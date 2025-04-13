@@ -15,6 +15,11 @@ class SolarRadiationHouse(House):
         super().plot_consumption_over_time(month, day)
         
         self.consumption = temp_consumption
+    def plot_consumption_over_time_range(self, time_stamp_1, time_stamp_2):
+        temp_consumption = self.consumption
+        self.consumption = self.solar_radiation
+        super().plot_consumption_over_time_range(time_stamp_1, time_stamp_2)
+        self.consumption = temp_consumption
     def change_timing_for_solar_radiation(self, house):
         if house.house_id != self.house_id:
             print(f'House {self.house_id} does not exist in the consumption data.')

@@ -1,5 +1,6 @@
 from housebuilder import HouseBuilder
 from solar_radiation_house import SolarRadiationHouse
+
 class SolarRadiationHouseBuilder(HouseBuilder) :
     def __init__(self):
         super().__init__()
