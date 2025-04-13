@@ -1,6 +1,7 @@
 import sqlite3
 import time
 import csv
+
 class DatabaseHandler():
     def __init__(self):
         pass
