@@ -1,6 +1,7 @@
 from house import House
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 class SolarRadiationHouse(House):
     def __init__(self, house_id):
@@ -21,9 +22,33 @@ class SolarRadiationHouse(House):
         self.consumption = self.solar_radiation
         super().plot_consumption_over_time_range(time_stamp_1, time_stamp_2)
         self.consumption = temp_consumption
-    def plot_radiation_with_consumption_over_time(self, month=None, day=None):
-        fig = px.scatter(x=pd.to_datetime(list(self.solar_radiation.keys())), y=list(self.solar_radiation.values()), title=f'House ID: {self.house_id}, Solar Radiation')
-        fig.add_trace(px.scatter(x=pd.to_datetime(list(self.solar_radiation.keys())), y=self.consumption, title=f'House ID: {self.house_id}, Consumption'))
+    def plot_radiation_with_consumption_over_time(self, consumption_house,month=None, day=None):
+        self.solar_radiation={t: v for t, v in self.solar_radiation.items() if v !=0}
+        solar_timestamps = set(pd.to_datetime(list(self.solar_radiation.keys())))
+        consumption_house.consumption={t: v for t, v in consumption_house.consumption.items() if pd.to_datetime(t) in solar_timestamps and v!=0}
+        fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+        fig.add_trace(
+        go.Scatter(x=pd.to_datetime(list(self.solar_radiation.keys())), 
+              y=list(self.solar_radiation.values()),
+              mode='lines', name='Solar Radiation'),
+        secondary_y=False,
+        )
+
+        fig.add_trace(
+            go.Scatter(x=pd.to_datetime(list(consumption_house.consumption.keys())), 
+                    y=list(consumption_house.consumption.values()),
+                    mode='lines', name='Consumption'),
+            secondary_y=True,
+        )
+
+        fig.update_layout(
+            title_text="Solar Radiation vs. Consumption"
+        )
+
+        fig.update_yaxes(title_text="Solar Radiation", secondary_y=False)
+        fig.update_yaxes(title_text="Consumption", secondary_y=True)
+
         fig.show()
 
     def change_timing_for_solar_radiation(self, house):
