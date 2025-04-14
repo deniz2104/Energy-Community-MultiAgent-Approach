@@ -1,6 +1,6 @@
-from housebuilder import HouseBuilder
+from housebuilder import HouseBuilder,houses,builder
 from solar_radiation_house import SolarRadiationHouse
-
+import csv
 class SolarRadiationHouseBuilder(HouseBuilder) :
     def __init__(self):
         super().__init__()
@@ -13,6 +13,13 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
                 solar_radiation_houses[house_id] = SolarRadiationHouse(house_id)
             solar_radiation_houses[house_id].add_solar_radiation(timestamp, value)
         return list(solar_radiation_houses.values())
+    def export_to_csv_solar_radiation(self, solar_radiation_houses, file_path):
+        with open(file_path, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['HouseID', 'EpochTime', 'TotalValue'])
+            for house in solar_radiation_houses:
+                for timestamp,value in house.solar_radiation.items():
+                    writer.writerow([house.house_id, timestamp, value])
     
     def match_and_filter_solar_houses(self,solar_houses, consumption_houses):
         consumption_dict = {house.house_id: house for house in consumption_houses}
@@ -23,3 +30,20 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
                 solar_house.change_timing_for_solar_radiation(consumption_house)
             else:
                 print(f"No matching consumption data for solar house {solar_house.house_id}")
+
+if __name__=="__main__":
+    builder_solar_radiation = SolarRadiationHouseBuilder()
+    solar_radiation_houses = builder_solar_radiation.build("solar_radiation_data.csv")  
+
+    consumption_house_ids = {house.house_id for house in houses}
+    solar_house_ids = {house.house_id for house in solar_radiation_houses}
+    
+    common_house_ids = consumption_house_ids.intersection(solar_house_ids)
+    print(f"Houses in both datasets: {len(common_house_ids)}")    
+
+    houses = [house for house in houses if house.house_id in common_house_ids]
+    solar_radiation_houses = [house for house in solar_radiation_houses if house.house_id in common_house_ids]
+
+    builder_solar_radiation.match_and_filter_solar_houses(solar_radiation_houses, houses)
+    builder_solar_radiation.export_to_csv_solar_radiation(solar_radiation_houses,"solar_radiation_after_resampling_and_matching_houses.csv")
+    

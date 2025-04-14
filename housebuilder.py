@@ -25,6 +25,14 @@ class HouseBuilder():
             houses[house_id].add_consumption(timestamp, value)
 
         return list(houses.values())
+    
+    def export_to_csv(self, houses, file_path):
+         with open(file_path, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['HouseID', 'EpochTime', 'TotalValue'])
+            for house in houses:
+                for timestamp,value in house.consumption.items():
+                    writer.writerow([house.house_id, timestamp, value])
 
     def resampling_houses_based_on_time_period(self, houses):
         resampled_houses={}
@@ -56,3 +64,23 @@ class HouseBuilder():
     def eliminate_houses_with_zero_for_a_period_of_time(self, houses):
         houses_with_no_eliminated_houses = [house for house in houses if house.remove_houses_having_zero_for_a_period_of_time()==0]
         return list(houses_with_no_eliminated_houses)
+
+builder = HouseBuilder()
+    
+houses = builder.build("consumption_data.csv")
+
+houses= builder.remove_houses_with_few_data_points(houses)
+
+houses= builder.remove_houses_with_lot_of_zeros(houses)
+
+houses= builder.resampling_houses_based_on_time_period(houses)
+
+builder.remove_anomalies_in_data(houses)
+
+builder.eliminate_days_after_a_year(houses)
+
+houses=builder.eliminate_houses_with_zero_for_a_period_of_time(houses)
+builder.export_to_csv(houses, "houses_after_filtering.csv")
+houses.clear()
+houses=builder.build("houses_after_filtering.csv")
+    

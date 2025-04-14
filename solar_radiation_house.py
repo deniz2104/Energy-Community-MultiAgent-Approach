@@ -1,5 +1,6 @@
 from house import House
 import pandas as pd
+import plotly.express as px
 
 class SolarRadiationHouse(House):
     def __init__(self, house_id):
@@ -20,6 +21,11 @@ class SolarRadiationHouse(House):
         self.consumption = self.solar_radiation
         super().plot_consumption_over_time_range(time_stamp_1, time_stamp_2)
         self.consumption = temp_consumption
+    def plot_radiation_with_consumption_over_time(self, month=None, day=None):
+        fig = px.scatter(x=pd.to_datetime(list(self.solar_radiation.keys())), y=list(self.solar_radiation.values()), title=f'House ID: {self.house_id}, Solar Radiation')
+        fig.add_trace(px.scatter(x=pd.to_datetime(list(self.solar_radiation.keys())), y=self.consumption, title=f'House ID: {self.house_id}, Consumption'))
+        fig.show()
+
     def change_timing_for_solar_radiation(self, house):
         if house.house_id != self.house_id:
             print(f'House {self.house_id} does not exist in the consumption data.')
