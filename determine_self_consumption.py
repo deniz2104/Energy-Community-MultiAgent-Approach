@@ -1,10 +1,10 @@
 from house import House
 from power_estimated import PowerEstimator
-class SelfConsumption(House, PowerEstimator):
+class SelfConsumption(PowerEstimator):
 
     def __init__(self,house_id):
-        House.__init__(self,house_id)
         PowerEstimator.__init__(self,house_id)
+        self.house_id = house_id
         self.self_consumption= {}
     
     def determine_self_consumption_over_time(self,month=None, day=None,use_load=False):

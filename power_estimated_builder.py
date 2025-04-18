@@ -5,7 +5,7 @@ class PowerEstimatedBuilder(SolarRadiationHouseBuilder):
         pass
     def build(self,csv_path):
         power_estimated_houses ={}
-        rows=super().open_csv_file("solar_radiation_after_resampling_and_matching_houses.csv")
+        rows=super().open_csv_file(csv_path)
 
         for house_id, timestamp, value in rows:
             if house_id not in power_estimated_houses:
