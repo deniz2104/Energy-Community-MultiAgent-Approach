@@ -24,7 +24,6 @@ class SelfConsumption(PowerEstimator):
         else:
             p_prod = [v for k, v in self.power_estimated.items() if k.month == month and (day is None or k.day == day)]
             p_load = [v for k, v in self.consumption.items() if k.month == month and (day is None or k.day == day)]
-        print(len(p_prod),len(p_load))
-        ##numerator = sum(min(p_prod[i], p_load[i]) for i in range(len(p_prod)))
-        ##denominator = sum(p_load) if use_load else sum(p_prod)
-        ##self.self_consumption = numerator / denominator if denominator != 0 else 0
+        numerator = sum(min(p_prod[i], p_load[i]) for i in range(min(len(p_prod),len(p_load))))
+        denominator = sum(p_load) if use_load else sum(p_prod)
+        self.self_consumption = numerator / denominator if denominator != 0 else 0

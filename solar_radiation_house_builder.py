@@ -31,3 +31,31 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
                 solar_house.change_timing_for_solar_radiation(consumption_house)
             else:
                 print(f"No matching consumption data for solar house {solar_house.house_id}")
+    
+    def filtrate_solar_radiation_by_number_of_values(self, solar_radiation_houses,consumption_houses, threshold=0.95):
+        consumption_dict = {house.house_id: house for house in consumption_houses}
+        filtered_solar_radiation_houses = []
+        for house in solar_radiation_houses:
+            if house.house_id in consumption_dict:
+                consumption_house = consumption_dict[house.house_id]
+                if len(house.solar_radiation) >= threshold*len(consumption_house.consumption):
+                    filtered_solar_radiation_houses.append(house)
+                else:
+                    print(f"House {house.house_id} has less than {threshold} values and will be removed.")
+        return filtered_solar_radiation_houses
+
+house_builder = HouseBuilder()
+houses = house_builder.build('houses_after_filtering_and_matching_with_weather_data.csv')
+
+solar_radiation_house_builder = SolarRadiationHouseBuilder()
+solar_radiation_house = solar_radiation_house_builder.build('solar_radiation_after_resampling_and_matching_houses.csv')
+print(f"Number of solar radiation houses: {len(solar_radiation_house)}")
+solar_radiation_house = solar_radiation_house_builder.filtrate_solar_radiation_by_number_of_values(solar_radiation_house,houses,0.95)
+print(f"Number of solar radiation houses after filtering: {len(solar_radiation_house)}")
+solar_radiation_house_dict={house.house_id: house for house in solar_radiation_house}
+for house in houses:
+    if house.house_id not in solar_radiation_house_dict:
+        houses.remove(house)
+print(f"Number of houses after filtering: {len(houses)}")
+#solar_radiation_house_builder.export_to_csv_solar_radiation(solar_radiation_house, 'solar_radiation_after_resampling_and_matching_houses.csv')
+house_builder.export_to_csv(houses, 'houses_after_filtering_and_matching_with_weather_data.csv')
