@@ -7,5 +7,5 @@ class SelfConsumptionBuilder:
         for house in houses:
             if(house.house_id not in self_consumption_house):
                 self_consumption_house[house.house_id] = SelfConsumption(house.house_id)
-                self_consumption_house[house.house_id].self_consumption = self_consumption_house[house.house_id].determine_self_consumption_over_time()
+                self_consumption_house[house.house_id].determine_self_consumption_over_time()
         return list(self_consumption_house.values())

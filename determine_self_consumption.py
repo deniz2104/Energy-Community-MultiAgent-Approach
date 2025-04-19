@@ -3,9 +3,13 @@ from power_estimated import PowerEstimator
 class SelfConsumption(PowerEstimator):
 
     def __init__(self,house_id):
-        PowerEstimator.__init__(self,house_id)
+        super().__init__(house_id)
         self.house_id = house_id
         self.self_consumption= {}
+    
+    def print_consumption(self):
+        for k, v in self.consumption.items():
+            print(f"Timestamp: {k}, Consumption: {v}")
     
     def determine_self_consumption_over_time(self,month=None, day=None,use_load=False):
         if month is None and day is None:
@@ -20,7 +24,7 @@ class SelfConsumption(PowerEstimator):
         else:
             p_prod = [v for k, v in self.power_estimated.items() if k.month == month and (day is None or k.day == day)]
             p_load = [v for k, v in self.consumption.items() if k.month == month and (day is None or k.day == day)]
-        numerator = sum(min(p_prod[i], p_load[i]) for i in range(len(p_prod)))
-        denominator = sum(p_load) if use_load else sum(p_prod)
-        self.self_consumption = numerator / denominator if denominator != 0 else 0
-        return self.self_consumption
+        print(len(p_prod),len(p_load))
+        ##numerator = sum(min(p_prod[i], p_load[i]) for i in range(len(p_prod)))
+        ##denominator = sum(p_load) if use_load else sum(p_prod)
+        ##self.self_consumption = numerator / denominator if denominator != 0 else 0

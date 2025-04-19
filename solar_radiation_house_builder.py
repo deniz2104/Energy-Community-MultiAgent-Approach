@@ -31,21 +31,3 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
                 solar_house.change_timing_for_solar_radiation(consumption_house)
             else:
                 print(f"No matching consumption data for solar house {solar_house.house_id}")
-
-if __name__=="__main__":
-    start=time.time()
-    builder_solar_radiation = SolarRadiationHouseBuilder()
-    solar_radiation_houses = builder_solar_radiation.build("solar_radiation_after_resampling_and_matching_houses.csv")
-    end=time.time()
-    print("Time taken to build solar radiation houses: ", end-start)
-    start=time.time()
-    builder_house=HouseBuilder()
-    consumption_houses = builder_house.build("houses_after_filtering_and_matching_with_weather_data.csv")
-    end=time.time()
-    print("Time taken to build consumption houses: ", end-start)
-    consumption_dict = {house.house_id: house for house in consumption_houses}
-
-    for solar_house in solar_radiation_houses[:5]:
-        if solar_house.house_id in consumption_dict:
-            consumption_house = consumption_dict[solar_house.house_id]
-            solar_house.plot_radiation_with_consumption_over_time(consumption_house)
