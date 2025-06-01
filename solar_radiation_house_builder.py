@@ -1,4 +1,4 @@
-from housebuilder import HouseBuilder,houses,builder
+from housebuilder import HouseBuilder
 from solar_radiation_house import SolarRadiationHouse
 import csv
 import time
@@ -43,19 +43,20 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
                 else:
                     print(f"House {house.house_id} has less than {threshold} values and will be removed.")
         return filtered_solar_radiation_houses
+    
+if __name__ == "__main__":
+    house_builder = HouseBuilder()
+    houses = house_builder.build('houses_after_filtering_and_matching_with_weather_data.csv')
 
-house_builder = HouseBuilder()
-houses = house_builder.build('houses_after_filtering_and_matching_with_weather_data.csv')
-
-solar_radiation_house_builder = SolarRadiationHouseBuilder()
-solar_radiation_house = solar_radiation_house_builder.build('solar_radiation_after_resampling_and_matching_houses.csv')
-print(f"Number of solar radiation houses: {len(solar_radiation_house)}")
-solar_radiation_house = solar_radiation_house_builder.filtrate_solar_radiation_by_number_of_values(solar_radiation_house,houses,0.95)
-print(f"Number of solar radiation houses after filtering: {len(solar_radiation_house)}")
-solar_radiation_house_dict={house.house_id: house for house in solar_radiation_house}
-for house in houses:
-    if house.house_id not in solar_radiation_house_dict:
-        houses.remove(house)
-print(f"Number of houses after filtering: {len(houses)}")
-#solar_radiation_house_builder.export_to_csv_solar_radiation(solar_radiation_house, 'solar_radiation_after_resampling_and_matching_houses.csv')
-house_builder.export_to_csv(houses, 'houses_after_filtering_and_matching_with_weather_data.csv')
+    solar_radiation_house_builder = SolarRadiationHouseBuilder()
+    solar_radiation_house = solar_radiation_house_builder.build('solar_radiation_after_resampling_and_matching_houses.csv')
+    print(f"Number of solar radiation houses: {len(solar_radiation_house)}")
+    solar_radiation_house = solar_radiation_house_builder.filtrate_solar_radiation_by_number_of_values(solar_radiation_house,houses,0.95)
+    print(f"Number of solar radiation houses after filtering: {len(solar_radiation_house)}")
+    solar_radiation_house_dict={house.house_id: house for house in solar_radiation_house}
+    for house in houses:
+        if house.house_id not in solar_radiation_house_dict:
+            houses.remove(house)
+    print(f"Number of houses after filtering: {len(houses)}")
+    solar_radiation_house_builder.export_to_csv_solar_radiation(solar_radiation_house, 'solar_radiation_after_resampling_and_matching_houses.csv')
+    house_builder.export_to_csv(houses, 'houses_after_filtering_and_matching_with_weather_data.csv')
