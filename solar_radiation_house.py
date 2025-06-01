@@ -22,35 +22,6 @@ class SolarRadiationHouse(House):
         self.consumption = self.solar_radiation
         super().plot_consumption_over_time_range(time_stamp_1, time_stamp_2)
         self.consumption = temp_consumption
-    def plot_radiation_with_consumption_over_time(self, consumption_house,month=None, day=None):
-        self.solar_radiation={t: v for t, v in self.solar_radiation.items() if v !=0}
-        solar_timestamps = set(pd.to_datetime(list(self.solar_radiation.keys())))
-        consumption_house.consumption={t: v for t, v in consumption_house.consumption.items() if pd.to_datetime(t) in solar_timestamps and v!=0}
-        fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-        fig.add_trace(
-        go.Scatter(x=pd.to_datetime(list(self.solar_radiation.keys())), 
-              y=list(self.solar_radiation.values()),
-              mode='lines', name='Solar Radiation'),
-        secondary_y=False,
-        )
-
-        fig.add_trace(
-            go.Scatter(x=pd.to_datetime(list(consumption_house.consumption.keys())), 
-                    y=list(consumption_house.consumption.values()),
-                    mode='lines', name='Consumption'),
-            secondary_y=True,
-        )
-
-        fig.update_layout(
-            title_text="Solar Radiation vs. Consumption"
-        )
-
-        fig.update_yaxes(title_text="Solar Radiation", secondary_y=False)
-        fig.update_yaxes(title_text="Consumption", secondary_y=True)
-
-        fig.show()
-
     def change_timing_for_solar_radiation(self, house):
         if house.house_id != self.house_id:
             print(f'House {self.house_id} does not exist in the consumption data.')
