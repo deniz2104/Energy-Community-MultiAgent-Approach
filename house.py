@@ -40,15 +40,15 @@ class House():
 
     def plot_consumption_over_time(self,month=None,day=None):
         if month is None and day is None:
-            fig = px.scatter(x=pd.to_datetime(list(self.consumption.keys())), y=list(self.consumption.values()), title=f'House ID: {self.house_id}')
+            fig = px.line(x=pd.to_datetime(list(self.consumption.keys())), y=list(self.consumption.values()), title=f'House ID: {self.house_id}')
             fig.show()
         if month is not None and day is None:
             timestamps_period, consumption_period = self.filter_values_by_month_and_day('month', month)
-            fig = px.scatter(x=timestamps_period, y=consumption_period, title=f'House ID: {self.house_id}')
+            fig = px.line(x=timestamps_period, y=consumption_period, title=f'House ID: {self.house_id}')
             fig.show()
         if month is None and day is not None:
             timestamps_period, consumption_period = self.filter_values_by_month_and_day('day', day)
-            fig = px.scatter(x=timestamps_period, y=consumption_period, title=f'House ID: {self.house_id}')
+            fig = px.line(x=timestamps_period, y=consumption_period, title=f'House ID: {self.house_id}')
             fig.show()
     
     def plot_consumption_over_time_range(self, time_stamp_1, time_stamp_2):
@@ -56,7 +56,7 @@ class House():
         time_stamp_2=pd.to_datetime(time_stamp_2)
         timestamps_period=[t for t in pd.to_datetime(list(self.consumption.keys())) if time_stamp_1<=t<=time_stamp_2]
         consumption_period=[self.consumption[t] for t in timestamps_period]
-        fig = px.scatter(x=timestamps_period, y=consumption_period, title=f'House ID: {self.house_id}')
+        fig = px.line(x=timestamps_period, y=consumption_period, title=f'House ID: {self.house_id}')
         fig.show()
 
     def eliminate_days_after_a_year_per_house(self):
