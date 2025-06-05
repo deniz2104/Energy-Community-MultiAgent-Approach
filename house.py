@@ -1,6 +1,8 @@
 import pandas as pd
 import plotly.express as px
+import numpy as np
 from sklearn.ensemble import IsolationForest 
+from scipy.stats.mstats import winsorize
 
 class House():
     def __init__(self, house_id):
@@ -78,6 +80,11 @@ class House():
         val=df['Consumption'].values.tolist()
         self.consumption={t:v for t,v in self.consumption.items() if v not in val}
 
+    def filtrate_remained_anomalies(self):
+        original_data = list(self.consumption.values())
+        data = winsorize(np.array(original_data), limits=[0, 0.003])
+        data = data.tolist()
+        self.consumption = {k: v for k, v in zip(self.consumption.keys(), data)}
 
     def count_zero_for_house(self):
         return sum(value == 0 for value in self.consumption.values())
