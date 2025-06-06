@@ -1,7 +1,7 @@
 from housebuilder import HouseBuilder
 from solar_radiation_house import SolarRadiationHouse
 import csv
-import time
+import pandas as pd
 class SolarRadiationHouseBuilder(HouseBuilder) :
     def __init__(self):
         super().__init__()
@@ -43,7 +43,25 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
                 else:
                     print(f"House {house.house_id} has less than {threshold} values and will be removed.")
         return filtered_solar_radiation_houses
-    
+
+    def filtrate_solar_radiation_having_zeros_for_a_period_of_time(self, solar_radiation_houses, consumption_houses):
+        consumption_dict = {house.house_id: house for house in consumption_houses}
+        filtered_solar_radiation_houses = []
+        
+        for house in solar_radiation_houses:
+            if house.house_id in consumption_dict:
+                house.consumption = house.solar_radiation.copy()
+                zero_count, zero_periods = house.remove_houses_having_zero_for_a_period_of_time()
+                if zero_count == 0:
+                    filtered_solar_radiation_houses.append(house)
+                else:
+                    print(f"House {house.house_id} has {zero_count} periods of zeros longer than 12 days:")
+                    for period_start, period_end in zero_periods:
+                        days = (pd.to_datetime(period_end) - pd.to_datetime(period_start)).days
+                        print(f"  - Period from {period_start} to {period_end} ({days} days)")
+        
+        return filtered_solar_radiation_houses
+        
 if __name__ == "__main__":
     house_builder = HouseBuilder()
     houses = house_builder.build('houses_after_filtering_and_matching_with_weather_data.csv')
@@ -53,10 +71,13 @@ if __name__ == "__main__":
     print(f"Number of solar radiation houses: {len(solar_radiation_house)}")
     solar_radiation_house = solar_radiation_house_builder.filtrate_solar_radiation_by_number_of_values(solar_radiation_house,houses,0.95)
     print(f"Number of solar radiation houses after filtering: {len(solar_radiation_house)}")
+    solar_radiation_house= solar_radiation_house_builder.filtrate_solar_radiation_having_zeros_for_a_period_of_time(solar_radiation_house, houses)
+    print(f"Number of solar radiation houses after filtering zeros: {len(solar_radiation_house)}")
     solar_radiation_house_dict={house.house_id: house for house in solar_radiation_house}
     for house in houses:
         if house.house_id not in solar_radiation_house_dict:
             houses.remove(house)
     print(f"Number of houses after filtering: {len(houses)}")
+    print(f"Number of solar radiation houses after filtering: {len(solar_radiation_house)}")
     solar_radiation_house_builder.export_to_csv_solar_radiation(solar_radiation_house, 'solar_radiation_after_resampling_and_matching_houses.csv')
     house_builder.export_to_csv(houses, 'houses_after_filtering_and_matching_with_weather_data.csv')

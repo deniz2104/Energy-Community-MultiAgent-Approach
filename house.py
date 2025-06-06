@@ -101,13 +101,13 @@ class House():
             else:
                 if first_period and last_period:
                     days_diff = (pd.to_datetime(last_period) - pd.to_datetime(first_period)).days
-                    if days_diff >= 14:
+                    if days_diff >= 12:
                         time_stamps.add((first_period, last_period))
                 first_period = None
                 last_period = None
 
         if first_period and last_period:
             days_diff = (pd.to_datetime(last_period) - pd.to_datetime(first_period)).days
-            if days_diff >= 14:
+            if days_diff >= 12:
                 time_stamps.add((first_period, last_period))
-        return len(time_stamps)
+        return len(time_stamps),list(time_stamps)
