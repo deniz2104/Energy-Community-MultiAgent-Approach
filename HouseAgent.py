@@ -12,7 +12,7 @@ class HouseAgent(Agent):
         self.set_agent_type()
         
     def set_agent_type(self):
-        if self.agent_type == "non-ethusiastic":
+        if self.agent_type == "non-enthusiastic":
             self.follow_recommendation=0.3
             self.consume_as_expected= 0.7
         elif self.agent_type == "ideal":
@@ -35,30 +35,22 @@ class HouseAgent(Agent):
         if not will_follow_recommendation:
             return "maintain"
         
-        if self.current_recommendation is "increase":
-            if self.agent_type=="enthusiastic":
-                return "strongly_increase"
-            else:
-                return "moderately_increase"
-        elif self.current_recommendation is "decrease":
-            if self.agent_type=="non-ethusiastic":
-                return "strongly_decrease"
-            else:
-                return "moderately_decrease"
+        if self.current_recommendation == "increase":
+            return "strongly_increase" if self.agent_type=="enthusiastic" else "moderately_increase"
+        elif self.current_recommendation == "decrease":
+            return "strongly_decrease" if self.agent_type=="non-enthusiastic" else "moderately_decrease"
         else:
             return "maintain"
         
-    def apply_action(self,action,delta_p_moderate,delta_p_strong):
-        if action=="maintain":
-            self.current_consumption=self.base_consumption
-        elif action=="moderately_increase":
-            self.current_consumption=(1+delta_p_moderate)*self.base_consumption
-        elif action=="strongly_increase":
-            self.current_consumption=(1+delta_p_strong)*self.base_consumption
-        elif action=="moderately_decrease":
-            self.current_consumption=(1-delta_p_moderate)*self.base_consumption
-        elif action=="strongly_decrease":
-            self.current_consumption=(1-delta_p_strong)*self.base_consumption
+    def apply_action(self,action,delta_p_moderate=0.2,delta_p_strong=0.2):
+        multipliers = {
+        "maintain": 1.0,
+        "moderately_increase": 1 + delta_p_moderate,
+        "strongly_increase": 1 + delta_p_strong,
+        "moderately_decrease": 1 - delta_p_moderate,
+        "strongly_decrease": 1 - delta_p_strong,
+    }
+        self.current_consumption = self.base_consumption * multipliers.get(action, 1.0)
     def step(self):
         action=self.decide_action()
         self.last_action = action
