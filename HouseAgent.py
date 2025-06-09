@@ -3,7 +3,10 @@ from statistics import mean
 class HouseAgent(Agent):
     def __init__(self,unique_id,model,house_obj,agent_type="normal"):
         super.__init__(unique_id,model)
-        self.base_consumption = house_obj.consumption
+        self.base_consumption ={
+            int(step): value 
+            for step, value in house_obj.consumption.items()
+        }
         self.weekly_consumption = self.define_weekly_consumption()
         self.agent_type = agent_type
         self.current_consumption = 0
@@ -18,7 +21,7 @@ class HouseAgent(Agent):
     #def convert_timestamp_to_steps(self,house_obj):
     #    values=list(house_obj.consumption.values())
     #    list_of_numbers=list(range(1,len(house_obj.consumption)))
-    #    self.base_consumption = {str(num): value for num, value in zip(list_of_numbers, values)}
+    #    self.base_consumption = {int(num): value for num, value in zip(list_of_numbers, values)}
 
     def define_weekly_consumption(self):
         weekly_consumption = {}
