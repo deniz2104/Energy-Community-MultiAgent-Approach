@@ -4,8 +4,7 @@ class SelfConsumption(PowerEstimator):
 
     def __init__(self,house_id):
         super().__init__(house_id)
-        self.house_id = house_id
-        self.self_consumption= {}
+        self.self_consumption= None
     
     def print_consumption(self):
         for k, v in self.consumption.items():
@@ -26,4 +25,6 @@ class SelfConsumption(PowerEstimator):
             p_load = [v for k, v in self.consumption.items() if k.month == month and (day is None or k.day == day)]
         numerator = sum(min(p_prod[i], p_load[i]) for i in range(min(len(p_prod),len(p_load))))
         denominator = sum(p_load) if use_load else sum(p_prod)
-        self.self_consumption = numerator / denominator if denominator != 0 else 0
+        result = numerator / denominator if denominator != 0 else 0
+        self.self_consumption = result
+        return result
