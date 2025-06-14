@@ -10,5 +10,8 @@ class PowerEstimatedBuilder(SolarRadiationHouseBuilder):
         for house_id, timestamp, value in rows:
             if house_id not in power_estimated_houses:
                 power_estimated_houses[house_id] = PowerEstimator(house_id)
+            power_estimated_houses[house_id].add_consumption(timestamp,value)
             power_estimated_houses[house_id].add_power_estimated(timestamp, value)
+            power_estimated_houses[house_id].determine_NEEG_over_time(timestamp)
+            power_estimated_houses[house_id].determine_NEEG()
         return list(power_estimated_houses.values())
