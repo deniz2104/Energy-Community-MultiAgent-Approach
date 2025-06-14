@@ -18,7 +18,7 @@ class PowerEstimator(SolarRadiationHouse):
         self.solar_radiation = self.power_estimated
         super().plot_consumption_over_time_range(time_stamp_1, time_stamp_2)
 
-    def plot_power_estimated_with_consumption_over_time(self, consumption_house):
+    def plot_power_estimated_with_consumption_over_time(self, consumption_house,self_consumption=None, self_sufficiency=None):
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
         fig.add_trace(
@@ -35,8 +35,42 @@ class PowerEstimator(SolarRadiationHouse):
             secondary_y=True,
         )
 
+        annotations = []
+        if self_consumption is not None:
+            annotations.append(
+                dict(
+                    x=0.02,
+                    y=0.98,
+                    xref="paper",
+                    yref="paper",
+                    text=f"Self Consumption: {self_consumption.self_consumption}%",
+                    showarrow=False,
+                    font=dict(size=14),
+                    bgcolor="white",
+                    bordercolor="black",
+                    borderwidth=1
+                )
+            )
+        
+        if self_sufficiency is not None:
+            annotations.append(
+                dict(
+                    x=0.02,
+                    y=0.92,
+                    xref="paper",
+                    yref="paper",
+                    text=f"Self Sufficiency: {self_sufficiency.self_sufficiency}%",
+                    showarrow=False,
+                    font=dict(size=14),
+                    bgcolor="white",
+                    bordercolor="black",
+                    borderwidth=1
+                )
+            )
+        
         fig.update_layout(
-            title_text="Power Estimated vs. Consumption"
+        title_text="Power Estimated vs. Consumption",
+        annotations=annotations
         )
 
         fig.update_yaxes(title_text="Power Estimated", secondary_y=False)
