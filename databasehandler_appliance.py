@@ -1,14 +1,14 @@
 import sqlite3
 import time
 import csv
+from databasehandler import DatabaseHandler
 from file_to_get_house_ids import house_ids
 
-class DatabaseHandlerAppliance():
+class DatabaseHandlerAppliance(DatabaseHandler):
     def __init__(self):
         pass
     def read_database(self, database_path):
-        self.connection = sqlite3.connect(database_path)
-        self.cursor = self.connection.cursor()
+        super().read_database(database_path)
     def extract_data(self):
         self.cursor.execute("""
         SELECT DISTINCT
@@ -43,7 +43,7 @@ class DatabaseHandlerAppliance():
             writer.writerows(data)
 
     def close_connection(self):
-        self.connection.close()
+        super().close_connection()
 
 if __name__ == "__main__":
     db_handler = DatabaseHandlerAppliance()
