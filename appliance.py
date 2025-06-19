@@ -1,6 +1,7 @@
 import pandas as pd
 from house import House
-from collections import OrderedDict
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 class Appliance(House):
     def __init__(self,house_id):
@@ -27,3 +28,15 @@ class Appliance(House):
             new_dictionary[appliance_type]=new_pairs
         self.consumption=new_dictionary
         new_dictionary=None
+    
+    def plot_all_appliances_consumption_over_time(self):
+        fig = make_subplots(rows=len(self.consumption), cols=1, shared_xaxes=True, vertical_spacing=0.03)
+
+        for i, (appliance_type, consumption) in enumerate(self.consumption.items()):
+            timestamps = [pair[0] for pair in consumption]
+            values = [pair[1] for pair in consumption]
+            fig.add_trace(go.Scatter(x=timestamps, y=values, name=appliance_type), row=i+1, col=1)
+
+        fig.update_layout(title_text="Appliances Consumption Over Time", showlegend=False)
+        fig.show()
+        

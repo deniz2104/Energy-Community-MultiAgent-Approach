@@ -76,3 +76,4 @@ if __name__ == "__main__":
     houses=house_builder.build("houses_after_filtering_and_matching_with_weather_data.csv")
     builder.matching_timestamps_between_appliance_and_house(appliances, houses)
     appliances=builder.resampling_appliance_data(appliances)
+    builder.export_to_csv(appliances, "appliance_consumption_resampled_data.csv")
