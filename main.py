@@ -1,12 +1,8 @@
 from housebuilder import HouseBuilder
-from house import House
-from solar_radiation_house import SolarRadiationHouse
 from solar_radiation_house_builder import SolarRadiationHouseBuilder
 from power_estimated_builder import PowerEstimatedBuilder
-from determine_self_consumption import SelfConsumption
-from determine_self_sufficiency import SelfSufficiency
 from determine_self_consumption_builder import SelfConsumptionBuilder
-from power_estimated import PowerEstimator
+from determine_self_sufficiency_builder import SelfSufficiencyBuilder
 
 if __name__ == "__main__":
     house_builder = HouseBuilder()
@@ -17,17 +13,11 @@ if __name__ == "__main__":
     
     power_estimated_builder = PowerEstimatedBuilder()
     power_estimated = power_estimated_builder.build('solar_radiation_after_resampling_and_matching_houses.csv')
-    power_dict = {house.house_id: house for house in power_estimated}
+    
     self_consumption_builder = SelfConsumptionBuilder()
-    self_consumption =[]
+    self_consumption = self_consumption_builder.build_self_consumption(houses, power_estimated)
 
-    for house in houses:
-            sc= SelfConsumption(house.house_id)
-            sc.consumption = house.consumption
-            sc.power_estimated = power_dict[house.house_id].power_estimated
-            sc.determine_self_consumption_over_time()
-            self_consumption.append(sc)
-    for self_consumption_house in self_consumption:
-        print(f"House ID: {self_consumption_house.house_id}, Self Consumption: {self_consumption_house.self_consumption}")
+    self_sufficiency_builder = SelfSufficiencyBuilder()
+    self_sufficiency_house = self_sufficiency_builder.build_self_sufficiency(houses, power_estimated)
 
         
