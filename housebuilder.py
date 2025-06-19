@@ -82,6 +82,4 @@ if __name__ == "__main__":
 
     houses=builder.eliminate_houses_with_zero_for_a_period_of_time(houses)
     builder.export_to_csv(houses, "houses_after_filtering.csv")
-    houses.clear()
-    houses=builder.build("houses_after_filtering.csv")
     
