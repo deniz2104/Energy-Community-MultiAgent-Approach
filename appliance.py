@@ -2,6 +2,7 @@ import pandas as pd
 from house import House
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from sklearn.ensemble import IsolationForest 
 
 class Appliance(House):
     def __init__(self,house_id):
@@ -39,4 +40,26 @@ class Appliance(House):
 
         fig.update_layout(title_text="Appliances Consumption Over Time", showlegend=False)
         fig.show()
+
+
+    def count_zeros_in_consumption(self):
+        return {appliance_type: sum(value == 0 for _, value in consumption) for appliance_type, consumption in self.consumption.items()}
+    
+    def eliminate_appliances_with_lot_of_zeros_consumption(self):
+        appliances_with_enough_data = {appliance_type: consumption for appliance_type, consumption in self.consumption.items() if sum(value == 0 for _, value in consumption) < len(consumption)-len(consumption)//24}
+        self.consumption = appliances_with_enough_data
+    
+    def eliminate_anomalies_in_my_data(self):
+        for appliance_type, pairs in self.consumption.items():
+            df=pd.DataFrame(pairs, columns=['Timestamp', 'Consumption'])
+            df['Timestamp']=pd.to_datetime(df['Timestamp'])
+            isolation_forest = IsolationForest(n_estimators=300,contamination=0.0002,random_state=42)
+            isolation_forest.fit(df[['Consumption']])
+            df['anomaly'] = isolation_forest.predict(df[['Consumption']])
+
+            anomalies_df = df[df['anomaly'] == -1]
+            anomalous_values = anomalies_df['Consumption'].values.tolist()
         
+            filtered_pairs = [(timestamp, value) for timestamp, value in pairs if value not in anomalous_values]
+            self.consumption[appliance_type]=filtered_pairs
+
