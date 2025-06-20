@@ -50,16 +50,21 @@ class Appliance(House):
         self.consumption = appliances_with_enough_data
     
     def eliminate_anomalies_in_my_data(self):
-        for appliance_type, pairs in self.consumption.items():
-            df=pd.DataFrame(pairs, columns=['Timestamp', 'Consumption'])
-            df['Timestamp']=pd.to_datetime(df['Timestamp'])
-            isolation_forest = IsolationForest(n_estimators=300,contamination=0.0002,random_state=42)
-            isolation_forest.fit(df[['Consumption']])
-            df['anomaly'] = isolation_forest.predict(df[['Consumption']])
-
-            anomalies_df = df[df['anomaly'] == -1]
-            anomalous_values = anomalies_df['Consumption'].values.tolist()
+        new_consumption = {}
         
-            filtered_pairs = [(timestamp, value) for timestamp, value in pairs if value not in anomalous_values]
-            self.consumption[appliance_type]=filtered_pairs
-
+        for appliance_type, pairs in self.consumption.items():
+            timestamps = [pair[0] for pair in pairs]
+            values = [pair[1] for pair in pairs]
+            
+            temp_consumption = dict(zip(timestamps, values))
+            
+            temp_house = House(self.house_id)
+            temp_house.consumption = temp_consumption
+            temp_house.eliminate_anomalies_in_data()
+            
+            filtered_pairs = [(timestamp, value) for timestamp, value in temp_house.consumption.items()]
+            
+            if filtered_pairs:
+                new_consumption[appliance_type] = filtered_pairs
+        
+        self.consumption = new_consumption
