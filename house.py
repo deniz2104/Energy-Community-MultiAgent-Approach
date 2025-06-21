@@ -115,7 +115,7 @@ class House():
         first_period=None
         last_period=None
         time_stamps=set()
-        if is_appliance:
+        if is_appliance is True:
             days_difference = 21
         for timestamp, value in self.consumption.items():
             if value == 0:

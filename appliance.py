@@ -68,3 +68,20 @@ class Appliance(House):
                 new_consumption[appliance_type] = filtered_pairs
         
         self.consumption = new_consumption
+
+    def eliminate_appliance_with_over_three_weeks_of_no_consumption(self):
+        new_consumption = {}
+
+        for appliance_type, pairs in self.consumption.items():
+            timestamps = [pair[0] for pair in pairs]
+            values = [pair[1] for pair in pairs]
+            
+            temp_consumption = dict(zip(timestamps, values))
+            
+            temp_house = House(self.house_id)
+            temp_house.consumption = temp_consumption
+            
+            if (temp_house.remove_houses_having_zero_for_a_period_of_time(is_appliance=True)==0):
+                filtered_pairs = [(timestamp, value) for timestamp, value in temp_house.consumption.items()]
+                new_consumption[appliance_type] = filtered_pairs        
+        self.consumption = new_consumption

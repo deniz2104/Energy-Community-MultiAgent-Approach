@@ -52,6 +52,7 @@ class HouseBuilder():
     def remove_houses_with_few_data_points(self, houses):
         houses_with_enough_data = [house for house in houses if len(house.consumption) >= 50000]
         return list(houses_with_enough_data)
+    
     def remove_houses_with_lot_of_zeros(self,houses):
         houses_to_consider=[house for house in houses if house.count_zero_for_house() < 0.15*len(house.consumption)]
         return list(houses_to_consider)
