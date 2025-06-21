@@ -111,10 +111,12 @@ class House():
     def count_zero_for_house(self):
         return sum(value == 0 for value in self.consumption.values())
 
-    def remove_houses_having_zero_for_a_period_of_time(self):
+    def remove_houses_having_zero_for_a_period_of_time(self,is_appliance=None,days_difference=12):
         first_period=None
         last_period=None
         time_stamps=set()
+        if is_appliance:
+            days_difference = 21
         for timestamp, value in self.consumption.items():
             if value == 0:
                 if first_period is None:
@@ -123,13 +125,13 @@ class House():
             else:
                 if first_period and last_period:
                     days_diff = (pd.to_datetime(last_period) - pd.to_datetime(first_period)).days
-                    if days_diff >= 12:
+                    if days_diff >= days_difference:
                         time_stamps.add((first_period, last_period))
                 first_period = None
                 last_period = None
 
         if first_period and last_period:
             days_diff = (pd.to_datetime(last_period) - pd.to_datetime(first_period)).days
-            if days_diff >= 12:
+            if days_diff >= days_difference:
                 time_stamps.add((first_period, last_period))
-        return len(time_stamps),list(time_stamps)
+        return len(time_stamps)

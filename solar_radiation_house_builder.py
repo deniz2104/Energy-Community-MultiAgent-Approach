@@ -51,15 +51,9 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
         for house in solar_radiation_houses:
             if house.house_id in consumption_dict:
                 house.consumption = house.solar_radiation.copy()
-                zero_count, zero_periods = house.remove_houses_having_zero_for_a_period_of_time()
+                zero_count= house.remove_houses_having_zero_for_a_period_of_time()
                 if zero_count == 0:
                     filtered_solar_radiation_houses.append(house)
-                else:
-                    print(f"House {house.house_id} has {zero_count} periods of zeros longer than 12 days:")
-                    for period_start, period_end in zero_periods:
-                        days = (pd.to_datetime(period_end) - pd.to_datetime(period_start)).days
-                        print(f"  - Period from {period_start} to {period_end} ({days} days)")
-        
         return filtered_solar_radiation_houses
         
 if __name__ == "__main__":
