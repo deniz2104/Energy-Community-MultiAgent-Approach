@@ -68,6 +68,17 @@ class ApplianceBuilder():
                     resampled_appliance.consumption[appliance_type] = sorted_consumption
         
         return list(resampled_appliances.values())
+    def remove_appliances_with_zero_data(self, appliances):
+        for appliance in appliances:
+            appliance.eliminate_appliances_with_lot_of_zeros_consumption()
+    
+    def eliminate_anomalies_in_appliances(self, appliances):
+        for appliance in appliances:
+            appliance.eliminate_anomalies_in_my_data()
+
+    def eliminate_appliance_with_five_days_of_no_consumption(self, appliances):
+        for appliance in appliances:
+            appliance.eliminate_appliance_with_five_days_of_no_consumption()
     
 if __name__ == "__main__":
     builder=ApplianceBuilder()
@@ -76,4 +87,7 @@ if __name__ == "__main__":
     houses=house_builder.build("houses_after_filtering_and_matching_with_weather_data.csv")
     builder.matching_timestamps_between_appliance_and_house(appliances, houses)
     appliances=builder.resampling_appliance_data(appliances)
-    builder.export_to_csv(appliances, "appliance_consumption_resampled_data.csv")
+    builder.remove_appliances_with_zero_data(appliances)
+    builder.eliminate_anomalies_in_appliances(appliances)
+    builder.eliminate_appliance_with_five_days_of_no_consumption(appliances)
+    builder.export_to_csv(appliances, "appliance_consumption_preprocessed.csv")

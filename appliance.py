@@ -69,7 +69,7 @@ class Appliance(House):
         
         self.consumption = new_consumption
 
-    def eliminate_appliance_with_over_three_weeks_of_no_consumption(self):
+    def eliminate_appliance_with_five_days_of_no_consumption(self):
         new_consumption = {}
 
         for appliance_type, pairs in self.consumption.items():
