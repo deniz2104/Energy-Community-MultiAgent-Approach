@@ -1,11 +1,11 @@
 from mesa import Agent
 from statistics import mean
 class HouseAgent(Agent):
-    def __init__(self,unique_id,model,house_obj,agent_type="normal"):
+    def __init__(self,unique_id,model,house_obj,agent_type="ideal"):
         super.__init__(unique_id,model)
         self.base_consumption ={
             int(step): value 
-            for step, value in house_obj.consumption.items()
+            for step, value in house_obj.power_estimated.items()
         }
         self.weekly_consumption = self.define_weekly_consumption()
         self.agent_type = agent_type
@@ -17,11 +17,6 @@ class HouseAgent(Agent):
 
         self.set_agent_type()
         self.convert_timestamp_to_steps(house_obj)
-    
-    #def convert_timestamp_to_steps(self,house_obj):
-    #    values=list(house_obj.consumption.values())
-    #    list_of_numbers=list(range(1,len(house_obj.consumption)))
-    #    self.base_consumption = {int(num): value for num, value in zip(list_of_numbers, values)}
 
     def define_weekly_consumption(self):
         weekly_consumption = {}
@@ -33,18 +28,8 @@ class HouseAgent(Agent):
 
         
     def set_agent_type(self):
-        if self.agent_type == "non-enthusiastic":
-            self.follow_recommendation=0.3
-            self.consume_as_expected= 0.7
-        elif self.agent_type == "ideal":
-            self.follow_recommendation=1.0
-            self.consume_as_expected=0.0
-        elif self.agent_type == "enthusiastic":
-            self.follow_recommendation=0.7
-            self.consume_as_expected=0.3
-        else:
-            self.follow_recommendation=0.5
-            self.consume_as_expected=0.5
+        self.follow_recommendation=1.0
+        self.consume_as_expected=0.0
         
     def get_recommendation(self,recommendation):
         self.current_recommendation = recommendation

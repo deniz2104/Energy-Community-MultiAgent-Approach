@@ -15,7 +15,7 @@ class HouseModel(Model):
 
     def create_agents(self,house_obj):
         for house in house_obj:
-            agent_type= random.choice(["normal","enthusiastic","non-enthusiastic","ideal"])
+            agent_type= "ideal"
             agent = HouseAgent(model=self, unique_id=house.house_id, house_obj=house, agent_type=agent_type)
             self.schedule.add(agent)
 
