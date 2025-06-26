@@ -41,12 +41,7 @@ class HouseAgent(Agent):
         if not will_follow_recommendation:
             return "maintain"
         
-        if self.current_recommendation == "increase":
-            return "strongly_increase" if self.agent_type=="enthusiastic" else "moderately_increase"
-        elif self.current_recommendation == "decrease":
-            return "strongly_decrease" if self.agent_type=="non-enthusiastic" else "moderately_decrease"
-        else:
-            return "maintain"
+        return self.current_recommendation
         
     def apply_action(self,action,delta_p_moderate=0.2,delta_p_strong=0.2):
         multipliers = {
