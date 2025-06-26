@@ -43,13 +43,11 @@ class HouseAgent(Agent):
         
         return self.current_recommendation
         
-    def apply_action(self,action,delta_p_moderate=0.2,delta_p_strong=0.2):
+    def apply_action(self,action,delta_p=0.2):
         multipliers = {
         "maintain": 1.0,
-        "moderately_increase": 1 + delta_p_moderate,
-        "strongly_increase": 1 + delta_p_strong,
-        "moderately_decrease": 1 - delta_p_moderate,
-        "strongly_decrease": 1 - delta_p_strong,
+        "increase": 1 + delta_p,
+        "decrease": 1 - delta_p,
     }
         self.current_consumption = self.base_consumption * multipliers.get(action, 1.0)
         self.simulated_consumption[self.model.step_count] = self.current_consumption
