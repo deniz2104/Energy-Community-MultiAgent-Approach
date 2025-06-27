@@ -1,4 +1,7 @@
 import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 from house import House
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -85,3 +88,45 @@ class Appliance(House):
                 filtered_pairs = [(timestamp, value) for timestamp, value in temp_house.consumption.items()]
                 new_consumption[appliance_type] = filtered_pairs        
         self.consumption = new_consumption
+
+    def kmeans_clustering(self,data_for_kmeans, number_of_clusters=2):
+        scaler = StandardScaler()
+        scaled_data = scaler.fit_transform(data_for_kmeans)
+        kmeans = KMeans(n_clusters=number_of_clusters, random_state=42, n_init=10)
+        kmeans.fit_predict(scaled_data)
+        centroids = scaler.inverse_transform(kmeans.cluster_centers_)
+        return scaler,kmeans,centroids
+    
+    def determine_on_off_periods(self, chunk_size=56):
+        dictionary_with_on_off_values = {}
+        for appliance_type, pairs in self.consumption.items():
+            dictionary_with_on_off_values.setdefault(appliance_type, [])
+            on_off_pairs = []
+            for i in range(0, len(pairs), chunk_size):
+                chunk = pairs[i:i+chunk_size]
+                data_for_kmeans = np.array([pair[1] for pair in chunk]).reshape(-1, 1)
+                scaler, kmeans, centroids = self.kmeans_clustering(data_for_kmeans)
+                off_cluster_label = np.argmin(centroids)
+                chunk_on_off = [
+                    chunk[j]
+                    for j in range(len(chunk))
+                    if kmeans.predict(scaler.transform([[chunk[j][1]]]))[0] == off_cluster_label
+                ]
+                on_off_pairs.extend(chunk_on_off)
+            dictionary_with_on_off_values[appliance_type] = on_off_pairs
+        return dictionary_with_on_off_values
+    
+    def plot_points_of_interest(self,dictionary_with_on_off_values):
+        fig = make_subplots(rows=len(self.consumption)*2, cols=1, shared_xaxes=True, vertical_spacing=0.03)
+
+        for i, (appliance_type, consumption) in enumerate(self.consumption.items()):
+            timestamps = [pair[0] for pair in consumption]
+            values = [pair[1] for pair in consumption]
+            fig.add_trace(go.Scatter(x=timestamps, y=values, name=appliance_type), row=i*2+1, col=1)
+        
+        for i, (appliance_type, points_of_interest) in enumerate(dictionary_with_on_off_values.items()):
+            timestamps = [pair[0] for pair in points_of_interest]
+            values = [pair[1] for pair in points_of_interest]
+            fig.add_trace(go.Scatter(x=timestamps, y=values, mode='markers', name=f"{appliance_type} Points of Interest", marker=dict(color='red')), row=i*2+2, col=1)
+    
+        fig.show()
