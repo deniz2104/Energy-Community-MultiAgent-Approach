@@ -15,8 +15,7 @@ class HouseModel(Model):
 
     def create_agents(self,house_obj):
         for house in house_obj:
-            agent_type= "ideal"
-            agent = HouseAgent(model=self, unique_id=house.house_id, house_obj=house, agent_type=agent_type)
+            agent = HouseAgent(model=self, unique_id=house.house_id, house_obj=house, agent_type="ideal")
             self.schedule.add(agent)
 
     def create_manager(self):

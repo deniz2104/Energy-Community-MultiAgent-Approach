@@ -16,7 +16,6 @@ class HouseAgent(Agent):
         self.last_action = "maintain"
 
         self.set_agent_type()
-        self.convert_timestamp_to_steps(house_obj)
 
     def define_weekly_consumption(self):
         weekly_consumption = {}

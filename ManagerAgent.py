@@ -17,9 +17,9 @@ class ManagerAgent(Agent):
             current_consumption = house.base_consumption[current_step]
             weekly_avg = house.weekly_consumption[current_week]
 
-            if current_consumption >1.1*weekly_avg:
+            if current_consumption > 1.1*weekly_avg:
                 house.current_recommendation = "increase"
-            elif current_consumption <0.9*weekly_avg:
+            elif current_consumption < 0.9*weekly_avg:
                 house.current_recommendation = "decrease"
             else:
                 house.current_recommendation = "maintain"
