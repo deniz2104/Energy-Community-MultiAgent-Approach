@@ -2,7 +2,6 @@ from solar_radiation_house import SolarRadiationHouse
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-## imi trebuie doar cantitate totala
 class PowerEstimator(SolarRadiationHouse):
     def __init__(self, house_id):
         super().__init__(house_id)

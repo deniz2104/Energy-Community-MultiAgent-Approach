@@ -112,9 +112,9 @@ class Appliance(House):
                 ]
         return data_chunks            
     def determine_on_off_periods(self,chunk_size=168):
-        dictionary_with_off_values = {}
+        dictionary_with_on_off_values = {}
         for appliance_type, pairs in self.consumption.items():
-            dictionary_with_off_values.setdefault(appliance_type, [])
+            dictionary_with_on_off_values.setdefault(appliance_type, [])
             off_pairs = []
             on_pairs = []
             for i in range(0,len(pairs),chunk_size):
@@ -130,9 +130,33 @@ class Appliance(House):
                 off_pairs.extend(chunk_off)
                 off_pairs_labeled = [(timestamp, 0) for timestamp, _ in off_pairs]
                 on_pairs_labeled = [(timestamp, 1) for timestamp, _ in on_pairs]
-            dictionary_with_off_values[appliance_type] = off_pairs_labeled + on_pairs_labeled
-        return dictionary_with_off_values
+            dictionary_with_on_off_values[appliance_type] = off_pairs_labeled + on_pairs_labeled
+        return dictionary_with_on_off_values
+
+    def count_on_off_values_per_time_period(self,dictionary_with_on_off_values,is_night=True):
+        hour_dictionary ={}
+        for appliance_type, pairs in dictionary_with_on_off_values.items():
+            hour_dictionary[appliance_type] = []
+            hours= {hour: 0 for hour in range(24)}
+            for timestamp, value in pairs:
+                hour = pd.to_datetime(timestamp).hour
+                if is_night:
+                    if (0 <= hour < 6 or 22 <= hour < 24) and value == 0:
+                        hours[hour] += 1
+                else:
+                    if (6 <= hour < 22) and value == 1:
+                        hours[hour] += 1
+            hour_dictionary[appliance_type] = hours
+            hour_dictionary[appliance_type] = {hour: count for hour, count in hours.items() if count > 0}
+        return hour_dictionary
     
+    def determine_off_hours_for_every_appliance_at_day_and_night(self, dictionary_with_on_off_values,day_values=False):
+        if day_values:
+            night_period = self.count_on_off_values_per_time_period(dictionary_with_on_off_values)
+        else:
+            day_period = self.count_on_off_values_per_time_period(dictionary_with_on_off_values, is_night=False)
+        return night_period if day_values is None else day_period
+
     def plot_points_of_interest(self,dictionary_with_on_off_values):
         fig = make_subplots(rows=len(self.consumption)*2, cols=1, shared_xaxes=True, vertical_spacing=0.03)
 
