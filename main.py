@@ -4,16 +4,16 @@ from power_estimated_builder import PowerEstimatedBuilder
 from determine_self_consumption_builder import SelfConsumptionBuilder
 from determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from appliancebuilder import ApplianceBuilder
-
-## am de facut csv ul updatat 
+## from house.model import House 
+## from house.builders import HouseBuilder
 ## trebuie sa vad niste chestii pentru numarul de panouri, putere per panou etc.
-## consider sub un anumit prag obersabil ca e oprit
-## ma gandesc la o metoda prin care sa determin eventual o medie/ceva idk
-## agent_type e basic ideal care primeste recomandare si reactioneaza intr-un anumit fel
-## manager compara la fiecare moment de timp consumul estimat al casei respectiva cu productia estimata la acel moment de tip si ofera o recomandare la acel moment de timp
-## la fiecare ora managerul da o recomandare si membrul reactioneaza la recomandare prin intermediul unei valori de consum simulat format pe baza consumului estimat ajutat cu 0.2
 ## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
 
+## o metoda de validare (ce se intampla ziua si noaptea ex: afisare momentele de timp care sunt noaptea si la care appliance ul apare pornit)
+## care este distributia functionarii appliance-urilor in functie de ore (sa determine orele  la care ele functioneaza)
+## numarul de ore = distributie
+## am de facut cate o clasa care face cate o chestie (plotter, procesare, nu fac mai multe lucruri intr o clasa))
+## scopul va fi sa am mai multe foldere care fac cate un lucru (folder house in care am builder,model,processers...etc)
 if __name__ == "__main__":
     house_builder = HouseBuilder()
     houses = house_builder.build('houses_after_filtering_and_matching_with_weather_data.csv')
@@ -32,4 +32,8 @@ if __name__ == "__main__":
 
     appliances_builder = ApplianceBuilder()
     appliances=appliances_builder.build("appliance_consumption_preprocessed.csv")
-        
+    for appliance in appliances[:3]:
+        temporary_dict = appliance.determine_on_off_periods()
+        #appliance.plot_points_of_interest(temporary_dict)
+        night_period = appliance.determine_off_hours_for_every_appliance_at_night(temporary_dict)
+        print(night_period)
