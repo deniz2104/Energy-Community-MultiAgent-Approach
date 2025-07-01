@@ -12,6 +12,5 @@ class PowerEstimatedBuilder(SolarRadiationHouseBuilder):
                 power_estimated_houses[house_id] = PowerEstimator(house_id)
             power_estimated_houses[house_id].add_consumption(timestamp,value)
             power_estimated_houses[house_id].add_power_estimated(timestamp, value)
-            power_estimated_houses[house_id].determine_NEEG_over_time(timestamp)
             power_estimated_houses[house_id].determine_NEEG()
         return list(power_estimated_houses.values())

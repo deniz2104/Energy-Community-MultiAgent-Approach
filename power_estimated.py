@@ -2,6 +2,7 @@ from solar_radiation_house import SolarRadiationHouse
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+## imi trebuie doar cantitate totala
 class PowerEstimator(SolarRadiationHouse):
     def __init__(self, house_id):
         super().__init__(house_id)
@@ -12,14 +13,11 @@ class PowerEstimator(SolarRadiationHouse):
     def add_power_estimated(self,timestamp,value,Pmax=575 , GTSTC=1000, number_of_panels=1, f=0.8):
         self.power_estimated[timestamp] = Pmax * f *number_of_panels * (value / GTSTC)
 
-    def determine_NEEG_over_time(self,timestamp):
-        p_prod=self.power_estimated.get(timestamp, 0)
-        p_load=self.consumption.get(timestamp, 0)
-
-        self.NEEG_on_period[timestamp] = min(p_prod, p_load)
-
     def determine_NEEG(self):
-        self.NEEG = sum(self.NEEG_on_period.values())
+        self.NEEG = sum(
+            min(self.power_estimated.get(ts, 0), self.consumption.get(ts, 0))
+            for ts in self.power_estimated
+        ) 
     
     def plot_power_over_time_for_a_number_of_panels(self,month=None, day=None):
         self.solar_radiation = self.power_estimated
