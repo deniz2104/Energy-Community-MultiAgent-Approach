@@ -6,7 +6,6 @@ class PowerEstimator(SolarRadiationHouse):
     def __init__(self, house_id):
         super().__init__(house_id)
         self.power_estimated = {}
-        self.NEEG_on_period= {}
         self.NEEG= None
     
     def add_power_estimated(self,timestamp,value,Pmax=575 , GTSTC=1000, number_of_panels=1, f=0.8):
@@ -14,9 +13,9 @@ class PowerEstimator(SolarRadiationHouse):
 
     def determine_NEEG(self):
         self.NEEG = sum(
-            min(self.power_estimated.get(ts, 0), self.consumption.get(ts, 0))
+            min(self.power_estimated[ts], self.consumption[ts])
             for ts in self.power_estimated
-        ) 
+        )
     
     def plot_power_over_time_for_a_number_of_panels(self,month=None, day=None):
         self.solar_radiation = self.power_estimated
