@@ -99,38 +99,27 @@ class Appliance(House):
             
     def return_chunk_values(self,chunk,kmeans,scaler,on_cluster_label=None,off_cluster_label=None):
         if on_cluster_label is None:
-            data_chunks = [
-                    chunk[j]
-                    for j in range(len(chunk))
-                    if kmeans.predict(scaler.transform([[chunk[j][1]]]))[0] == off_cluster_label
-                ]
+            label = off_cluster_label
         else:
-            data_chunks = [
-                    chunk[j]
-                    for j in range(len(chunk))
-                    if kmeans.predict(scaler.transform([[chunk[j][1]]]))[0] == on_cluster_label
-                ]
+            label = on_cluster_label
+        data_chunks = [chunk[j]
+                       for j in range(len(chunk))
+                    if kmeans.predict(scaler.transform([[chunk[j][1]]]))[0] == label]
         return data_chunks            
-    def determine_on_off_periods(self,chunk_size=168):
+    def determine_on_off_periods(self, chunk_size=168):
         dictionary_with_on_off_values = {}
         for appliance_type, pairs in self.consumption.items():
-            dictionary_with_on_off_values.setdefault(appliance_type, [])
-            off_pairs = []
-            on_pairs = []
-            for i in range(0,len(pairs),chunk_size):
-                chunk= pairs[i:i+chunk_size]
-                chunk = list(set(chunk))
+            off_pairs, on_pairs = [], []
+            for i in range(0, len(pairs), chunk_size):
+                chunk = list(set(pairs[i:i+chunk_size]))
                 data_for_kmeans = np.array([pair[1] for pair in chunk]).reshape(-1, 1)
-                scaler,kmeans,centroids = self.kmeans_clustering(data_for_kmeans)
-                off_cluster_label = np.argmin(centroids)
-                on_cluster_label = np.argmax(centroids)
-                chunk_on = self.return_chunk_values(chunk,kmeans,scaler,on_cluster_label)
-                on_pairs.extend(chunk_on)
-                chunk_off = self.return_chunk_values(chunk,kmeans,scaler,None,off_cluster_label)
-                off_pairs.extend(chunk_off)
-                off_pairs_labeled = [(timestamp, 0) for timestamp, _ in off_pairs]
-                on_pairs_labeled = [(timestamp, 1) for timestamp, _ in on_pairs]
-            dictionary_with_on_off_values[appliance_type] = off_pairs_labeled + on_pairs_labeled
+                scaler, kmeans, centroids = self.kmeans_clustering(data_for_kmeans)
+                off_label = np.argmin(centroids)
+                on_label = np.argmax(centroids)
+                off_pairs.extend(self.return_chunk_values(chunk, kmeans, scaler, None, off_label))
+                on_pairs.extend(self.return_chunk_values(chunk, kmeans, scaler, on_label))
+            labeled = [(ts, 0) for ts, _ in off_pairs] + [(ts, 1) for ts, _ in on_pairs]
+            dictionary_with_on_off_values[appliance_type] = labeled
         return dictionary_with_on_off_values
 
     def count_on_off_values_per_time_period(self,dictionary_with_on_off_values,is_night=True):
@@ -151,13 +140,13 @@ class Appliance(House):
         return hour_dictionary
     
     def determine_off_hours_for_every_appliance_at_day_and_night(self, dictionary_with_on_off_values,day_values=False):
-        if day_values:
+        if day_values is False:
             night_period = self.count_on_off_values_per_time_period(dictionary_with_on_off_values)
         else:
             day_period = self.count_on_off_values_per_time_period(dictionary_with_on_off_values, is_night=False)
-        return night_period if day_values is None else day_period
+        return night_period if day_values is False else day_period
 
-    def plot_points_of_interest(self,dictionary_with_on_off_values):
+    def plot_appliances_and_on_off_values(self,dictionary_with_on_off_values):
         fig = make_subplots(rows=len(self.consumption)*2, cols=1, shared_xaxes=True, vertical_spacing=0.03)
 
         for i, (appliance_type, consumption) in enumerate(self.consumption.items()):
