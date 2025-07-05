@@ -82,9 +82,9 @@ class ApplianceBuilder():
     
 if __name__ == "__main__":
     builder=ApplianceBuilder()
-    appliances=builder.build("appliance_consumption_data.csv")
+    appliances=builder.build("CSVs/appliance_consumption_data.csv")
     house_builder=HouseBuilder()
-    houses=house_builder.build("houses_after_filtering_and_matching_with_weather_data.csv")
+    houses=house_builder.build("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
     builder.matching_timestamps_between_appliance_and_house(appliances, houses)
     appliances=builder.resampling_appliance_data(appliances)
     builder.remove_appliances_with_zero_data(appliances)

@@ -58,10 +58,10 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
         
 if __name__ == "__main__":
     house_builder = HouseBuilder()
-    houses = house_builder.build('houses_after_filtering_and_matching_with_weather_data.csv')
+    houses = house_builder.build('CSVs/houses_after_filtering_and_matching_with_weather_data.csv')
 
     solar_radiation_house_builder = SolarRadiationHouseBuilder()
-    solar_radiation_house = solar_radiation_house_builder.build('solar_radiation_after_resampling_and_matching_houses.csv')
+    solar_radiation_house = solar_radiation_house_builder.build('CSVs/solar_radiation_after_resampling_and_matching_houses.csv')
     print(f"Number of solar radiation houses: {len(solar_radiation_house)}")
     solar_radiation_house = solar_radiation_house_builder.filtrate_solar_radiation_by_number_of_values(solar_radiation_house,houses,0.95)
     print(f"Number of solar radiation houses after filtering: {len(solar_radiation_house)}")
