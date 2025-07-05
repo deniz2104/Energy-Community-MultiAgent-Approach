@@ -1,6 +1,5 @@
 from determine_self_sufficiency import SelfSufficiency
-from determine_self_consumption_builder import SelfConsumptionBuilder
-class SelfSufficiencyBuilder(SelfConsumptionBuilder):
+class SelfSufficiencyBuilder():
     def __init__(self):
         pass
 

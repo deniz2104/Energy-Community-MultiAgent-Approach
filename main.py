@@ -3,8 +3,7 @@ from solar_radiation_house_builder import SolarRadiationHouseBuilder
 from power_estimated_builder import PowerEstimatedBuilder
 from determine_self_consumption_builder import SelfConsumptionBuilder
 from determine_self_sufficiency_builder import SelfSufficiencyBuilder
-from appliancebuilder import ApplianceBuilder
-## am de important din folderul de CSV-uri de acum in: appliancebuilder.py,
+#from appliancebuilder import ApplianceBuilder
 ## trebuie sa vad niste chestii pentru numarul de panouri, putere per panou etc.
 ## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
 
@@ -23,10 +22,12 @@ if __name__ == "__main__":
 
     self_consumption_builder = SelfConsumptionBuilder()
     self_consumption = self_consumption_builder.build_self_consumption(houses, power_estimated)
-
+    
     self_sufficiency_builder = SelfSufficiencyBuilder()
     self_sufficiency_house = self_sufficiency_builder.build_self_sufficiency(houses, power_estimated)
-
+    for house in self_sufficiency_house[:1]:
+        print(house.self_sufficiency)
+    exit()
     appliances_builder = ApplianceBuilder()
     appliances=appliances_builder.build("CSVs/appliance_consumption_preprocessed.csv")
     for appliance in appliances[:1]:

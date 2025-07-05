@@ -1,6 +1,5 @@
 from determine_self_consumption import SelfConsumption
-from power_estimated_builder import PowerEstimatedBuilder
-class SelfConsumptionBuilder(PowerEstimatedBuilder):
+class SelfConsumptionBuilder():
     def __init__(self):
         pass
     def build_self_consumption(self,houses,power_estimated_houses):

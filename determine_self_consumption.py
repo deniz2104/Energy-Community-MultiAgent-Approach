@@ -1,4 +1,3 @@
-from house import House
 from power_estimated import PowerEstimator
 class SelfConsumption(PowerEstimator):
 
