@@ -39,5 +39,5 @@ if __name__ == "__main__":
     db_handler = DatabaseHandler()
     db_handler.read_database('irise.sqlite3')
     data = db_handler.extract_data()
-    db_handler.write_to_csv(data,'consumption_data.csv')
+    db_handler.write_to_csv(data,'CSVs/consumption_data.csv')
     db_handler.close_connection()

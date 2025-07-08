@@ -1,13 +1,12 @@
-import sqlite3
 import csv
 import time
-class SolarRadiationDatabaseHandler():
+from database_house import DatabaseHandler
+class SolarRadiationDatabaseHandler(DatabaseHandler):
 
     def __init__(self):
         pass
-    def connect_to_database(self, database_path):
-        self.connection = sqlite3.connect(database_path)
-        self.cursor = self.connection.cursor()
+    def read_database(self, database_path):
+        super().read_database(database_path)
     def extract_solar_radiation_data(self):
         self.cursor.execute("""
             SELECT h.ID,WD.EpochTime, WD.TotalValue
@@ -36,11 +35,11 @@ class SolarRadiationDatabaseHandler():
             writer.writerows(data)
     
     def close_connection(self):
-        self.connection.close()
+        super().close_connection()
 
 if __name__ == "__main__":
     handler=SolarRadiationDatabaseHandler()
-    handler.connect_to_database("irise.sqlite3")
+    handler.read_database("irise.sqlite3")
     data=handler.extract_solar_radiation_data()
-    handler.write_to_csv(data, "solar_radiation_data.csv")
+    handler.write_to_csv(data, "CSVs/solar_radiation_data.csv")
     handler.close_connection()

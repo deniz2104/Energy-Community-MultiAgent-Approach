@@ -1,8 +1,7 @@
-import sqlite3
 import time
 import csv
-from databasehandler import DatabaseHandler
-from file_to_get_house_ids import house_ids
+from database_house import DatabaseHandler
+from HelperFiles.file_to_get_house_ids import house_ids
 
 class DatabaseHandlerAppliance(DatabaseHandler):
     def __init__(self):
@@ -49,5 +48,5 @@ if __name__ == "__main__":
     db_handler = DatabaseHandlerAppliance()
     db_handler.read_database('irise.sqlite3')
     data = db_handler.extract_data()
-    db_handler.write_to_csv(data, 'appliance_consumption_data.csv')
+    db_handler.write_to_csv(data, 'CSVs/appliance_consumption_data.csv')
     db_handler.close_connection()
