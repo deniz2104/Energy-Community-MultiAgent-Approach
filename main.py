@@ -1,8 +1,9 @@
-from housebuilder import HouseBuilder
+from house_builder import HouseBuilder
 from solar_radiation_house_builder import SolarRadiationHouseBuilder
 from power_estimated_builder import PowerEstimatedBuilder
 from determine_self_consumption_builder import SelfConsumptionBuilder
 from determine_self_sufficiency_builder import SelfSufficiencyBuilder
+from AppliancesModel.appliance_facade import ApplianceFacade
 #from appliancebuilder import ApplianceBuilder
 ## trebuie sa vad niste chestii pentru numarul de panouri, putere per panou etc.
 ## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
@@ -25,15 +26,7 @@ if __name__ == "__main__":
     
     self_sufficiency_builder = SelfSufficiencyBuilder()
     self_sufficiency_house = self_sufficiency_builder.build_self_sufficiency(houses, power_estimated)
-    for house in self_sufficiency_house[:1]:
-        print(house.self_sufficiency)
-    exit()
-    appliances_builder = ApplianceBuilder()
-    appliances=appliances_builder.build("CSVs/appliance_consumption_preprocessed.csv")
-    for appliance in appliances[:1]:
-        temporary_dict = appliance.determine_on_off_periods()
-        appliance.plot_appliances_and_on_off_values(temporary_dict)
-        night_period = appliance.determine_off_hours_for_every_appliance_at_day_and_night(temporary_dict)
-        day_period = appliance.determine_off_hours_for_every_appliance_at_day_and_night(temporary_dict, day_values=True)
-        print(night_period)
-        print(day_period)
+    
+    appliance_facade = ApplianceFacade()
+    #appliances = appliance_facade.process_appliances_pipeline("CSVs/appliance_consumption_data.csv", houses, export_path="CSVs/appliance_consumption_preprocessed.csv")
+    appliances = appliance_facade.builder.build("CSVs/appliance_consumption_preprocessed.csv")

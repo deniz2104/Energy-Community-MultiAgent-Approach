@@ -1,7 +1,6 @@
-from housebuilder import HouseBuilder
+from house_builder import HouseBuilder
 from solar_radiation_house import SolarRadiationHouse
 import csv
-import pandas as pd
 class SolarRadiationHouseBuilder(HouseBuilder) :
     def __init__(self):
         super().__init__()
