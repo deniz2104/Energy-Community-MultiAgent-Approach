@@ -1,15 +1,12 @@
 from house_builder import HouseBuilder
 from solar_radiation_house_builder import SolarRadiationHouseBuilder
 from power_estimated_builder import PowerEstimatedBuilder
-from determine_self_consumption_builder import SelfConsumptionBuilder
-from determine_self_sufficiency_builder import SelfSufficiencyBuilder
+from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumptionBuilder
+from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from AppliancesModel.appliance_facade import ApplianceFacade
-#from appliancebuilder import ApplianceBuilder
 ## trebuie sa vad niste chestii pentru numarul de panouri, putere per panou etc.
 ## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
 
-## am de facut cate o clasa care face cate o chestie (plotter, procesare, nu fac mai multe lucruri intr o clasa))
-## scopul va fi sa am mai multe foldere care fac cate un lucru (folder house in care am builder,model,processers...etc)
 if __name__ == "__main__":
     house_builder = HouseBuilder()
     houses = house_builder.build("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
