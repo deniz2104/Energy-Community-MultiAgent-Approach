@@ -1,5 +1,5 @@
 import pandas as pd
-from appliance import Appliance
+from .appliance import Appliance
 class ApplianceResampling:
     def __init__(self):
         pass
@@ -10,7 +10,7 @@ class ApplianceResampling:
             resampled_appliance = Appliance(appliance.house_id)
             resampled_appliances[appliance.house_id] = resampled_appliance
             
-            for appliance_type, pairs in appliance.consumption.items():
+            for appliance_type, pairs in appliance.appliance_consumption.items():
                 
                 df = pd.DataFrame(pairs, columns=['timestamp', 'consumption'])
                 df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -22,9 +22,9 @@ class ApplianceResampling:
                     resampled_appliance.add_appliance_consumption(
                         row['timestamp'], appliance_type, row['consumption'])
                 
-                if appliance_type in resampled_appliance.consumption:
-                    sorted_consumption = sorted(resampled_appliance.consumption[appliance_type], 
+                if appliance_type in resampled_appliance.appliance_consumption:
+                    sorted_consumption = sorted(resampled_appliance.appliance_consumption[appliance_type], 
                                             key=lambda x: x[0])
-                    resampled_appliance.consumption[appliance_type] = sorted_consumption
+                    resampled_appliance.appliance_consumption[appliance_type] = sorted_consumption
         
         return list(resampled_appliances.values())
