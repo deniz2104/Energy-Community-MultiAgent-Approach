@@ -1,7 +1,5 @@
-import sys
-import os
 from house import House
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class Appliance(House):
     def __init__(self,house_id):

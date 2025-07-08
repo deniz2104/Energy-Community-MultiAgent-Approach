@@ -1,12 +1,10 @@
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from .appliance_builder import ApplianceBuilder
 from .appliance_preprocessing_data import AppliancePreprocessingData
 from .appliance_resampling import ApplianceResampling
 from .appliance_plotter import AppliancePlotter
 from .appliance_label_for_on_and_off_values import ApplianceOnOffValues
-
+from HelperFiles.file_to_handle_absolute_path_imports import *
 class ApplianceFacade:
     def __init__(self):
         self.builder = ApplianceBuilder()

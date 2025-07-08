@@ -1,4 +1,4 @@
-from determine_self_consumption import SelfConsumption
+from SelfConsumptionModel.determine_self_consumption import SelfConsumption
 class SelfSufficiency(SelfConsumption):
     def __init__(self, house_id):
         super().__init__(house_id)

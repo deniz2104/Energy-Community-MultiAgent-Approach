@@ -1,4 +1,5 @@
 from power_estimated import PowerEstimator
+from HelperFiles.file_to_handle_absolute_path_imports import *
 class SelfConsumption(PowerEstimator):
 
     def __init__(self,house_id):

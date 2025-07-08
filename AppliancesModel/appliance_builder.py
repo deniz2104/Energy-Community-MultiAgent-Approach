@@ -1,9 +1,6 @@
 import csv
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from .appliance import Appliance
-
+from HelperFiles.file_to_handle_absolute_path_imports import *
 class ApplianceBuilder:
     def __init__(self):
         pass
