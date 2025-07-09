@@ -79,13 +79,6 @@ class House():
         df=df[df['anomaly']==-1]
         val=df['Consumption'].values.tolist()
         self.consumption={t:v for t,v in self.consumption.items() if v not in val}
-    def get_monthly_consumption(self):
-        df = pd.DataFrame(list(self.consumption.items()), columns=['Timestamp', 'Consumption'])
-        df['Timestamp'] = pd.to_datetime(df['Timestamp'])
-        df.set_index('Timestamp', inplace=True)
-        monthly_avg = df.groupby(pd.Grouper(freq='ME'))['Consumption'].mean()
-        for timestamp, value in monthly_avg.items():
-            print(f"Month: {timestamp.strftime('%Y-%m')}, Average Consumption: {value:.2f}")
     def get_weekly_consumption_by_month(self):
         df = pd.DataFrame(list(self.consumption.items()), columns=['Timestamp', 'Consumption'])
         df['Timestamp'] = pd.to_datetime(df['Timestamp'])
