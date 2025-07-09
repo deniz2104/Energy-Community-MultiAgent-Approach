@@ -1,4 +1,4 @@
-from solar_radiation_house_builder import SolarRadiationHouseBuilder
+from SolarRadiationModel.solar_radiation_house_builder import SolarRadiationHouseBuilder
 from power_estimated import PowerEstimator
 class PowerEstimatedBuilder(SolarRadiationHouseBuilder):
     def __init__(self):

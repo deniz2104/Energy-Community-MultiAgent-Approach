@@ -1,4 +1,4 @@
-from solar_radiation_house import SolarRadiationHouse
+from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 

@@ -1,4 +1,4 @@
-from determine_self_sufficiency import SelfSufficiency
+from .determine_self_sufficiency import SelfSufficiency
 class SelfSufficiencyBuilder():
     def __init__(self):
         pass

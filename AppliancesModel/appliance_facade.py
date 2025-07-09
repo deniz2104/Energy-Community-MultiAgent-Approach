@@ -1,10 +1,12 @@
-
 from .appliance_builder import ApplianceBuilder
 from .appliance_preprocessing_data import AppliancePreprocessingData
 from .appliance_resampling import ApplianceResampling
 from .appliance_plotter import AppliancePlotter
 from .appliance_label_for_on_and_off_values import ApplianceOnOffValues
 from HelperFiles.file_to_handle_absolute_path_imports import *
+
+##Am de facut csv cu perioadele de on si off pentru fiecare tip de appliance, pentru fiecare casa
+
 class ApplianceFacade:
     def __init__(self):
         self.builder = ApplianceBuilder()
@@ -42,5 +44,5 @@ class ApplianceFacade:
 
     def plot_appliances_and_on_off_values(self, appliance, on_off_dict, plot_on_off=True):
         self.plotter.plot_all_appliances_consumption_over_time(appliance)
-        if plot_on_off:
-            self.plotter.plot_appliances_and_on_off_values(appliance, on_off_dict)
+        if plot_on_off and on_off_dict is not None:
+            self.plotter.plot_appliances_and_on_off_values(appliance,on_off_dict)
