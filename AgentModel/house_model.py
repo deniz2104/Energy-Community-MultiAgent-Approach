@@ -1,7 +1,7 @@
 from mesa import Model,time
 import random
-from HouseAgent import HouseAgent
-from ManagerAgent import ManagerAgent
+from .house_agent import HouseAgent
+from .manager_agent import ManagerAgent
 class HouseModel(Model):
     def __init__(self,n,house_obj,seed=None):
         super().__init__(seed=seed)

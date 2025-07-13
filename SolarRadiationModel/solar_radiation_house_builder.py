@@ -1,4 +1,4 @@
-from house_builder import HouseBuilder
+from HouseModel.house_builder import HouseBuilder
 from .solar_radiation_house import SolarRadiationHouse
 from HelperFiles.file_to_handle_absolute_path_imports import *
 import csv

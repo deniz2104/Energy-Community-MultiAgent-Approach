@@ -1,5 +1,6 @@
 import pandas as pd
-from house import House
+from HouseModel.house import House
+from HouseModel.house_helper_file import HouseHelperFile
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class AppliancePreprocessingData():
@@ -7,7 +8,8 @@ class AppliancePreprocessingData():
         pass
 
     def eliminate_days_after_a_year(self,appliance,house):
-        starting_time,ending_time = house.show_starting_time_and_ending_time()
+        helper_method=HouseHelperFile()
+        starting_time,ending_time = helper_method.show_starting_time_and_ending_time(house)
         new_dictionary={}
 
         starting_time = pd.to_datetime(starting_time)

@@ -1,8 +1,8 @@
 from mesa import Agent
-from HouseAgent import HouseAgent
+from .house_agent import HouseAgent
 class ManagerAgent(Agent):
     def __init__(self,unique_id,model):
-        super.__init__(unique_id,model)
+        super().__init__(unique_id,model)
 
         self.current_recommendation = None
         self.recommendation_history = []

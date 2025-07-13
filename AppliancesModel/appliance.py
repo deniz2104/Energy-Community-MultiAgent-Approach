@@ -1,4 +1,4 @@
-from house import House
+from HouseModel.house import House
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class Appliance(House):

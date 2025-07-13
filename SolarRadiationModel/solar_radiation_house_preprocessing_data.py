@@ -1,10 +1,12 @@
 import pandas as pd
+from HouseModel.house_helper_file import HouseHelperFile
 class SolarRadiationHousePreprocessingData:
     def change_timing_for_solar_radiation(self, house):
         if house.house_id != self.house_id:
             return
-    
-        starting_time, ending_time = house.show_starting_time_and_ending_time()
+
+        helper_method=HouseHelperFile()
+        starting_time, ending_time = helper_method.show_starting_time_and_ending_time(house)
         if starting_time and ending_time:
         
             starting_time = pd.to_datetime(starting_time)

@@ -1,4 +1,4 @@
-from house_builder import HouseBuilder
+from HouseModel.house_builder import HouseBuilder
 from .solar_radiation_house_builder import SolarRadiationHouseBuilder
 from .solar_radiation_house_preprocessing_data import SolarRadiationHousePreprocessingData
 from .solar_radiation_plotter import SolarRadiationPLotter
