@@ -1,4 +1,4 @@
-from house_builder import HouseBuilder
+from HouseModel.house_facade import HouseFacade
 from SolarRadiationModel.solar_radiation_house_facade import SolarRadiationHouseFacade
 from PowerEstimatedModel.power_estimated_facade import PowerEstimatedFacade
 from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumptionBuilder
@@ -9,9 +9,13 @@ from AppliancesModel.appliance_facade import ApplianceFacade
 ## as putea sa fac ceva o interfata pentru alea de plot basic si ala de filtrare
 ## ar trebui sa fac CSV-uri pentru fiecare casa cu appliance cu perioade on,off
 if __name__ == "__main__":
-    house_builder = HouseBuilder()
-    houses = house_builder.build("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
-
+    house_facade = HouseFacade()
+    houses = house_facade.process_houses_pipeline("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
+    for house in houses[:1]:
+        house_facade.plot_house_consumption(house, month=1, day=1)
+        stats = house_facade.get_house_statistics(house)
+        print(f"Statistics for house {house.house_id}: {stats}")
+    exit()
     solar_radiation_house_facade = SolarRadiationHouseFacade()
     solar_radiation_houses = solar_radiation_house_facade.builder.build("CSVs/solar_radiation_after_resampling_and_matching_houses.csv")
     
