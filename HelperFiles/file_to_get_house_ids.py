@@ -1,4 +1,4 @@
-from housebuilder import HouseBuilder
+from HouseModel.house_builder import HouseBuilder
 
 house_builder = HouseBuilder()
 houses = house_builder.build('houses_after_filtering_and_matching_with_weather_data.csv')
