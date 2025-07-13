@@ -10,12 +10,8 @@ from AppliancesModel.appliance_facade import ApplianceFacade
 ## ar trebui sa fac CSV-uri pentru fiecare casa cu appliance cu perioade on,off
 if __name__ == "__main__":
     house_facade = HouseFacade()
-    houses = house_facade.process_houses_pipeline("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
-    for house in houses[:1]:
-        house_facade.plot_house_consumption(house, month=1, day=1)
-        stats = house_facade.get_house_statistics(house)
-        print(f"Statistics for house {house.house_id}: {stats}")
-    exit()
+    houses = house_facade.build_houses("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
+    
     solar_radiation_house_facade = SolarRadiationHouseFacade()
     solar_radiation_houses = solar_radiation_house_facade.builder.build("CSVs/solar_radiation_after_resampling_and_matching_houses.csv")
     
