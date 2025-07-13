@@ -1,43 +1,25 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import pandas as pd
-import plotly.express as px
+from HelperFiles.base_plotter_interface import BasePlotterInterface
 
-class PowerEstimatedPlotter:
+class PowerEstimatedPlotter(BasePlotterInterface):
     def __init__(self):
-        pass
+        super().__init__()
 
-    def filter_values_by_month_and_day(self,power_house, mode, value):
-        timestamps=[]
-        consumptions=[]
+    def get_data_dict(self, power_house):
+        return power_house.power_estimated
 
-        for key,consumption in power_house.power_estimated.items():
-            timestamp=pd.to_datetime(key)
-            if(mode=='month' and timestamp.month==value) or (mode=='day' and timestamp.day==value):
-                timestamps.append(timestamp)
-                consumptions.append(consumption)
-        return timestamps, consumptions
-    
-    def plot_power_over_time_for_a_number_of_panels(self,power_house,month=None, day=None):
-        if month is None and day is None:
-            fig = px.line(x=pd.to_datetime(list(power_house.power_estimated.keys())), y=list(power_house.power_estimated.values()), title=f'House ID: {power_house.house_id}')
-            fig.show()
-        if month is not None and day is None:
-            timestamps_period, consumption_period = self.filter_values_by_month_and_day(power_house,'month', month)
-            fig = px.line(x=timestamps_period, y=consumption_period, title=f'House ID: {power_house.house_id}')
-            fig.show()
-        if month is None and day is not None:
-            timestamps_period, consumption_period = self.filter_values_by_month_and_day(power_house,'day', day)
-            fig = px.line(x=timestamps_period, y=consumption_period, title=f'House ID: {power_house.house_id}')
-            fig.show()
+    def get_object_id(self, power_house):
+        return power_house.house_id
 
-    def plot_power_over_time_range_for_a_number_of_panels(self,power_house,time_stamp_1, time_stamp_2):
-        time_stamp_1=pd.to_datetime(time_stamp_1)
-        time_stamp_2=pd.to_datetime(time_stamp_2)
-        timestamps_period=[t for t in pd.to_datetime(list(power_house.power_estimated.keys())) if time_stamp_1<=t<=time_stamp_2]
-        power_estimated_period=[power_house.power_estimated[t] for t in timestamps_period]
-        fig = px.line(x=timestamps_period, y=power_estimated_period, title=f'House ID: {power_house.house_id}')
-        fig.show()
+    def get_plot_title_prefix(self):
+        return "Power Estimated House ID"
+
+    def plot_power_over_time_for_a_number_of_panels(self, power_house, month=None, day=None):
+        return self.plot_over_time(power_house, month, day)
+
+    def plot_power_over_time_range_for_a_number_of_panels(self, power_house, time_stamp_1, time_stamp_2):
+        return self.plot_over_time_range(power_house, time_stamp_1, time_stamp_2)
 
     def plot_power_estimated_with_consumption_over_time(self,power_house,consumption_house,self_consumption=None, self_sufficiency=None):
         fig = make_subplots(specs=[[{"secondary_y": True}]])
