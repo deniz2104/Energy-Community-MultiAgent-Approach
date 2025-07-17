@@ -1,5 +1,6 @@
 from .appliance_builder import ApplianceBuilder
 from .appliance_preprocessing_data import AppliancePreprocessingData
+from .appliance_hours_weights import ApplianceHoursWeights
 from .appliance_resampling import ApplianceResampling
 from .appliance_plotter import AppliancePlotter
 from .appliance_label_for_on_and_off_values import ApplianceOnOffValues
@@ -14,6 +15,7 @@ class ApplianceFacade:
         self.resampler = ApplianceResampling()
         self.plotter = AppliancePlotter()
         self.data_labeler = ApplianceOnOffValues()
+        self.calculate_weights = ApplianceHoursWeights()
 
     def build_appliances(self, csv_path):
         return self.builder.build(csv_path)
@@ -38,10 +40,17 @@ class ApplianceFacade:
 
     def see_on_off_patterns(self,appliance):
         on_off_dict=self.data_labeler.determine_on_off_periods(appliance)
-        night_period=self.data_labeler.determine_off_hours_for_every_appliance_at_day_and_night(on_off_dict)
-        day_period=self.data_labeler.determine_on_hours_for_every_appliance_at_day_and_night(on_off_dict,day_values=True)
-        return on_off_dict, night_period, day_period
+        return on_off_dict
 
+    def show_hours_distribution(self, appliance):
+        on_off_dict = self.data_labeler.determine_on_off_periods(appliance)
+        hours_distribution = self.data_labeler.count_on_off_values_per_time_period(on_off_dict)
+        return hours_distribution
+    
+    def show_hours_weights(self,appliance):
+        hours_distribution = self.show_hours_distribution(appliance)
+        hours_weights = self.calculate_weights.determine_hours_weights(hours_distribution)
+        return hours_weights
     def plot_appliances_and_on_off_values(self, appliance, on_off_dict, plot_on_off=True):
         self.plotter.plot_all_appliances_consumption_over_time(appliance)
         if plot_on_off and on_off_dict is not None:
