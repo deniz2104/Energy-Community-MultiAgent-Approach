@@ -3,6 +3,7 @@ from .appliance_preprocessing_data import AppliancePreprocessingData
 from .appliance_hours_weights import ApplianceHoursWeights
 from .appliance_resampling import ApplianceResampling
 from .appliance_plotter import AppliancePlotter
+from .appliance_consumption_statistics import ApplianceConsumptionStatistics
 from .appliance_label_for_on_and_off_values import ApplianceOnOffValues
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
@@ -14,6 +15,7 @@ class ApplianceFacade:
         self.plotter = AppliancePlotter()
         self.data_labeler = ApplianceOnOffValues()
         self.calculate_weights = ApplianceHoursWeights()
+        self.consumption_statistics = ApplianceConsumptionStatistics()
 
     def build_appliances(self, csv_path):
         return self.builder.build(csv_path)
@@ -45,7 +47,7 @@ class ApplianceFacade:
         hours_distribution = self.data_labeler.count_on_off_values_per_time_period(on_off_dict)
         return hours_distribution
 
-    def plot_appliances_and_on_off_values(self, appliance, on_off_dict, plot_on_off=True):
+    def plot_appliances_and_on_off_values(self, appliance, on_off_dict=None, plot_on_off=True):
         self.plotter.plot_all_appliances_consumption_over_time(appliance)
         if plot_on_off and on_off_dict is not None:
             self.plotter.plot_appliances_and_on_off_values(appliance,on_off_dict)
@@ -59,3 +61,9 @@ class ApplianceFacade:
         hours_distribution = self.show_hours_distribution(appliance)
         for appliance_name, hours in hours_distribution.items():
             self.plotter.plot_appliance_histogram(hours,appliance_name)
+
+    def show_appliance_mean_consumption_based_on_hour(self,appliance):
+        on_off_dict = self.see_on_off_patterns(appliance)
+        hours_distribution = self.show_hours_distribution(appliance)
+        mean_consumption = self.consumption_statistics.get_mean_consumption_by_hour(appliance, on_off_dict,hours_distribution)
+        return mean_consumption
