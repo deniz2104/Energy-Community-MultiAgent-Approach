@@ -1,6 +1,7 @@
 from mesa import Agent
 from .house_agent import HouseAgent
 class ManagerAgent(Agent):
+## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
     def __init__(self,unique_id,model):
         super().__init__(unique_id,model)
 
