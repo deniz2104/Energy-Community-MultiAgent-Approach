@@ -22,11 +22,14 @@ class AppliancePlotter:
             values = [pair[1] for pair in consumption]
             fig.add_trace(go.Scatter(x=timestamps, y=values, name=appliance_type), row=i*2+1, col=1)
         
-        for i, (appliance_type, points_of_interest) in enumerate(dictionary_with_on_off_values.items()):
-            timestamps = [pair[0] for pair in points_of_interest]
-            values = [pair[1] for pair in points_of_interest]
-            fig.add_trace(go.Scatter(x=timestamps, y=values, mode='markers', name=f"{appliance_type} On and Off values", marker=dict(color='red')), row=i*2+2, col=1)
-    
+        for i, (appliance_type, on_off_points) in enumerate(dictionary_with_on_off_values.items()):
+            timestamps_for_on_values = [pair[0] for pair in on_off_points if pair[1] == 1]
+            on_values = [pair[1] for pair in on_off_points if pair[1] == 1]
+            fig.add_trace(go.Scatter(x=timestamps_for_on_values, y=on_values, mode='markers', name=f"{appliance_type} On values", marker=dict(color='green')), row=i*2+2, col=1)
+
+            timestamps_for_off_values = [pair[0] for pair in on_off_points if pair[1]==0] 
+            off_values = [pair[1] for pair in on_off_points if pair[1]==0]
+            fig.add_trace(go.Scatter(x=timestamps_for_off_values, y=off_values, mode='markers', name=f"{appliance_type} Off values", marker=dict(color='red')), row=i*2+2, col=1)   
         fig.show()
 
     def plot_appliance_histogram(self, hours_dictionary, appliance_name=None, is_night=False):
