@@ -5,6 +5,7 @@ from .appliance_resampling import ApplianceResampling
 from .appliance_plotter import AppliancePlotter
 from .appliance_consumption_statistics import ApplianceConsumptionStatistics
 from .appliance_label_for_on_and_off_values import ApplianceOnOffValues
+from .determine_which_appliance_consumes_more import DetermineWhichApplianceConsumesMore
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class ApplianceFacade:
@@ -16,6 +17,8 @@ class ApplianceFacade:
         self.data_labeler = ApplianceOnOffValues()
         self.calculate_weights = ApplianceHoursWeights()
         self.consumption_statistics = ApplianceConsumptionStatistics()
+        self.determine_which_appliance_consumes_more = DetermineWhichApplianceConsumesMore()
+
 
     def build_appliances(self, csv_path):
         return self.builder.build(csv_path)
@@ -67,3 +70,6 @@ class ApplianceFacade:
         hours_distribution = self.show_hours_distribution(appliance)
         mean_consumption = self.consumption_statistics.get_mean_consumption_by_hour(appliance, on_off_dict,hours_distribution)
         return mean_consumption
+    
+    def display_sigmoid_values_along_with_consumption(self,appliances):
+        self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(appliances)

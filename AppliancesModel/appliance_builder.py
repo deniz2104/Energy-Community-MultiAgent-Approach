@@ -1,6 +1,7 @@
 import csv
 from .appliance import Appliance
 from HelperFiles.file_to_handle_absolute_path_imports import *
+
 class ApplianceBuilder:
     def __init__(self):
         pass

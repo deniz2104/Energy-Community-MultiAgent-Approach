@@ -1,4 +1,3 @@
-
 class ApplianceHoursWeights:
     def __init__(self):
         pass
