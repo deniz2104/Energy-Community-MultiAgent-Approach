@@ -71,5 +71,5 @@ class ApplianceFacade:
         mean_consumption = self.consumption_statistics.get_mean_consumption_by_hour(appliance, on_off_dict,hours_distribution)
         return mean_consumption
     
-    def display_sigmoid_values_along_with_consumption(self,appliances):
-        self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(appliances)
+    def display_sigmoid_values_along_with_consumption(self,appliance):
+        self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(appliance)

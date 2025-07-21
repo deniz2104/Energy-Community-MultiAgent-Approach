@@ -4,17 +4,15 @@ from PowerEstimatedModel.power_estimated_facade import PowerEstimatedFacade
 from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumptionBuilder
 from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from AppliancesModel.appliance_facade import ApplianceFacade
-## trebuie sa vad niste chestii pentru numarul de panouri, putere per panou etc.
-## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
-## as putea sa fac ceva o interfata pentru alea de plot basic si ala de filtrare
-## ar trebui sa fac CSV-uri pentru fiecare casa cu appliance cu perioade on,off
+## rescriere file appliance_label_for_on_and_off_values.py
+## thresholdul de 0.4 este unul arbitrar, dar nu am gasit un altul mai bun, sa vad daca pot sa il fac mai bun
 if __name__ == "__main__":
     house_facade = HouseFacade()
     houses = house_facade.build_houses("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
     
     solar_radiation_house_facade = SolarRadiationHouseFacade()
     solar_radiation_houses = solar_radiation_house_facade.builder.build("CSVs/solar_radiation_after_resampling_and_matching_houses.csv")
-    
+
     power_estimated_facade = PowerEstimatedFacade()
     power_estimated = power_estimated_facade.build_power_estimated_data('CSVs/solar_radiation_after_resampling_and_matching_houses.csv')
     power_estimated_facade.determine_NEEG_for_all_houses(power_estimated)
