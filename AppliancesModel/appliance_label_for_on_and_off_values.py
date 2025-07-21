@@ -2,6 +2,9 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 import pandas as pd
+from HelperFiles.file_to_handle_absolute_path_imports import *
+from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
+
 class ApplianceOnOffValues:
     def __init__(self):
         pass
@@ -43,13 +46,22 @@ class ApplianceOnOffValues:
         hour_dictionary ={}
         for appliance_type, pairs in dictionary_with_on_off_values.items():
             hour_dictionary[appliance_type] = []
-            hours= {hour: 0 for hour in range(24)}
+            hours= {hour: 0 for hour in range(TOTAL_HOURS)}
             for timestamp, value in pairs:
                 hour = pd.to_datetime(timestamp).hour
-                if (0 <= hour < 6 or 22 <= hour < 24) and value == 0:
+                if (hour in NIGHT_HOURS) and value == 0:
                     hours[hour] += 1
-                if (6 <= hour < 22) and value == 1:
+                if (hour not in NIGHT_HOURS) and value == 1:
                     hours[hour] += 1
             hour_dictionary[appliance_type] = hours
             hour_dictionary[appliance_type] = {hour: count for hour, count in hours.items() if count > 0}
         return hour_dictionary
+
+    def determine_off_dictionary_for_night(self,appliance,dictionary_with_on_off_values):
+        off_values_list=[]
+        for appliance_type,pairs in dictionary_with_on_off_values.items():
+            for timestamp,value in pairs:
+                hour=pd.to_datetime(timestamp).hour
+                if(hour in NIGHT_HOURS) and value == 0:
+                    off_values_list.append(appliance.dict(appliance_consumption[appliance_type]).get(timestamp))
+        return np.unique(np.trim_zeros(np.array(off_values_list)))

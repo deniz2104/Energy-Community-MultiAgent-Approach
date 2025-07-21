@@ -42,13 +42,11 @@ class ApplianceFacade:
         return appliances
 
     def see_on_off_patterns(self,appliance):
-        on_off_dict=self.data_labeler.determine_on_off_periods(appliance)
-        return on_off_dict
+        return self.data_labeler.determine_on_off_periods(appliance)
 
     def show_hours_distribution(self, appliance):
         on_off_dict = self.data_labeler.determine_on_off_periods(appliance)
-        hours_distribution = self.data_labeler.count_on_off_values_per_time_period(on_off_dict)
-        return hours_distribution
+        return self.data_labeler.count_on_off_values_per_time_period(on_off_dict)
 
     def plot_appliances_and_on_off_values(self, appliance, on_off_dict=None, plot_on_off=True):
         self.plotter.plot_all_appliances_consumption_over_time(appliance)
@@ -57,8 +55,7 @@ class ApplianceFacade:
 
     def show_hours_weights(self,appliance):
         hours_distribution = self.show_hours_distribution(appliance)
-        hours_weights = self.calculate_weights.determine_hours_weights(hours_distribution)
-        return hours_weights
+        return self.calculate_weights.determine_hours_weights(hours_distribution)
 
     def show_appliance_histogram(self, appliance):
         hours_distribution = self.show_hours_distribution(appliance)
@@ -68,8 +65,11 @@ class ApplianceFacade:
     def show_appliance_mean_consumption_based_on_hour(self,appliance):
         on_off_dict = self.see_on_off_patterns(appliance)
         hours_distribution = self.show_hours_distribution(appliance)
-        mean_consumption = self.consumption_statistics.get_mean_consumption_by_hour(appliance, on_off_dict,hours_distribution)
-        return mean_consumption
+        return self.consumption_statistics.get_mean_consumption_by_hour(appliance,on_off_dict,hours_distribution)
     
     def display_sigmoid_values_along_with_consumption(self,appliance):
         self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(appliance)
+
+    def show_off_values(self,appliance):
+        on_off_dict=self.see_on_off_patterns(appliance)
+        return self.data_labeler.determine_off_dictionary_for_night(appliance,on_off_dict)
