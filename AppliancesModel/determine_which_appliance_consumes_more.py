@@ -11,6 +11,10 @@ class DetermineWhichApplianceConsumesMore:
                 all_consumption_values.append(value)
         return np.unique(np.trim_zeros(np.sort(np.array(all_consumption_values))))
 
+    def eliminate_off_values_from_consumption_list(self,appliance,off_values):
+        all_consumption_values=self.gather_all_appliances_consumption_from_all_houses(appliance)
+        pass
+
 
     def sigmoid(self, x): return 1 / (1 + np.exp(-x))
 
@@ -25,7 +29,7 @@ class DetermineWhichApplianceConsumesMore:
         for consumption, sigmoid in zip(all_consumption_values, sigmoid_values):
             print(f"Consumption: {consumption}, Sigmoid: {sigmoid}")
         
-    def determine_which_appliance_consumes_more(self, appliance):
+    def determine_appliances(self, appliance):
         all_consumption_values = self.gather_all_appliances_consumption_from_all_houses(appliance)
         sigmoid_values = self.determine_sigmoid_values(all_consumption_values)
         if len(appliance.appliance_consumption.keys()) == 1:
@@ -37,7 +41,7 @@ class DetermineWhichApplianceConsumesMore:
                 if value in all_consumption_values:
                     index = np.where(all_consumption_values == value)[0][0]
                     sigmoid_value = sigmoid_values[index]
-                    if sigmoid_value > 0.4:
+                    if sigmoid_value > 0.3:
                         count += 1
             if count > len(consumption)//2:
                 appliances_list.append(appliance_name)

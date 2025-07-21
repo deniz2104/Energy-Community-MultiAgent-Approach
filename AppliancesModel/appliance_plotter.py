@@ -1,5 +1,8 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from HelperFiles.file_to_handle_absolute_path_imports import *
+from HelperFiles.hours_for_day_and_night import TOTAL_HOURS,NIGHT_HOURS
+
 class AppliancePlotter:
     def __init__(self):
         pass
@@ -33,9 +36,6 @@ class AppliancePlotter:
         fig.show()
 
     def plot_appliance_histogram(self, hours_dictionary, appliance_name=None, is_night=False):
-        TOTAL_HOURS = 24
-        NIGHT_HOURS = {0, 1, 2, 3, 4, 5, 6, 22, 23}
-
         hours_list = self._prepare_hours_data(hours_dictionary, NIGHT_HOURS, TOTAL_HOURS, is_night)
 
         fig = self._create_histogram_figure(hours_list, appliance_name)
