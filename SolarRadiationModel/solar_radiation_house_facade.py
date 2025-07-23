@@ -17,11 +17,11 @@ class SolarRadiationHouseFacade:
     def process_solar_radiation_pipeline(self, csv_path, houses, export_solar_radiation_path=None,export_house_path=None):
         solar_radiation_houses = self.build_solar_radiation_data(csv_path)
 
-        self.preprocessor.matching_timestamps_between_solar_radiation_and_house(solar_radiation_houses, houses)
+        self.preprocessor.match_houses_ids_and_match_timestamps(solar_radiation_houses, houses)
 
-        solar_radiation_houses = self.preprocessor.filtrate_solar_radiation_having_zeros_for_a_period_of_time(solar_radiation_houses,houses)
+        solar_radiation_houses = self.preprocessor.filtrate_solar_radiation_houses_having_zeros_for_a_period_of_time(solar_radiation_houses,houses)
 
-        solar_radiation_houses = self.preprocessor.filtrate_solar_radiation_by_number_of_values(solar_radiation_houses, houses)
+        solar_radiation_houses = self.preprocessor.filtrate_solar_radiation_houses_by_number_of_values(solar_radiation_houses, houses)
 
         solar_radiation_house_dict = {house.house_id: house for house in solar_radiation_houses}
         houses_to_remove = []
