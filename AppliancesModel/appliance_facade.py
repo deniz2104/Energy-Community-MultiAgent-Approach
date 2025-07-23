@@ -3,7 +3,7 @@ from .appliance_preprocessing_data import AppliancePreprocessingData
 from .appliance_hours_weights import ApplianceHoursWeights
 from .appliance_resampling import ApplianceResampling
 from .appliance_plotter import AppliancePlotter
-from .appliance_consumption_statistics import ApplianceConsumptionStatistics
+from .appliance_statistics import ApplianceStatistics
 from .appliance_label_for_on_and_off_values import ApplianceOnOffValues
 from .determine_which_appliance_consumes_more import DetermineWhichApplianceConsumesMore
 from HelperFiles.file_to_handle_absolute_path_imports import *
@@ -16,7 +16,7 @@ class ApplianceFacade:
         self.plotter = AppliancePlotter()
         self.data_labeler = ApplianceOnOffValues()
         self.calculate_weights = ApplianceHoursWeights()
-        self.consumption_statistics = ApplianceConsumptionStatistics()
+        self.statistics = ApplianceStatistics()
         self.determine_which_appliance_consumes_more = DetermineWhichApplianceConsumesMore()
 
 
@@ -55,7 +55,7 @@ class ApplianceFacade:
 
     def show_hours_weights(self,appliance):
         hours_distribution = self.show_hours_distribution(appliance)
-        return self.calculate_weights.determine_hours_weights(hours_distribution)
+        return self.statistics.determine_hours_weights(hours_distribution)
 
     def show_appliance_histogram(self, appliance):
         hours_distribution = self.show_hours_distribution(appliance)
@@ -65,10 +65,7 @@ class ApplianceFacade:
     def show_appliance_mean_consumption_based_on_hour(self,appliance):
         on_off_dict = self.see_on_off_patterns(appliance)
         hours_distribution = self.show_hours_distribution(appliance)
-        return self.consumption_statistics.get_mean_consumption_by_hour(appliance,on_off_dict,hours_distribution)
-    
-    def display_sigmoid_values_along_with_consumption(self,appliance):
-        self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(appliance)
+        return self.statistics.get_mean_consumption_by_hour(appliance,on_off_dict,hours_distribution)
 
     def show_off_values(self,appliance):
         on_off_dict=self.see_on_off_patterns(appliance)

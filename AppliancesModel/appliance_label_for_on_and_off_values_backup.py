@@ -7,17 +7,13 @@ from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
 
 class ApplianceOnOffValues:
     def __init__(self):
-        self.random_state = 42 
-        self.chunk_size = 168
-        self.number_of_clusters = 2
+        pass
 
-    def kmeans_clustering(self,data_for_kmeans):
+    def kmeans_clustering(self,data_for_kmeans, number_of_clusters=2):
         scaler = StandardScaler()
         scaled_data = scaler.fit_transform(data_for_kmeans)
-
-        kmeans = KMeans(n_clusters=self.number_of_clusters, random_state=self.random_state, n_init=50)
+        kmeans = KMeans(n_clusters=number_of_clusters, random_state=42, n_init=50)
         kmeans.fit_predict(scaled_data)
-
         centroids = scaler.inverse_transform(kmeans.cluster_centers_)
         return scaler,kmeans,centroids
             

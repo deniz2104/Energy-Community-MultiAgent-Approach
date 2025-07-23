@@ -13,6 +13,7 @@ class DetermineWhichApplianceConsumesMore:
 
     def eliminate_off_values_from_consumption_list(self,appliance,off_values):
         all_consumption_values=self.gather_all_appliances_consumption_from_all_houses(appliance)
+        ## sa elimin valorile de off
         pass
 
 
