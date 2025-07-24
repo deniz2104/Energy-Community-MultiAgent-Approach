@@ -11,17 +11,17 @@ class HouseBuilder():
             for row in reader:
                 house_id = int(row['HouseID'])
                 timestamp = row['EpochTime']
-                value = float(row['TotalValue'])
-                results.append((house_id, timestamp, value))
+                consumption = float(row['TotalValue'])
+                results.append((house_id, timestamp, consumption))
         return results
     def build(self, csv_path):
         houses = {}
         rows= self.open_csv_file(csv_path)
-        for house_id, timestamp, value in rows:
+        for house_id, timestamp, consumption in rows:
             if house_id not in houses:
                 houses[house_id] = House(house_id)
 
-            houses[house_id].add_consumption(timestamp, value)
+            houses[house_id].add_consumption(timestamp, consumption)
 
         return list(houses.values())
     
@@ -30,6 +30,5 @@ class HouseBuilder():
             writer = csv.writer(file)
             writer.writerow(['HouseID', 'EpochTime', 'TotalValue'])
             for house in houses:
-                for timestamp,value in house.consumption.items():
-                    writer.writerow([house.house_id, timestamp, value])
-    
+                for timestamp, consumption in house.consumption.items():
+                    writer.writerow([house.house_id, timestamp, consumption])

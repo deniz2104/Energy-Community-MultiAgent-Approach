@@ -5,7 +5,7 @@ class HouseResampler:
     def __init__(self):
         pass
 
-    def prepare_house_for_resampling(self,house):
+    def resample_house(self,house):
         df=pd.DataFrame(list(house.consumption.items()), columns=['Timestamp', 'Consumption'])
         df['Timestamp']=pd.to_datetime(df['Timestamp'])
         df.set_index('Timestamp', inplace=True)
@@ -19,7 +19,7 @@ class HouseResampler:
     def resampling_houses_based_on_time_period(self, houses):
         resampled_houses={}
         for house in houses:
-            timestamps, consumption = self.prepare_house_for_resampling(house)
+            timestamps, consumption = self.resample_house(house)
             resampled_house = House(house.house_id)
             resampled_houses[house.house_id] = resampled_house
 

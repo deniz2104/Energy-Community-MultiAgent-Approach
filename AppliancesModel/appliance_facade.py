@@ -1,6 +1,5 @@
 from .appliance_builder import ApplianceBuilder
 from .appliance_preprocessing_data import AppliancePreprocessingData
-from .appliance_hours_weights import ApplianceHoursWeights
 from .appliance_resampling import ApplianceResampling
 from .appliance_plotter import AppliancePlotter
 from .appliance_statistics import ApplianceStatistics
@@ -15,7 +14,6 @@ class ApplianceFacade:
         self.resampler = ApplianceResampling()
         self.plotter = AppliancePlotter()
         self.data_labeler = ApplianceOnOffValues()
-        self.calculate_weights = ApplianceHoursWeights()
         self.statistics = ApplianceStatistics()
         self.determine_which_appliance_consumes_more = DetermineWhichApplianceConsumesMore()
 

@@ -5,9 +5,11 @@ class PowerEstimator(SolarRadiationHouse):
         super().__init__(house_id)
         self.power_estimated = {}
         self.NEEG= None
+        self.f = 0.8
+        self.GTSTC= 1000
     
-    def add_power_estimated(self,timestamp,value,Pmax=575 , GTSTC=1000, number_of_panels=1, f=0.8):
-        self.power_estimated[timestamp] = Pmax * f *number_of_panels * (value / GTSTC)
+    def add_power_estimated(self,timestamp,value,Pmax=575, number_of_panels=1):
+        self.power_estimated[timestamp] = Pmax * self.f *number_of_panels * (value / self.GTSTC)
 
     def determine_NEEG(self):
         self.NEEG = sum(
