@@ -4,8 +4,20 @@ from PowerEstimatedModel.power_estimated_facade import PowerEstimatedFacade
 from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumptionBuilder
 from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from AppliancesModel.appliance_facade import ApplianceFacade
-## rescriere file appliance_label_for_on_and_off_values.py
 ## thresholdul de 0.4 este unul arbitrar, dar nu am gasit un altul mai bun, sa vad daca pot sa il fac mai bun
+## sa fac distributia valorilor de sigmoid si sa fac un procentaj
+## trebuie sa schimb denumirea de appliance (=> house_appliance_consumption) plus numele functiilor daca trebuie
+## sa tin cont de denumirile appliance urilor
+## Trebuie sa generez in agent un nou profil generat
+## Pot sa fac o scara cu un nivel de confidenta.
+## 1 – toate appliance urile pornite
+## Fiecarui appliance ii dau un scor. Fiecare au cate un punct la inceput. 
+## Daca e acasa dau recomandare si daca nu e nu ii dau. Chestia asta o fac in functie de care sunt appliance urile dominante
+## hardcodeaza capul de tabel din csv urile tale modificate care sunt si variante finale; schimba in clasele de baze de date capul de tabel in TotalConsumption si in toate clasele de builder
+## am de facut un requirments.txt
+## am de facut si un venv
+## type hints peste tot
+## metode private care le utilizez doar intern
 if __name__ == "__main__":
     house_facade = HouseFacade()
     houses = house_facade.build_houses("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
@@ -26,3 +38,5 @@ if __name__ == "__main__":
     appliance_facade = ApplianceFacade()
     #appliances = appliance_facade.process_appliances_pipeline("CSVs/appliance_consumption_data.csv", houses, export_path="CSVs/appliance_consumption_preprocessed.csv")
     appliances = appliance_facade.builder.build("CSVs/appliance_consumption_preprocessed.csv")
+    for appliance in appliances[:1]:
+        appliance_facade.show_consumption_along_with_sigmoid_values(appliance)

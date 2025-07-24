@@ -68,3 +68,6 @@ class ApplianceFacade:
     def show_off_values(self,appliance):
         on_off_dict=self.see_on_off_patterns(appliance)
         return self.data_labeler.determine_off_dictionary_for_night(appliance,on_off_dict)
+
+    def show_consumption_along_with_sigmoid_values(self, appliance):
+        self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(appliance)
