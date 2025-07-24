@@ -5,7 +5,6 @@ from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumpt
 from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from AppliancesModel.appliance_facade import ApplianceFacade
 ## thresholdul de 0.4 este unul arbitrar, dar nu am gasit un altul mai bun, sa vad daca pot sa il fac mai bun
-## sa fac distributia valorilor de sigmoid si sa fac un procentaj
 ## trebuie sa schimb denumirea de appliance (=> house_appliance_consumption) plus numele functiilor daca trebuie
 ## sa tin cont de denumirile appliance urilor
 ## Trebuie sa generez in agent un nou profil generat
