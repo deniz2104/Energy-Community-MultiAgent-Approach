@@ -54,16 +54,3 @@ class ApplianceOnOffValues:
                     hours_count[hour] += 1
             hour_dictionary[appliance_type] = {hour: count for hour, count in hours_count.items() if count > 0}
         return hour_dictionary
-
-    def determine_off_dictionary_for_night(self,appliance,dictionary_with_on_off_values):
-        off_values_list=[]
-        for appliance_type, pairs in dictionary_with_on_off_values.items():
-            appliance_consumption_dict = dict(appliance.appliance_consumption[appliance_type])
-            
-            for timestamp, state in pairs:
-                hour = pd.to_datetime(timestamp).hour
-                
-                if hour in NIGHT_HOURS and state == 0:
-                    consumption_value = appliance_consumption_dict.get(timestamp)
-                    off_values_list.append(consumption_value)
-        return np.unique(np.trim_zeros(np.array(off_values_list)))

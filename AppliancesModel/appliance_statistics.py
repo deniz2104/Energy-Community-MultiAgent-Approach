@@ -33,12 +33,3 @@ class ApplianceStatistics:
             for hour,count in hours.items():
                 hours_weights[appliance_type][hour] = round(count / self.period, 2)
         return hours_weights
-    
-    def determine_off_values_from_dictionary_night(self,appliance,dictionary_with_on_off_values):
-        off_values_list=[]
-        for appliance_type,pairs in dictionary_with_on_off_values.items():
-            for timestamp,value in pairs:
-                hour=pd.to_datetime(timestamp).hour
-                if(hour in NIGHT_HOURS) and value == 0:
-                    off_values_list.append(dict(appliance.appliance_consumption[appliance_type]).get(timestamp))
-        return np.unique(np.trim_zeros(np.array(off_values_list)))
