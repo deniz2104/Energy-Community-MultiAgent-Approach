@@ -4,19 +4,19 @@ from .house import House
 class HouseBuilder():
     def __init__(self):
         pass
-    def _open_csv_file(self, csv_path):
+    def open_csv_file(self, csv_path):
         results=[]
         with open(csv_path, 'r', newline='') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 house_id = int(row['HouseID'])
                 timestamp = row['EpochTime']
-                consumption = float(row['TotalValue'])
+                consumption = float(row['TotalConsumption'])
                 results.append((house_id, timestamp, consumption))
         return results
     def build(self, csv_path):
         houses = {}
-        rows= self._open_csv_file(csv_path)
+        rows= self.open_csv_file(csv_path)
         for house_id, timestamp, consumption in rows:
             if house_id not in houses:
                 houses[house_id] = House(house_id)

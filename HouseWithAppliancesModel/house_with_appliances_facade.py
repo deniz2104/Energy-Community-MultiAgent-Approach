@@ -18,52 +18,55 @@ class HouseWithAppliancesFacade:
         self.determine_which_appliance_consumes_more = DetermineWhichApplianceConsumesMore()
 
 
-    def build_appliances(self, csv_path):
+    def build_houses_with_appliances(self, csv_path):
         return self.builder.build(csv_path)
 
     def process_appliances_pipeline(self,csv_path,houses,export_path=None):
-        appliances = self.build_appliances(csv_path)
-                
-        appliances = self.resampler.resampling_appliance_data(appliances)
+        houses_with_appliances = self.build_houses_with_appliances(csv_path)
 
-        self.preprocessor.matching_timestamps_between_appliance_and_house(appliances, houses)
-        
-        self.preprocessor.remove_appliances_with_zero_data(appliances)
-        
-        self.preprocessor.eliminate_anomalies_in_appliances(appliances)
+        houses_with_appliances = self.resampler.resampling_appliance_data(houses_with_appliances)
 
-        self.preprocessor.eliminate_appliances_with_five_days_of_no_consumption(appliances)
-        
+        self.preprocessor.matching_timestamps_between_appliance_and_house(houses_with_appliances, houses)
+
+        self.preprocessor.remove_appliances_with_zero_data(houses_with_appliances)
+
+        self.preprocessor.eliminate_anomalies_in_appliances(houses_with_appliances)
+
+        self.preprocessor.eliminate_appliances_with_five_days_of_no_consumption(houses_with_appliances)
+
         if export_path:
-            self.builder.export_to_csv(appliances, export_path)
+            self.builder.export_to_csv(houses_with_appliances, export_path)
 
-        return appliances
+        return houses_with_appliances
 
-    def see_on_off_patterns(self,appliance):
-        return self.data_labeler.determine_on_off_periods(appliance)
+    def see_on_off_patterns(self,house_with_appliances):
+        return self.data_labeler.determine_on_off_periods(house_with_appliances)
 
-    def show_hours_distribution(self, appliance):
-        on_off_dict = self.data_labeler.determine_on_off_periods(appliance)
+    def show_hours_distribution(self, house_with_appliances):
+        on_off_dict = self.data_labeler.determine_on_off_periods(house_with_appliances)
         return self.data_labeler.count_on_off_values_per_time_period(on_off_dict)
 
-    def plot_appliances_and_on_off_values(self, appliance, on_off_dict=None, plot_on_off=True):
-        self.plotter.plot_all_appliances_consumption_over_time(appliance)
+    def plot_appliances_and_on_off_values(self, house_with_appliances, on_off_dict=None, plot_on_off=True):
+        self.plotter.plot_all_appliances_consumption_over_time(house_with_appliances)
         if plot_on_off and on_off_dict is not None:
-            self.plotter.plot_appliances_and_on_off_values(appliance,on_off_dict)
+            self.plotter.plot_appliances_and_on_off_values(house_with_appliances, on_off_dict)
 
-    def show_hours_weights(self,appliance):
-        hours_distribution = self.show_hours_distribution(appliance)
+    def show_hours_weights(self,house_with_appliances):
+        hours_distribution = self.show_hours_distribution(house_with_appliances)
         return self.statistics.determine_hours_weights(hours_distribution)
 
-    def show_appliance_histogram(self, appliance):
-        hours_distribution = self.show_hours_distribution(appliance)
+    def show_appliance_histogram(self, house_with_appliances):
+        hours_distribution = self.show_hours_distribution(house_with_appliances)
         for appliance_name, hours in hours_distribution.items():
-            self.plotter.plot_appliance_histogram(hours,appliance_name)
+            self.plotter.plot_appliance_histogram(hours, appliance_name)
 
-    def show_appliance_mean_consumption_based_on_hour(self,appliance):
-        on_off_dict = self.see_on_off_patterns(appliance)
-        hours_distribution = self.show_hours_distribution(appliance)
-        return self.statistics.get_mean_consumption_by_hour(appliance,on_off_dict,hours_distribution)
+    def show_appliance_mean_consumption_based_on_hour(self, house_with_appliances):
+        on_off_dict = self.see_on_off_patterns(house_with_appliances)
+        hours_distribution = self.show_hours_distribution(house_with_appliances)
+        return self.statistics.get_mean_consumption_by_hour(house_with_appliances, on_off_dict, hours_distribution)
 
-    def show_consumption_along_with_sigmoid_values(self, appliance):
-        self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(appliance)
+    def show_consumption_along_with_sigmoid_values(self, house_with_appliances):
+        self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(house_with_appliances)
+
+    def show_histogram(self, house_with_appliances):
+        self.determine_which_appliance_consumes_more.plot_sigmoid_distribution_bins(house_with_appliances)

@@ -1,7 +1,7 @@
 import pandas as pd
 from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
 
-class HouseWithApplianceSStatistics:
+class HouseWithAppliancesStatistics:
     def __init__(self):
         self.period = 365
 

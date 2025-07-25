@@ -1,4 +1,5 @@
 import numpy as np
+import plotly.graph_objects as go
 from sklearn.preprocessing import MinMaxScaler
 class DetermineWhichApplianceConsumesMore:
     def __init__(self):
@@ -11,7 +12,7 @@ class DetermineWhichApplianceConsumesMore:
                 all_consumption_values.append(value)
         return np.unique(np.trim_zeros(np.sort(np.array(all_consumption_values))))
 
-    def _plot_sigmoid_distribution_bins(self, house_with_appliances):
+    def plot_sigmoid_distribution_bins(self, house_with_appliances):
         all_consumption_values = self._gather_all_appliances_consumption_from_a_house(house_with_appliances)
         sigmoid_values = self._determine_sigmoid_values(all_consumption_values)
         
@@ -20,7 +21,7 @@ class DetermineWhichApplianceConsumesMore:
         
         counts, _ = np.histogram(sigmoid_values, bins=bin_edges)
         
-        ##need to make plot        
+        go.Figure(data=[go.Bar(x=bin_labels, y=counts)]).show()
         print("\nSigmoid Values Distribution by Bins:")
         total_values = len(sigmoid_values)
         for _, (label, count) in enumerate(zip(bin_labels, counts)):
@@ -41,7 +42,7 @@ class DetermineWhichApplianceConsumesMore:
             print(f"Consumption: {consumption}, Sigmoid: {sigmoid}")
 
 
-    def _determine_appliances(self, house_with_appliances, threshold=0.3):
+    def determine_appliances(self, house_with_appliances, threshold=0.3):
         all_consumption_values = self._gather_all_appliances_consumption_from_a_house(house_with_appliances)
         sigmoid_values = self._determine_sigmoid_values(all_consumption_values)
         if len(house_with_appliances.appliance_consumption.keys()) == 1:
