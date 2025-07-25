@@ -10,10 +10,10 @@ class DatabaseHandler():
         self.cursor = self.connection.cursor()
     def extract_data(self):
         self.cursor.execute("""
-            SELECT h.ID, cs.EpochTime, cs.TotalValue
+            SELECT h.ID, cs.EpochTime, cs.TotalConsumption
             FROM House h
             JOIN (
-                SELECT HouseIDREF, EpochTime, SUM(Value) AS TotalValue
+                SELECT HouseIDREF, EpochTime, SUM(Value) AS TotalConsumption
                 FROM Consumption
                 GROUP BY HouseIDREF, EpochTime
             ) cs ON cs.HouseIDREF = h.ID
@@ -30,7 +30,7 @@ class DatabaseHandler():
     def write_to_csv(self, data, file_path):
         with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['HouseID', 'EpochTime', 'TotalValue'])
+            writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
             writer.writerows(data)
 
     def close_connection(self):

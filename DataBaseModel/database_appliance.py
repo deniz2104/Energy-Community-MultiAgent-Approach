@@ -15,10 +15,10 @@ class DatabaseHandlerAppliance(DatabaseHandler):
             c.EpochTime,
             c.ApplianceIDREF,
             at.Name,
-            c.TotalValue
+            c.TotalConsumption
         FROM House h
         JOIN(
-            SELECT HouseIDREF, ApplianceIDREF, EpochTime, Value AS TotalValue
+            SELECT HouseIDREF, ApplianceIDREF, EpochTime, Value AS TotalConsumption
             FROM Consumption
             GROUP BY HouseIDREF, ApplianceIDREF, EpochTime
         ) c ON c.HouseIDREF = h.ID
@@ -38,7 +38,7 @@ class DatabaseHandlerAppliance(DatabaseHandler):
     def write_to_csv(self, data, file_path):
         with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['HouseID', 'EpochTime','Appliance_ID','Appliance_Name','TotalValue'])
+            writer.writerow(['HouseID', 'EpochTime','Appliance_ID','Appliance_Name','TotalConsumption'])
             writer.writerows(data)
 
     def close_connection(self):

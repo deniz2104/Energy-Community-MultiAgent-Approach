@@ -9,10 +9,10 @@ class SolarRadiationDatabaseHandler(DatabaseHandler):
         super().read_database(database_path)
     def extract_solar_radiation_data(self):
         self.cursor.execute("""
-            SELECT h.ID,WD.EpochTime, WD.TotalValue
+            SELECT h.ID,WD.EpochTime, WD.TotalSolarConsumption
             FROM House h
             JOIN (
-                SELECT WeatherStationIDREF, EpochTime, Value as TotalValue
+                SELECT WeatherStationIDREF, EpochTime, Value as TotalSolarConsumption
                 FROM WeatherData
                 WHERE WeatherVariableIDREF=4
                 GROUP BY WeatherStationIDREF, EpochTime
@@ -31,7 +31,7 @@ class SolarRadiationDatabaseHandler(DatabaseHandler):
     def write_to_csv(self, data, file_path):
         with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['HouseID', 'EpochTime', 'TotalValue'])
+            writer.writerow(['HouseID', 'EpochTime', 'TotalSolarConsumption'])
             writer.writerows(data)
     
     def close_connection(self):
