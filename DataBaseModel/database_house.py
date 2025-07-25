@@ -3,12 +3,12 @@ import time
 import csv
 
 class DatabaseHandler():
-    def __init__(self):
+    def __init__(self) -> None:
         pass
-    def read_database(self, database_path):
+    def read_database(self, database_path: str) -> None:
         self.connection = sqlite3.connect(database_path)
         self.cursor = self.connection.cursor()
-    def extract_data(self):
+    def extract_data(self) -> list[tuple]:
         self.cursor.execute("""
             SELECT h.ID, cs.EpochTime, cs.TotalConsumption
             FROM House h
@@ -27,13 +27,13 @@ class DatabaseHandler():
             rows[i]=tuple(row)
         return rows
 
-    def write_to_csv(self, data, file_path):
+    def write_to_csv(self, data: list[tuple], file_path: str) -> None:
         with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
             writer.writerows(data)
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         self.connection.close()
 if __name__ == "__main__":
     db_handler = DatabaseHandler()

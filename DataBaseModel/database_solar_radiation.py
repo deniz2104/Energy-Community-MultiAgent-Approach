@@ -3,11 +3,11 @@ import time
 from database_house import DatabaseHandler
 class SolarRadiationDatabaseHandler(DatabaseHandler):
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
-    def read_database(self, database_path):
+    def read_database(self, database_path: str) -> None:
         super().read_database(database_path)
-    def extract_solar_radiation_data(self):
+    def extract_solar_radiation_data(self) -> list[tuple]:
         self.cursor.execute("""
             SELECT h.ID,WD.EpochTime, WD.TotalSolarConsumption
             FROM House h
@@ -27,14 +27,14 @@ class SolarRadiationDatabaseHandler(DatabaseHandler):
             row[1]=time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(row[1]))
             rows[i]=tuple(row)
         return rows
-    
-    def write_to_csv(self, data, file_path):
+
+    def write_to_csv(self, data: list[tuple], file_path: str) -> None:
         with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['HouseID', 'EpochTime', 'TotalSolarConsumption'])
+            writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
             writer.writerows(data)
-    
-    def close_connection(self):
+
+    def close_connection(self) -> None:
         super().close_connection()
 
 if __name__ == "__main__":

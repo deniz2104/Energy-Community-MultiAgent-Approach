@@ -1,24 +1,25 @@
 from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Tuple, Optional
 import pandas as pd
 import plotly.express as px
 
 class BasePlotterInterface(ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         pass
     
     @abstractmethod
-    def get_data_dict(self, data_object):
+    def get_data_dict(self, data_object: Any) -> Dict[str, float]:
         pass
     
     @abstractmethod
-    def get_object_id(self, data_object):
+    def get_object_id(self, data_object: Any) -> int:
         pass
     
     @abstractmethod
-    def get_plot_title_prefix(self):
+    def get_plot_title_prefix(self) -> str:
         pass
     
-    def filter_values_by_month_and_day(self, data_object, mode, value):
+    def filter_values_by_month_and_day(self, data_object: Any, mode: str, value: int) -> Tuple[List[pd.Timestamp], List[float]]:
         timestamps = []
         values = []
         
@@ -30,7 +31,7 @@ class BasePlotterInterface(ABC):
                 values.append(data_value)
         return timestamps, values
     
-    def plot_over_time(self, data_object, month=None, day=None):
+    def plot_over_time(self, data_object: Any, month: Optional[int] = None, day: Optional[int] = None) -> None:
         object_id = self.get_object_id(data_object)
         title_prefix = self.get_plot_title_prefix()
         
@@ -59,7 +60,7 @@ class BasePlotterInterface(ABC):
             )
             fig.show()
     
-    def plot_over_time_range(self, data_object, time_stamp_1, time_stamp_2):
+    def plot_over_time_range(self, data_object: Any, time_stamp_1: str, time_stamp_2: str) -> None:
         time_stamp_1 = pd.to_datetime(time_stamp_1)
         time_stamp_2 = pd.to_datetime(time_stamp_2)
         
