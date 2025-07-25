@@ -3,7 +3,7 @@ from HouseModel.house_helper_file import HouseHelperFile
 class SolarRadiationHousePreprocessingData:
     def __init__(self):
         self.threshold = 0.95
-    def change_timing_for_solar_radiation_data(self, house):
+    def _change_timing_for_solar_radiation_data(self, house):
         if house.house_id != self.house_id:
             return
 
@@ -49,6 +49,6 @@ class SolarRadiationHousePreprocessingData:
         for solar_house in solar_houses:
             if solar_house.house_id in consumption_dict:
                 consumption_house = consumption_dict[solar_house.house_id]
-                self.change_timing_for_solar_radiation_data(consumption_house)
+                self._change_timing_for_solar_radiation_data(consumption_house)
             else:
                 print(f"No matching consumption data for solar house {solar_house.house_id}")
