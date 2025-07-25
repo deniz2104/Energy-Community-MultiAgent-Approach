@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any,Optional
 import pandas as pd
 import plotly.express as px
 
@@ -8,7 +8,7 @@ class BasePlotterInterface(ABC):
         pass
     
     @abstractmethod
-    def get_data_dict(self, data_object: Any) -> Dict[str, float]:
+    def get_data_dict(self, data_object: Any) -> dict[str, float]:
         pass
     
     @abstractmethod
@@ -18,8 +18,8 @@ class BasePlotterInterface(ABC):
     @abstractmethod
     def get_plot_title_prefix(self) -> str:
         pass
-    
-    def filter_values_by_month_and_day(self, data_object: Any, mode: str, value: int) -> Tuple[List[pd.Timestamp], List[float]]:
+
+    def filter_values_by_month_and_day(self, data_object: Any, mode: str, value: int) -> tuple[list[pd.Timestamp], list[float]]:
         timestamps = []
         values = []
         

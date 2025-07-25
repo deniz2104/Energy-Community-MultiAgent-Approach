@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 from PowerEstimatedModel.power_estimated import PowerEstimator
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
@@ -9,8 +9,8 @@ class SelfConsumption(PowerEstimator):
     
     def determine_self_consumption_over_time(self, month: Optional[int] = None, day: Optional[int] = None, use_load: bool = False) -> float:
         if month is None and day is None:
-            p_prod: List[float] = list(self.power_estimated.values())
-            p_load: List[float] = list(self.consumption.values())
+            p_prod: list[float] = list(self.power_estimated.values())
+            p_load: list[float] = list(self.consumption.values())
         elif month is not None and day is None:
             p_prod = [v for k, v in self.power_estimated.items() if k.month == month]
             p_load = [v for k, v in self.consumption.items() if k.month == month]
