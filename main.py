@@ -5,18 +5,21 @@ from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumpt
 from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from AppliancesModel.appliance_facade import ApplianceFacade
 ## thresholdul de 0.4 este unul arbitrar, dar nu am gasit un altul mai bun, sa vad daca pot sa il fac mai bun
-## trebuie sa schimb denumirea de appliance (=> house_appliance_consumption) plus numele functiilor daca trebuie
+## trebuie sa schimb denumirea de appliance (=> house_appliance_consumption)
+## am de facut plot pentru distributia sigmoid a valorilor
+## sa ma uit daca numele functiilor au sens si daca atributele si variabilele numite au si ele sens doar pt appliance
 ## sa tin cont de denumirile appliance urilor
+
 ## Trebuie sa generez in agent un nou profil generat
 ## Pot sa fac o scara cu un nivel de confidenta.
 ## 1 – toate appliance urile pornite
 ## Fiecarui appliance ii dau un scor. Fiecare au cate un punct la inceput. 
 ## Daca e acasa dau recomandare si daca nu e nu ii dau. Chestia asta o fac in functie de care sunt appliance urile dominante
-## hardcodeaza capul de tabel din csv urile tale modificate care sunt si variante finale; schimba in clasele de baze de date capul de tabel in TotalConsumption si in toate clasele de builder
+
 ## am de facut un requirments.txt
 ## am de facut si un venv
 ## type hints peste tot
-## metode private care le utilizez doar intern
+## la final ar fi good practice sa fac si un __init__.py si un devcontainer
 if __name__ == "__main__":
     house_facade = HouseFacade()
     houses = house_facade.build_houses("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
