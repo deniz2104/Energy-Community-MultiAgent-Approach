@@ -19,8 +19,7 @@ class HouseFacade:
     def process_houses_pipeline(self, csv_path, export_path=None):
         houses = self.build_houses(csv_path)
         
-        #houses = self.houses_preprocessor.remove_houses_with_few_data_points(houses)
-        #print(f"After removing houses with few data points: {len(houses)}")
+        houses = self.houses_preprocessor.remove_houses_with_few_data_points(houses)
         
         houses = self.houses_preprocessor.remove_houses_with_lot_of_zeros(houses)
 
