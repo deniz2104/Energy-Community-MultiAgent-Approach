@@ -28,7 +28,7 @@ class HouseBuilder():
     def export_to_csv(self, houses, file_path):
          with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['HouseID', 'EpochTime', 'TotalValue'])
+            writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
             for house in houses:
                 for timestamp, consumption in house.consumption.items():
                     writer.writerow([house.house_id, timestamp, consumption])

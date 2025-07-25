@@ -4,7 +4,7 @@ from scipy.stats.mstats import winsorize
 import numpy as np
 class HousePreprocessingData:
     def __init__(self):
-        pass
+        self.days_difference=12
 
     def eliminate_days_after_a_year_per_house(self,house):
         starting_date=min(pd.to_datetime(list(house.consumption.keys())))
@@ -34,12 +34,12 @@ class HousePreprocessingData:
     def count_zero_for_house(self,house):
         return sum(value == 0 for value in house.consumption.values())
 
-    def remove_houses_having_zero_for_a_period_of_time(self,house,is_appliance=None,days_difference=12):
+    def remove_houses_having_zero_for_a_period_of_time(self,house,is_appliance=None):
         first_period=None
         last_period=None
         time_stamps=set()
         if is_appliance is True:
-            days_difference = 5
+            self.days_difference = 5
         for timestamp, value in house.consumption.items():
             if value == 0:
                 if first_period is None:
@@ -48,13 +48,13 @@ class HousePreprocessingData:
             else:
                 if first_period and last_period:
                     days_diff = (pd.to_datetime(last_period) - pd.to_datetime(first_period)).days
-                    if days_diff >= days_difference:
+                    if days_diff >= self.days_difference:
                         time_stamps.add((first_period, last_period))
                 first_period = None
                 last_period = None
 
         if first_period and last_period:
             days_diff = (pd.to_datetime(last_period) - pd.to_datetime(first_period)).days
-            if days_diff >= days_difference:
+            if days_diff >= self.days_difference:
                 time_stamps.add((first_period, last_period))
         return len(time_stamps)

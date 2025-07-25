@@ -8,8 +8,8 @@ class PowerEstimator(SolarRadiationHouse):
         self.f = 0.8
         self.GTSTC= 1000
     
-    def add_power_estimated(self,timestamp,value,Pmax=575, number_of_panels=1):
-        self.power_estimated[timestamp] = Pmax * self.f *number_of_panels * (value / self.GTSTC)
+    def add_power_estimated(self,timestamp,solar_radiatian_value,Pmax=575, number_of_panels=1):
+        self.power_estimated[timestamp] = Pmax * self.f *number_of_panels * (solar_radiatian_value / self.GTSTC)
 
     def determine_NEEG(self):
         self.NEEG = sum(

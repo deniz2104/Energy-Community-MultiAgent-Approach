@@ -1,6 +1,8 @@
 import pandas as pd
 from HouseModel.house_helper_file import HouseHelperFile
 class SolarRadiationHousePreprocessingData:
+    def __init__(self):
+        self.threshold = 0.95
     def change_timing_for_solar_radiation_data(self, house):
         if house.house_id != self.house_id:
             return
@@ -17,16 +19,16 @@ class SolarRadiationHousePreprocessingData:
                 if starting_time <= pd.to_datetime(t) <= ending_time
         }
         
-    def filtrate_solar_radiation_houses_by_number_of_values(self, solar_radiation_houses,consumption_houses, threshold=0.95):
+    def filtrate_solar_radiation_houses_by_number_of_values(self, solar_radiation_houses,consumption_houses):
         consumption_dict = {house.house_id: house for house in consumption_houses}
         filtered_solar_radiation_houses = []
         for house in solar_radiation_houses:
             if house.house_id in consumption_dict:
                 consumption_house = consumption_dict[house.house_id]
-                if len(house.solar_radiation) >= threshold*len(consumption_house.consumption):
+                if len(house.solar_radiation) >= self.threshold*len(consumption_house.consumption):
                     filtered_solar_radiation_houses.append(house)
                 else:
-                    print(f"House {house.house_id} has less than {threshold} values and will be removed.")
+                    print(f"House {house.house_id} has less than {self.threshold} values and will be removed.")
         return filtered_solar_radiation_houses
     
     def filtrate_solar_radiation_houses_having_zeros_for_a_period_of_time(self, solar_radiation_houses, consumption_houses):

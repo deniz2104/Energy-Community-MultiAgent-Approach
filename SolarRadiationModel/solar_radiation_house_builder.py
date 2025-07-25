@@ -17,7 +17,7 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
     def export_to_csv_solar_radiation(self, solar_radiation_houses, file_path):
         with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['HouseID', 'EpochTime', 'TotalValue'])
+            writer.writerow(['HouseID', 'EpochTime', 'TotalSolarConsumption'])
             for house in solar_radiation_houses:
                 for timestamp, solar_radiation_consumption in house.solar_radiation.items():
                     writer.writerow([house.house_id, timestamp, solar_radiation_consumption])
