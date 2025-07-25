@@ -1,8 +1,8 @@
 from HelperFiles.file_to_handle_absolute_path_imports import *
 from HelperFiles.base_plotter_interface import BasePlotterInterface
-from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
+from .solar_radiation_house import SolarRadiationHouse
 
-class SolarRadiationPLotter(BasePlotterInterface):
+class SolarRadiationPlotter(BasePlotterInterface):
     def __init__(self) -> None:
         super().__init__()
 

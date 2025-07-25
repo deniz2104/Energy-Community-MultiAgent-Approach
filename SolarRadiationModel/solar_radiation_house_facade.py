@@ -3,7 +3,7 @@ from HouseModel.house_builder import HouseBuilder
 from HouseModel.house import House
 from .solar_radiation_house_builder import SolarRadiationHouseBuilder
 from .solar_radiation_house_preprocessing_data import SolarRadiationHousePreprocessingData
-from .solar_radiation_plotter import SolarRadiationPLotter
+from .solar_radiation_plotter import SolarRadiationPlotter
 from .solar_radiation_house import SolarRadiationHouse
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
@@ -12,7 +12,7 @@ class SolarRadiationHouseFacade:
         self.builder: SolarRadiationHouseBuilder = SolarRadiationHouseBuilder()
         self.preprocessor: SolarRadiationHousePreprocessingData = SolarRadiationHousePreprocessingData()
         self.house_builder: HouseBuilder = HouseBuilder()
-        self.plotter: SolarRadiationPLotter = SolarRadiationPLotter()
+        self.plotter: SolarRadiationPlotter = SolarRadiationPlotter()
 
     def build_solar_radiation_data(self, csv_path: str) -> list[SolarRadiationHouse]:
         return self.builder.build(csv_path)

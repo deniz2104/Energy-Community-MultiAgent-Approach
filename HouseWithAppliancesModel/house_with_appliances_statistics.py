@@ -1,11 +1,12 @@
 import pandas as pd
-from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
+from HelperFiles.hours_for_day_and_night import NIGHT_HOURS, TOTAL_HOURS
+from .house_with_appliances import HouseWithAppliancesConsumption
 
 class HouseWithAppliancesStatistics:
-    def __init__(self):
-        self.period = 365
+    def __init__(self) -> None:
+        self.period: int = 365
 
-    def get_mean_consumption_by_hour(self, houses_with_appliances, dictionary_with_on_off_values, hours_distribution, is_night=False):
+    def get_mean_consumption_by_hour(self, houses_with_appliances: HouseWithAppliancesConsumption, dictionary_with_on_off_values: dict[str, dict[int, int]], hours_distribution: dict[str, dict[int, int]], is_night: bool = False) -> dict[str, dict[int, float]]:
         mean_consumption_by_hour = {}
 
         for appliance_type, consumption in houses_with_appliances.appliance_consumption.items():
@@ -26,10 +27,10 @@ class HouseWithAppliancesStatistics:
         
         return mean_consumption_by_hour
 
-    def determine_hours_weights(self,hour_dictionary):
+    def determine_hours_weights(self, hour_dictionary: dict[str, dict[int, int]]) -> dict[str, dict[int, float]]:
         hours_weights = {}
         for appliance_type, hours in hour_dictionary.items():
             hours_weights[appliance_type] = {}
-            for hour,count in hours.items():
+            for hour, count in hours.items():
                 hours_weights[appliance_type][hour] = round(count / self.period, 2)
         return hours_weights

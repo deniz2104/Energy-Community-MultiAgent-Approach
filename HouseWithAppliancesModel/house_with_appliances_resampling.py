@@ -2,11 +2,11 @@ import pandas as pd
 from .house_with_appliances import HouseWithAppliancesConsumption
 
 class HouseWithAppliancesResampling:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def resampling_appliance_data(self, houses_with_appliances):
-        resampled_houses_with_appliances = {}
+    def resampling_appliance_data(self, houses_with_appliances: list[HouseWithAppliancesConsumption]) -> list[HouseWithAppliancesConsumption]:
+        resampled_houses_with_appliances: dict[str, HouseWithAppliancesConsumption] = {}
         for house in houses_with_appliances:
             resampled_appliance = HouseWithAppliancesConsumption(house.house_id)
             resampled_houses_with_appliances[house.house_id] = resampled_appliance

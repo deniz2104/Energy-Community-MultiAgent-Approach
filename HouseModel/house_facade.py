@@ -1,22 +1,24 @@
+from typing import Optional
 from .house_builder import HouseBuilder
 from .houses_preprocessing_data import HousesPreprocessingData
 from .house_resampling import HouseResampler
 from .house_plotter import HousePlotter
 from .house_useful_stats import HouseStatistics
+from .house import House
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class HouseFacade:
-    def __init__(self):
-        self.builder = HouseBuilder()
-        self.houses_preprocessor = HousesPreprocessingData()
-        self.resampler = HouseResampler()
-        self.plotter = HousePlotter()
-        self.statistics = HouseStatistics()
+    def __init__(self) -> None:
+        self.builder: HouseBuilder = HouseBuilder()
+        self.houses_preprocessor: HousesPreprocessingData = HousesPreprocessingData()
+        self.resampler: HouseResampler = HouseResampler()
+        self.plotter: HousePlotter = HousePlotter()
+        self.statistics: HouseStatistics = HouseStatistics()
 
-    def build_houses(self, csv_path):
+    def build_houses(self, csv_path: str) -> list[House]:
         return self.builder.build(csv_path)
 
-    def process_houses_pipeline(self, csv_path, export_path=None):
+    def process_houses_pipeline(self, csv_path: str, export_path: Optional[str] = None) -> list[House]:
         houses = self.build_houses(csv_path)
         
         houses = self.houses_preprocessor.remove_houses_with_few_data_points(houses)
@@ -38,11 +40,11 @@ class HouseFacade:
         
         return houses
 
-    def plot_house_consumption(self, house, month=None, day=None, time_range=None):
+    def plot_house_consumption(self, house: House, month: Optional[int] = None, day: Optional[int] = None, time_range: Optional[tuple[str, str]] = None) -> None:
         if time_range:
             self.plotter.plot_consumption_over_time_range(house, time_range[0], time_range[1])
         else:
             self.plotter.plot_consumption_over_time(house, month=month, day=day)
 
-    def get_house_statistics(self, house):
+    def get_house_statistics(self, house: House) -> dict[str, float]:
         return self.statistics.get_weekly_consumption_by_month(house)

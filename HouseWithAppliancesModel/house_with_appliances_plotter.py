@@ -1,12 +1,14 @@
+from typing import Optional
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from HelperFiles.file_to_handle_absolute_path_imports import *
 from HelperFiles.hours_for_day_and_night import TOTAL_HOURS,NIGHT_HOURS
+from .house_with_appliances import HouseWithAppliancesConsumption
 
 class HouseWithAppliancesPlotter:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
-    def plot_all_appliances_consumption_over_time(self,house_with_appliances):
+    def plot_all_appliances_consumption_over_time(self,house_with_appliances: HouseWithAppliancesConsumption) -> None:
         fig = make_subplots(rows=len(house_with_appliances.appliance_consumption), cols=1, shared_xaxes=True, vertical_spacing=0.03)
 
         for i, (appliance_type, consumption) in enumerate(house_with_appliances.appliance_consumption.items()):
@@ -17,7 +19,7 @@ class HouseWithAppliancesPlotter:
         fig.update_layout(title_text="Appliances Consumption Over Time", showlegend=False)
         fig.show()
 
-    def plot_appliances_and_on_off_values(self,house_with_appliances,dictionary_with_on_off_values):
+    def plot_appliances_and_on_off_values(self,house_with_appliances: HouseWithAppliancesConsumption, dictionary_with_on_off_values: dict[str, list[tuple[str, int]]]) -> None:
         fig = make_subplots(rows=len(house_with_appliances.appliance_consumption)*2, cols=1, shared_xaxes=True, vertical_spacing=0.03)
 
         for i, (appliance_type, consumption) in enumerate(house_with_appliances.appliance_consumption.items()):
@@ -34,16 +36,15 @@ class HouseWithAppliancesPlotter:
             off_values = [pair[1] for pair in on_off_points if pair[1]==0]
             fig.add_trace(go.Scatter(x=timestamps_for_off_values, y=off_values, mode='markers', name=f"{appliance_type} Off values", marker=dict(color='red')), row=i*2+2, col=1)   
         fig.show()
-
-    def plot_appliance_histogram(self, hours_dictionary, appliance_name=None, is_night=False):
+    def plot_appliance_histogram(self, hours_dictionary: dict[int, int], appliance_name: Optional[str] = None, is_night: bool = False) -> None:
         hours_list = self._prepare_hours_data(hours_dictionary, NIGHT_HOURS, TOTAL_HOURS, is_night)
 
         fig = self._create_histogram_figure(hours_list, appliance_name)
         fig = self._update_figure_layout(fig, appliance_name)
         
         fig.show()
-    
-    def _prepare_hours_data(self, hours_dictionary, night_hours, total_hours,is_night=False):
+
+    def _prepare_hours_data(self, hours_dictionary: dict[str, int], night_hours: list[int], total_hours: int, is_night: bool = False) -> list[int]:
         hours_list = []
         if is_night:
             all_hours = [hour for hour in range(total_hours) if hour in night_hours]
@@ -56,8 +57,8 @@ class HouseWithAppliancesPlotter:
                 hours_list.extend([hour] * int(count))
         
         return hours_list
-    
-    def _create_histogram_figure(self, hours_list, appliance_name):
+
+    def _create_histogram_figure(self, hours_list: list[int], appliance_name: Optional[str] = None) -> go.Figure:
         return go.Figure(data=[
             go.Histogram(
                 x=hours_list,
@@ -73,7 +74,7 @@ class HouseWithAppliancesPlotter:
             )
         ])
 
-    def _update_figure_layout(self,fig,appliance_name=None):
+    def _update_figure_layout(self, fig: go.Figure, appliance_name: Optional[str] = None) -> go.Figure:
         fig.update_layout(
             title=dict(
                 text=f"Usage Hours Distribution - {appliance_name}" if appliance_name else "Appliance Usage Hours Distribution",
