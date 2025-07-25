@@ -21,12 +21,7 @@ class SolarRadiationDatabaseHandler(DatabaseHandler):
             ORDER BY h.ID;
         """)
         rows= self.cursor.fetchall()
-        rows=list(rows)
-        for i in range(len(rows)):
-            row=list(rows[i])
-            row[1]=time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(row[1]))
-            rows[i]=tuple(row)
-        return rows
+        return super().convert_rows_to_correct_format(rows)
 
     def write_to_csv(self, data: list[tuple], file_path: str) -> None:
         with open(file_path, 'w', newline='') as file:
