@@ -3,23 +3,16 @@ from SolarRadiationModel.solar_radiation_house_facade import SolarRadiationHouse
 from PowerEstimatedModel.power_estimated_facade import PowerEstimatedFacade
 from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumptionBuilder
 from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
-from AppliancesModel.appliance_facade import ApplianceFacade
-## thresholdul de 0.4 este unul arbitrar, dar nu am gasit un altul mai bun, sa vad daca pot sa il fac mai bun
-## trebuie sa schimb denumirea de appliance (=> house_appliance_consumption)
-## am de facut plot pentru distributia sigmoid a valorilor
-## sa ma uit daca numele functiilor au sens si daca atributele si variabilele numite au si ele sens doar pt appliance
-## sa tin cont de denumirile appliance urilor
+from HouseWithAppliancesModel.house_with_appliances_facade import HouseWithAppliancesFacade
+## sa nu uit sa fac dictionar din lista de dictionare => dictionar de dictionare => sa nu mai convertesc lista la dictionar si sa pot face .get pe el
 
 ## Trebuie sa generez in agent un nou profil generat
 ## Pot sa fac o scara cu un nivel de confidenta.
 ## 1 – toate appliance urile pornite
 ## Fiecarui appliance ii dau un scor. Fiecare au cate un punct la inceput. 
 ## Daca e acasa dau recomandare si daca nu e nu ii dau. Chestia asta o fac in functie de care sunt appliance urile dominante
-
-## am de facut un requirments.txt
-## am de facut si un venv
-## type hints peste tot
 ## la final ar fi good practice sa fac si un __init__.py si un devcontainer
+
 if __name__ == "__main__":
     house_facade = HouseFacade()
     houses = house_facade.build_houses("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
@@ -36,9 +29,11 @@ if __name__ == "__main__":
     
     self_sufficiency_builder = SelfSufficiencyBuilder()
     self_sufficiency_house = self_sufficiency_builder.build_self_sufficiency(houses, power_estimated)
-    
-    appliance_facade = ApplianceFacade()
+
+    house_with_appliances_facade = HouseWithAppliancesFacade()
     #appliances = appliance_facade.process_appliances_pipeline("CSVs/appliance_consumption_data.csv", houses, export_path="CSVs/appliance_consumption_preprocessed.csv")
-    appliances = appliance_facade.builder.build("CSVs/appliance_consumption_preprocessed.csv")
-    for appliance in appliances[:1]:
-        appliance_facade.show_consumption_along_with_sigmoid_values(appliance)
+    houses_with_appliances = house_with_appliances_facade.builder.build("CSVs/appliance_consumption_preprocessed.csv")
+    for house in houses_with_appliances[:3]:
+        house_with_appliances_facade.plot_appliances_and_on_off_values(house)
+        list_of_appliances = house_with_appliances_facade.determine_appliances_with_highest_consumption(house)
+        print(list_of_appliances)
