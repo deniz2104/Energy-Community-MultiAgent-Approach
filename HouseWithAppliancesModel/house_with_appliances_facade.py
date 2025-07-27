@@ -72,3 +72,8 @@ class HouseWithAppliancesFacade:
 
     def show_histogram(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
         self.determine_which_appliance_consumes_more.plot_sigmoid_distribution_bins(house_with_appliances)
+
+    def test(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
+        off_values_per_appliance = self.data_labeler.count_off_values_per_appliance(self.see_on_off_patterns(house_with_appliances))
+        total_off_values = self.data_labeler.gather_all_off_values(self.see_on_off_patterns(house_with_appliances))
+        self.determine_which_appliance_consumes_more.determine_appliances_with_highest_consumption(house_with_appliances, off_values_per_appliance, total_off_values)

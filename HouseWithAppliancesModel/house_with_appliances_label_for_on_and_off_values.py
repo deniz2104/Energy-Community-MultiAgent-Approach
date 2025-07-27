@@ -57,3 +57,16 @@ class HouseWithAppliancesOnOffValues:
                     hours_count[hour] += 1
             hour_dictionary[appliance_type] = {hour: count for hour, count in hours_count.items() if count > 0}
         return hour_dictionary
+
+    def count_off_values_per_appliance(self, dictionary_with_on_off_values: dict[str, dict[int, int]]) -> dict[str, int]:
+        off_values_count = {}
+        for appliance_type, pairs in dictionary_with_on_off_values.items():
+            off_count = sum(1 for _, state in pairs if state == 0)
+            off_values_count[appliance_type] = off_count
+        return off_values_count
+
+    def gather_all_off_values(self, dictionary_with_on_off_values: dict[str, dict[int, int]]) -> list[int]:
+        all_off_values = []
+        for _, pairs in dictionary_with_on_off_values.items():
+            all_off_values.extend([value for _, value in pairs if value == 0])
+        return all_off_values

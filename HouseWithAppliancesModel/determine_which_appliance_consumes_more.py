@@ -103,10 +103,35 @@ class DetermineWhichApplianceConsumesMore:
         
         return off_pairs, on_pairs
 
+
     def determine_threshold(self, house_with_appliances: HouseWithAppliancesConsumption) -> float:
         all_consumption_values = self._gather_all_appliances_consumption_from_a_house(house_with_appliances)
         sigmoid_values = self._determine_sigmoid_values(all_consumption_values)
         sigmoid_values = self._determine_top_margin_for_sigmoid(house_with_appliances, sigmoid_values)
 
         off_pairs, _ = self._determine_pairs_of_active_and_inactive(sigmoid_values)
-        return off_pairs[-1]
+        off_values_from_off_pairs, _ = self._determine_pairs_of_active_and_inactive(np.array(off_pairs))
+        return off_values_from_off_pairs[-1]
+
+    def determine_appliances_with_highest_consumption(self, house_with_appliances: HouseWithAppliancesConsumption, off_values_per_appliance : dict[str,int], off_values_list : list[float]) -> list[str]:
+        all_consumption_values = self._gather_all_appliances_consumption_from_a_house(house_with_appliances)
+        sigmoid_values = self._determine_sigmoid_values(all_consumption_values)
+        threshold = self.determine_threshold(house_with_appliances)
+
+        if len(house_with_appliances.appliance_consumption.keys()) == 1:
+            return list(house_with_appliances.appliance_consumption.keys())[0]
+        
+        appliances_list = []
+        for appliance_name, consumption in house_with_appliances.appliance_consumption.items():
+            count = 0
+            for _, value in consumption:
+                if value in all_consumption_values:
+                    index = np.where(all_consumption_values == value)[0][0]
+                    sigmoid_value = sigmoid_values[index]
+                    if sigmoid_value > threshold: 
+                        count += 1
+            print(count)
+            print(len(consumption))
+            print(len(consumption)-(off_values_per_appliance[appliance_name]))
+            if count > len(consumption) - off_values_per_appliance[appliance_name]: ## aici trebuie sa ma gandesc 
+                appliances_list.append(appliance_name)
