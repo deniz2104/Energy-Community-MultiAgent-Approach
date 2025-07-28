@@ -64,9 +64,17 @@ class HouseWithAppliancesOnOffValues:
             off_count = sum(1 for _, state in pairs if state == 0)
             off_values_count[appliance_type] = off_count
         return off_values_count
+    
+    def gather_off_values_per_appliance(self, house_with_appliances: dict[str, dict[str, float]]) -> dict[str, list[int]]:
+        off_values_per_appliance = {}
+        values=[]
+        for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
+            values=[]
+            consumption_values = np.array([pair[1] for pair in pairs]).reshape(-1, 1)
+            scaler, kmeans, centroids = self._cluster_data(consumption_values)
 
-    def gather_all_off_values(self, dictionary_with_on_off_values: dict[str, dict[int, int]]) -> list[int]:
-        all_off_values = []
-        for _, pairs in dictionary_with_on_off_values.items():
-            all_off_values.extend([value for _, value in pairs if value == 0])
-        return all_off_values
+            off_label = np.argmin(centroids)
+
+            values.extend(self._filter_by_cluster(list(set(pairs[:len(pairs)])), kmeans, scaler, off_label))
+            off_values_per_appliance[appliance_type] = np.unique(np.trim_zeros([pair[1] for pair in values]))
+        return off_values_per_appliance 

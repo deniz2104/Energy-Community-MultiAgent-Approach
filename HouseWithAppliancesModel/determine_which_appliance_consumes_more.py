@@ -15,8 +15,25 @@ class DetermineWhichApplianceConsumesMore:
         for _, consumption in house_with_appliances.appliance_consumption.items():
             for _, value in consumption:
                 all_consumption_values.append(value)
-        return np.unique(np.trim_zeros(np.sort(np.array(all_consumption_values))))
+        return np.unique(np.trim_zeros(np.sort(all_consumption_values)))
+
+
+    def _gather_consumption_values_for_each_appliance(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, np.ndarray]:
+        consumption_values = {}
+        for appliance_name, consumption in house_with_appliances.appliance_consumption.items():
+            values = np.array([value for _, value in consumption])
+            consumption_values[appliance_name] = np.unique(np.trim_zeros(np.sort(values)))
+        return consumption_values
     
+    def eliminate_off_values_from_each_appliance(self,house_with_appliances:HouseWithAppliancesConsumption,off_consumption_values: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
+        consumption_values = self._gather_consumption_values_for_each_appliance(house_with_appliances)
+        for appliance_name, values in consumption_values.items():
+            if appliance_name in off_consumption_values:
+                off_values_per_appliance = off_consumption_values[appliance_name]
+                mask = ~np.isin(values, off_values_per_appliance)
+                consumption_values[appliance_name] = values[mask]
+        return consumption_values
+
     def _sigmoid(self, x: np.ndarray) -> np.ndarray: return 1 / (1 + np.exp(-x))
 
     def _determine_sigmoid_values(self, all_consumption_values: np.ndarray) -> np.ndarray:
@@ -24,13 +41,15 @@ class DetermineWhichApplianceConsumesMore:
         all_consumption_values = scaler.fit_transform(all_consumption_values.reshape(-1, 1)).flatten()
         return self._sigmoid(all_consumption_values)
 
-    def show_sigmoid_values_along_with_consumption_values(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
-        all_consumption_values = self._gather_all_appliances_consumption_from_a_house(house_with_appliances)
-        sigmoid_values = self._determine_sigmoid_values(all_consumption_values)
-        for consumption, sigmoid in zip(all_consumption_values, sigmoid_values):
-            print(f"Consumption: {consumption}, Sigmoid: {sigmoid}")
+    def determine_sigmoid_values_for_each_appliance(self, consumption_values: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
+        sigmoid_values = {}
+        for appliance_name, values in consumption_values.items():
+            if len(values) > 0:
+                scaled_values = MinMaxScaler(feature_range=(-1, 1)).fit_transform(values.reshape(-1, 1)).flatten()
+                sigmoid_values[appliance_name] = self._sigmoid(scaled_values)
+        return sigmoid_values
 
-    def _gather_labels_and_counts(self, house_with_appliances: HouseWithAppliancesConsumption) -> tuple[list[str], np.ndarray]:
+    def gather_labels_and_counts(self, house_with_appliances: HouseWithAppliancesConsumption, off_values: dict[str, np.ndarray]) -> tuple[list[str], dict]:
         """
         Gather histogram bins and counts for sigmoid values distribution.
         
@@ -43,17 +62,20 @@ class DetermineWhichApplianceConsumesMore:
         
         Args:
             house_with_appliances: House consumption data object
+            off_values: Dictionary of off values per appliance
             
         Returns:
-            tuple: (bin_labels, counts) for the sigmoid distribution histogram
+            tuple: (bin_labels, counts_per_appliance) for the sigmoid distribution histogram
         """
-        all_consumption_values = self._gather_all_appliances_consumption_from_a_house(house_with_appliances)
-        sigmoid_values = self._determine_sigmoid_values(all_consumption_values)
+        all_consumption_values = self.eliminate_off_values_from_each_appliance(house_with_appliances, off_values)
+        sigmoid_values = self.determine_sigmoid_values_for_each_appliance(all_consumption_values)
         
         bin_edges = np.arange(0.2, 0.9, 0.1)
         bin_labels = [f"{edge:.1f}-{edge+0.1:.1f}" for edge in bin_edges[:-1]]
-        
-        counts, _ = np.histogram(sigmoid_values, bins=bin_edges)
+
+        counts = {}
+        for appliance_name, values in sigmoid_values.items():
+            counts[appliance_name], _ = np.histogram(values, bins=bin_edges)
         return bin_labels, counts
     def plot_sigmoid_distribution_bins(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
         bin_labels, counts = self._gather_labels_and_counts(house_with_appliances)
@@ -112,26 +134,3 @@ class DetermineWhichApplianceConsumesMore:
         off_pairs, _ = self._determine_pairs_of_active_and_inactive(sigmoid_values)
         off_values_from_off_pairs, _ = self._determine_pairs_of_active_and_inactive(np.array(off_pairs))
         return off_values_from_off_pairs[-1]
-
-    def determine_appliances_with_highest_consumption(self, house_with_appliances: HouseWithAppliancesConsumption, off_values_per_appliance : dict[str,int], off_values_list : list[float]) -> list[str]:
-        all_consumption_values = self._gather_all_appliances_consumption_from_a_house(house_with_appliances)
-        sigmoid_values = self._determine_sigmoid_values(all_consumption_values)
-        threshold = self.determine_threshold(house_with_appliances)
-
-        if len(house_with_appliances.appliance_consumption.keys()) == 1:
-            return list(house_with_appliances.appliance_consumption.keys())[0]
-        
-        appliances_list = []
-        for appliance_name, consumption in house_with_appliances.appliance_consumption.items():
-            count = 0
-            for _, value in consumption:
-                if value in all_consumption_values:
-                    index = np.where(all_consumption_values == value)[0][0]
-                    sigmoid_value = sigmoid_values[index]
-                    if sigmoid_value > threshold: 
-                        count += 1
-            print(count)
-            print(len(consumption))
-            print(len(consumption)-(off_values_per_appliance[appliance_name]))
-            if count > len(consumption) - off_values_per_appliance[appliance_name]: ## aici trebuie sa ma gandesc 
-                appliances_list.append(appliance_name)
