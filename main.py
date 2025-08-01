@@ -4,8 +4,9 @@ from PowerEstimatedModel.power_estimated_facade import PowerEstimatedFacade
 from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumptionBuilder
 from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from HouseWithAppliancesModel.house_with_appliances_facade import HouseWithAppliancesFacade
-## sa nu uit sa fac dictionar din lista de dictionare => dictionar de dictionare => sa nu mai convertesc lista la dictionar si sa pot face .get pe el
 
+## sa nu uit sa fac dictionar din lista de dictionare => dictionar de dictionare => sa nu mai convertesc lista la dictionar si sa pot face .get pe el
+## habar nu mai am de ce am scris list(set(pairs[i:i+self.chunk_size])) aici
 ## Trebuie sa generez in agent un nou profil generat
 ## Pot sa fac o scara cu un nivel de confidenta.
 ## 1 – toate appliance urile pornite
@@ -33,7 +34,3 @@ if __name__ == "__main__":
     house_with_appliances_facade = HouseWithAppliancesFacade()
     #appliances = appliance_facade.process_appliances_pipeline("CSVs/appliance_consumption_data.csv", houses, export_path="CSVs/appliance_consumption_preprocessed.csv")
     houses_with_appliances = house_with_appliances_facade.builder.build("CSVs/appliance_consumption_preprocessed.csv")
-    for house in houses_with_appliances[:3]:
-        house_with_appliances_facade.plot_appliances_and_on_off_values(house)
-        list_of_appliances = house_with_appliances_facade.determine_appliances_with_highest_consumption(house)
-        print(list_of_appliances)

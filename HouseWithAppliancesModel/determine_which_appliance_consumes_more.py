@@ -9,14 +9,23 @@ class DetermineWhichApplianceConsumesMore:
         self.top_threshold = 20
         self.number_of_clusters = 2
         self.random_state = 42
+        
+    def _sigmoid(self, x: np.ndarray) -> np.ndarray: return 1 / (1 + np.exp(-x))
 
-    def _gather_all_appliances_consumption_from_a_house(self, house_with_appliances: HouseWithAppliancesConsumption) -> np.ndarray:
-        all_consumption_values= []
-        for _, consumption in house_with_appliances.appliance_consumption.items():
-            for _, value in consumption:
-                all_consumption_values.append(value)
-        return np.unique(np.trim_zeros(np.sort(all_consumption_values)))
+    def _determine_sigmoid_values(self, all_consumption_values: np.ndarray) -> np.ndarray:
+        scaler = MinMaxScaler(feature_range=(-1, 1))
+        all_consumption_values = scaler.fit_transform(all_consumption_values.reshape(-1, 1)).flatten()
+        return self._sigmoid(all_consumption_values)
 
+    def _label_house_appliances_with_Kmeans(self,sigmoid_values: np.ndarray) -> tuple[StandardScaler, KMeans, np.ndarray]:
+        scaler = StandardScaler()
+        scaled_data = scaler.fit_transform(sigmoid_values.reshape(-1, 1))
+
+        kmeans = KMeans(n_clusters=self.number_of_clusters, random_state=self.random_state, n_init=50)
+        kmeans.fit(scaled_data)
+
+        centroids = scaler.inverse_transform(kmeans.cluster_centers_)
+        return scaler, kmeans, centroids
 
     def _gather_consumption_values_for_each_appliance(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, np.ndarray]:
         consumption_values = {}
@@ -24,8 +33,8 @@ class DetermineWhichApplianceConsumesMore:
             values = np.array([value for _, value in consumption])
             consumption_values[appliance_name] = np.unique(np.trim_zeros(np.sort(values)))
         return consumption_values
-    
-    def eliminate_off_values_from_each_appliance(self,house_with_appliances:HouseWithAppliancesConsumption,off_consumption_values: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
+
+    def eliminate_off_values_from_each_appliance(self, house_with_appliances: HouseWithAppliancesConsumption, off_consumption_values: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
         consumption_values = self._gather_consumption_values_for_each_appliance(house_with_appliances)
         for appliance_name, values in consumption_values.items():
             if appliance_name in off_consumption_values:
@@ -33,13 +42,6 @@ class DetermineWhichApplianceConsumesMore:
                 mask = ~np.isin(values, off_values_per_appliance)
                 consumption_values[appliance_name] = values[mask]
         return consumption_values
-
-    def _sigmoid(self, x: np.ndarray) -> np.ndarray: return 1 / (1 + np.exp(-x))
-
-    def _determine_sigmoid_values(self, all_consumption_values: np.ndarray) -> np.ndarray:
-        scaler = MinMaxScaler(feature_range=(-1, 1))
-        all_consumption_values = scaler.fit_transform(all_consumption_values.reshape(-1, 1)).flatten()
-        return self._sigmoid(all_consumption_values)
 
     def determine_sigmoid_values_for_each_appliance(self, consumption_values: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
         sigmoid_values = {}
@@ -77,38 +79,63 @@ class DetermineWhichApplianceConsumesMore:
         for appliance_name, values in sigmoid_values.items():
             counts[appliance_name], _ = np.histogram(values, bins=bin_edges)
         return bin_labels, counts
-    def plot_sigmoid_distribution_bins(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
-        bin_labels, counts = self._gather_labels_and_counts(house_with_appliances)
+
+    def plot_sigmoid_distribution_bins(self, house_with_appliances: HouseWithAppliancesConsumption, off_values: dict[str, np.ndarray]) -> None:
+        bin_labels, counts = self.gather_labels_and_counts(house_with_appliances, off_values)
         go.Figure(data=[go.Bar(x=bin_labels, y=counts)]).show()
 
-    def _delete_big_value_labels_from_bins(self, house_with_appliances: HouseWithAppliancesConsumption, sigmoid_values: np.ndarray) -> tuple[list[str],np.ndarray]:
+    def _delete_big_value_labels_from_bins(self, house_with_appliances: HouseWithAppliancesConsumption, sigmoid_values: dict[str, np.ndarray], off_values) -> tuple[list[str], dict]:
         labels_to_delete_from_bins = []
         count_percentage = 0
-        bin_labels, counts = self._gather_labels_and_counts(house_with_appliances)
-        for (label, count) in zip(bin_labels[::-1], counts[::-1]):
-            percentage = (count / len(sigmoid_values)) * 100
+        bin_labels, counts = self.gather_labels_and_counts(house_with_appliances, off_values)
+        
+        total_counts_per_bin = []
+        total_sigmoid_values = sum(len(values) for values in sigmoid_values.values())
+        
+        for i in range(len(bin_labels)):
+            total_count = sum(counts[appliance][i] for appliance in counts.keys())
+            total_counts_per_bin.append(total_count)
+        
+        for label, total_count in zip(bin_labels[::-1], total_counts_per_bin[::-1]):
+            percentage = (total_count / total_sigmoid_values) * 100
             if count_percentage + percentage < self.top_threshold:
                 labels_to_delete_from_bins.append(label)
+                print(f"Deleting label {label}: {total_count} values ({percentage:.2f}%), cumulative: {count_percentage + percentage:.2f}%")
             count_percentage += percentage
-        bin_labels = [label for label in bin_labels if label not in labels_to_delete_from_bins]
-        counts = [count for label, count in zip(bin_labels, counts) if label in bin_labels]
-        return bin_labels, counts
+        
+        print(f"Labels to delete (top {self.top_threshold}%): {labels_to_delete_from_bins}")
+        
+        filtered_bin_labels = [label for label in bin_labels if label not in labels_to_delete_from_bins]
+        filtered_counts = {}
+        for appliance_name in counts.keys():
+            filtered_counts[appliance_name] = [
+                counts[appliance_name][i] for i, label in enumerate(bin_labels) 
+                if label not in labels_to_delete_from_bins
+            ]
+            remaining_total = sum(filtered_counts[appliance_name])
+            original_total = sum(counts[appliance_name])
+            print(f"Appliance {appliance_name}: {remaining_total} values remaining (out of {original_total})")
+        
+        return filtered_bin_labels, filtered_counts
 
-    def _determine_top_margin_for_sigmoid(self, house_with_appliances: HouseWithAppliancesConsumption, sigmoid_values: np.ndarray) -> np.ndarray:
-        bin_labels, _ = self._delete_big_value_labels_from_bins(house_with_appliances, sigmoid_values)
+    def _determine_top_margin_for_sigmoid(self, house_with_appliances: HouseWithAppliancesConsumption, sigmoid_values: dict[str, np.ndarray], off_values) -> dict[str, np.ndarray]:
+        bin_labels, _ = self._delete_big_value_labels_from_bins(house_with_appliances, sigmoid_values, off_values)
         top_margin = float(bin_labels[-1].split("-")[1])
-        sigmoid_values = np.array([value for value in sigmoid_values if value <= top_margin])
-        return sigmoid_values
-
-    def _label_house_appliances_with_Kmeans(self,sigmoid_values: np.ndarray) -> tuple[StandardScaler, KMeans, np.ndarray]:
-        scaler = StandardScaler()
-        scaled_data = scaler.fit_transform(sigmoid_values.reshape(-1, 1))
-
-        kmeans = KMeans(n_clusters=self.number_of_clusters, random_state=self.random_state, n_init=50)
-        kmeans.fit(scaled_data)
-
-        centroids = scaler.inverse_transform(kmeans.cluster_centers_)
-        return scaler, kmeans, centroids
+        
+        print(f"Remaining bin labels after filtering: {bin_labels}")
+        print(f"Top margin determined: {top_margin}")
+        
+        filtered_sigmoid_values = {}
+        for appliance_name, values in sigmoid_values.items():
+            filtered_values = np.array([value for value in values if value <= top_margin])
+            filtered_sigmoid_values[appliance_name] = filtered_values
+            print(f"Appliance {appliance_name}: {len(filtered_values)} sigmoid values remaining (out of {len(values)} original)")
+            if len(filtered_values) > 0:
+                print(f"  Range: {filtered_values.min():.4f} to {filtered_values.max():.4f}")
+            else:
+                print(f"  No values remaining after filtering")
+        
+        return filtered_sigmoid_values
     
     def _filter_by_cluster(self, data: np.ndarray, kmeans: KMeans, scaler: StandardScaler, label: int) -> np.ndarray:
         return np.array([value for value in data if kmeans.predict(scaler.transform([[value]]))[0] == label])
@@ -126,11 +153,33 @@ class DetermineWhichApplianceConsumesMore:
         return off_pairs, on_pairs
 
 
-    def determine_threshold(self, house_with_appliances: HouseWithAppliancesConsumption) -> float:
-        all_consumption_values = self._gather_all_appliances_consumption_from_a_house(house_with_appliances)
-        sigmoid_values = self._determine_sigmoid_values(all_consumption_values)
-        sigmoid_values = self._determine_top_margin_for_sigmoid(house_with_appliances, sigmoid_values)
-
-        off_pairs, _ = self._determine_pairs_of_active_and_inactive(sigmoid_values)
-        off_values_from_off_pairs, _ = self._determine_pairs_of_active_and_inactive(np.array(off_pairs))
-        return off_values_from_off_pairs[-1]
+    def determine_threshold(self, house_with_appliances: HouseWithAppliancesConsumption, off_values: dict[str, np.ndarray] = None) -> dict[str, float]:
+        if off_values is None:
+            off_values = {}
+        
+        all_consumption_values = self.eliminate_off_values_from_each_appliance(house_with_appliances, off_values)
+        
+        sigmoid_values_per_appliance = self.determine_sigmoid_values_for_each_appliance(all_consumption_values)
+        
+        filtered_sigmoid_values = self._determine_top_margin_for_sigmoid(house_with_appliances, sigmoid_values_per_appliance, off_values)
+        
+        thresholds_per_appliance = {}
+        for appliance_name, appliance_sigmoid_values in filtered_sigmoid_values.items():
+            if len(appliance_sigmoid_values) > 0:
+                off_pairs, _ = self._determine_pairs_of_active_and_inactive(appliance_sigmoid_values)
+                if len(off_pairs) > 0:
+                    off_values_from_off_pairs, _ = self._determine_pairs_of_active_and_inactive(np.array(off_pairs))
+                    if len(off_values_from_off_pairs) > 0:
+                        thresholds_per_appliance[appliance_name] = off_values_from_off_pairs[-1]
+                        print(f"Appliance {appliance_name}: Last element of off_pairs = {off_values_from_off_pairs[-1]}")
+                    else:
+                        thresholds_per_appliance[appliance_name] = 0.0
+                        print(f"Appliance {appliance_name}: No off values found, threshold set to 0.0")
+                else:
+                    thresholds_per_appliance[appliance_name] = 0.0
+                    print(f"Appliance {appliance_name}: No off pairs found, threshold set to 0.0")
+            else:
+                thresholds_per_appliance[appliance_name] = 0.0
+                print(f"Appliance {appliance_name}: No filtered sigmoid values, threshold set to 0.0")
+        
+        return thresholds_per_appliance

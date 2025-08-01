@@ -60,15 +60,15 @@ class HouseWithAppliancesFacade:
     def show_appliance_histogram(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
         hours_distribution = self.show_hours_distribution(house_with_appliances)
         for appliance_name, hours in hours_distribution.items():
-            self.plotter.plot_appliance_histogram(hours, appliance_name)
+            self.plotter.plot_appliance_histogram(hours, appliance_name,is_night=True)
 
     def show_appliance_mean_consumption_based_on_hour(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, dict[int, float]]:
         on_off_dict = self.see_on_off_patterns(house_with_appliances)
         hours_distribution = self.show_hours_distribution(house_with_appliances)
-        return self.statistics.get_mean_consumption_by_hour(house_with_appliances, on_off_dict, hours_distribution)
+        return self.statistics.get_mean_consumption_by_hour(house_with_appliances, on_off_dict, hours_distribution,is_night=True)
 
-    def show_consumption_along_with_sigmoid_values(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
-        self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(house_with_appliances)
+    #def show_consumption_along_with_sigmoid_values(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
+    #    self.determine_which_appliance_consumes_more.show_sigmoid_values_along_with_consumption_values(house_with_appliances)
 
-    def show_histogram(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
-        self.determine_which_appliance_consumes_more.plot_sigmoid_distribution_bins(house_with_appliances)
+    #def show_histogram(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
+    #    self.determine_which_appliance_consumes_more.plot_sigmoid_distribution_bins(house_with_appliances)
