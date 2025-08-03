@@ -29,9 +29,12 @@ class HouseWithAppliancesOnOffValues:
         dictionary_with_on_off_values = {}
         for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
             off_pairs, on_pairs = [], []
+            print(type(pairs))
             
             for i in range(0, len(pairs), self.chunk_size):
-                chunk = list(set(pairs[i:i+self.chunk_size]))
+                chunk = list(np.unique((pairs[i:i+self.chunk_size])))
+                print(chunk)
+                exit()
                 consumption_values = np.array([pair[1] for pair in chunk]).reshape(-1, 1)
                 scaler, kmeans, centroids = self._cluster_data(consumption_values)
 

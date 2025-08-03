@@ -1,6 +1,6 @@
 from typing import Optional
 from .house_with_appliances_builder import HouseWithAppliancesBuilder
-from .house_with_appliances_preprocessing_data import HouseWithAppliancesPreprocessingData
+from .house_with_appliances_preprocessing_all_houses import HouseWithAppliancesPreprocessingAllHouses
 from .house_with_appliances_resampling import HouseWithAppliancesResampling
 from .house_with_appliances_plotter import HouseWithAppliancesPlotter
 from .house_with_appliances_statistics import HouseWithAppliancesStatistics
@@ -13,8 +13,8 @@ from HelperFiles.file_to_handle_absolute_path_imports import *
 class HouseWithAppliancesFacade:
     def __init__(self) -> None:
         self.builder: HouseWithAppliancesBuilder = HouseWithAppliancesBuilder()
-        self.preprocessor: HouseWithAppliancesPreprocessingData = HouseWithAppliancesPreprocessingData()
-        self.resampler: HouseWithAppliancesResampling = HouseWithAppliancesResampling()
+        self.preprocessing_data: HouseWithAppliancesPreprocessingAllHouses = HouseWithAppliancesPreprocessingAllHouses()
+        self.resampling_data: HouseWithAppliancesResampling = HouseWithAppliancesResampling()
         self.plotter: HouseWithAppliancesPlotter = HouseWithAppliancesPlotter()
         self.data_labeler: HouseWithAppliancesOnOffValues = HouseWithAppliancesOnOffValues()
         self.statistics: HouseWithAppliancesStatistics = HouseWithAppliancesStatistics()
@@ -26,15 +26,12 @@ class HouseWithAppliancesFacade:
     def process_appliances_pipeline(self, csv_path: str, houses: list[House], export_path: Optional[str] = None) -> list[HouseWithAppliancesConsumption]:
         houses_with_appliances = self.build_houses_with_appliances(csv_path)
 
-        houses_with_appliances = self.resampler.resampling_appliance_data(houses_with_appliances)
+        houses_with_appliances = self.resampling_data.resampling_appliance_data(houses_with_appliances)
 
-        self.preprocessor.matching_timestamps_between_appliance_and_house(houses_with_appliances, houses)
-
-        self.preprocessor.remove_appliances_with_zero_data(houses_with_appliances)
-
-        self.preprocessor.eliminate_anomalies_in_appliances(houses_with_appliances)
-
-        self.preprocessor.eliminate_appliances_with_five_days_of_no_consumption(houses_with_appliances)
+        self.preprocessing_data.matching_timestamps_between_appliance_and_house(houses_with_appliances, houses)
+        self.preprocessing_data.remove_appliances_with_zero_data(houses_with_appliances)
+        self.preprocessing_data.eliminate_anomalies_in_appliances(houses_with_appliances)
+        self.preprocessing_data.eliminate_appliances_with_five_days_of_no_consumption(houses_with_appliances)
 
         if export_path:
             self.builder.export_to_csv(houses_with_appliances, export_path)

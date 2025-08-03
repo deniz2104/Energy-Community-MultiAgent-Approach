@@ -6,7 +6,7 @@ class HouseWithAppliancesResampling:
         pass
 
     def resampling_appliance_data(self, houses_with_appliances: list[HouseWithAppliancesConsumption]) -> list[HouseWithAppliancesConsumption]:
-        resampled_houses_with_appliances: dict[str, HouseWithAppliancesConsumption] = {}
+        resampled_houses_with_appliances: dict[int, HouseWithAppliancesConsumption] = {}
         for house in houses_with_appliances:
             resampled_appliance = HouseWithAppliancesConsumption(house.house_id)
             resampled_houses_with_appliances[house.house_id] = resampled_appliance

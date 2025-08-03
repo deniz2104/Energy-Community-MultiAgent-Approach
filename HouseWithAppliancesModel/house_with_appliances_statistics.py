@@ -7,17 +7,16 @@ class HouseWithAppliancesStatistics:
         self.period: int = 365
 
     def get_mean_consumption_by_hour(self, houses_with_appliances: HouseWithAppliancesConsumption, dictionary_with_on_off_values: dict[str, dict[int, int]], hours_distribution: dict[str, dict[int, int]], is_night: bool = False) -> dict[str, dict[int, float]]:
-        mean_consumption_by_hour = {}
+        mean_consumption_by_hour : dict[str,dict[int,float]] = {}
 
         for appliance_type, consumption in houses_with_appliances.appliance_consumption.items():
             target_hours = NIGHT_HOURS if is_night else {h for h in range(TOTAL_HOURS) if h not in NIGHT_HOURS}
-            on_off_values_per_appliance = dict(dictionary_with_on_off_values[appliance_type])
             hours = {hour: 0 for hour in target_hours}
             target_status = 0 if is_night else 1
             
-            for timestamp, value in consumption:
+            for timestamp, value in consumption.items():
                 hour = pd.to_datetime(timestamp).hour
-                if hour in target_hours and on_off_values_per_appliance.get(timestamp) == target_status:
+                if hour in target_hours and dictionary_with_on_off_values[appliance_type].get(timestamp) == target_status:
                     hours[hour] += value
             
             mean_consumption_by_hour[appliance_type] = {
@@ -28,7 +27,7 @@ class HouseWithAppliancesStatistics:
         return mean_consumption_by_hour
 
     def determine_hours_weights(self, hour_dictionary: dict[str, dict[int, int]]) -> dict[str, dict[int, float]]:
-        hours_weights = {}
+        hours_weights : dict[str,dict[int,float]] = {}
         for appliance_type, hours in hour_dictionary.items():
             hours_weights[appliance_type] = {}
             for hour, count in hours.items():
