@@ -11,9 +11,9 @@ class HouseWithAppliancesResampling:
             resampled_appliance = HouseWithAppliancesConsumption(house.house_id)
             resampled_houses_with_appliances[house.house_id] = resampled_appliance
             
-            for appliance_type, pairs in house.appliance_consumption.items():
+            for appliance_type, consumption in house.appliance_consumption.items():
                 
-                df = pd.DataFrame(pairs, columns=['timestamp', 'consumption'])
+                df = pd.DataFrame(consumption, columns=['timestamp', 'consumption'])
                 df['timestamp'] = pd.to_datetime(df['timestamp'])
                 df.set_index('timestamp', inplace=True)
                 

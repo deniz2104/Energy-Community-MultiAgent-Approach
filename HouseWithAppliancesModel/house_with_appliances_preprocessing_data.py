@@ -16,53 +16,44 @@ class HouseWithAppliancesPreprocessingData:
         starting_time = pd.to_datetime(starting_time)
         ending_time = pd.to_datetime(ending_time)
 
-        for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
+        for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
             new_pairs: list[tuple[str, float]] = []
-            timestamps = [pair[0] for pair in pairs]
+            timestamps = list(consumption.keys())
             datatime_timestamps=pd.to_datetime(timestamps)
-            for i,(timestamp,value) in enumerate(pairs):
+            for i,(timestamp,value) in enumerate(consumption.items()):
                 if starting_time <= datatime_timestamps[i] <= ending_time:
                     new_pairs.append((timestamp, value))
             new_dictionary[appliance_type]=new_pairs
         house_with_appliances.appliance_consumption=new_dictionary    
 
     def eliminate_appliances_with_lot_of_zeros_consumption(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
-        appliances_with_enough_data = {appliance_type: consumption for appliance_type, consumption in house_with_appliances.appliance_consumption.items() if sum(value == 0 for _, value in consumption) < len(consumption)-len(consumption)//24}
+        appliances_with_enough_data = {appliance_type: consumption for appliance_type, consumption in house_with_appliances.appliance_consumption.items() if sum(value == 0 for _, value in consumption.items()) < len(consumption)-len(consumption)//24}
         house_with_appliances.appliance_consumption = appliances_with_enough_data
 
     def eliminate_anomalies_in_my_data(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
         new_consumption = {}
 
-        for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
-            timestamps = [pair[0] for pair in pairs]
-            values = [pair[1] for pair in pairs]
-            
-            temp_consumption = dict(zip(timestamps, values))
+        for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
 
             temp_house = House(house_with_appliances.house_id)
-            temp_house.consumption = temp_consumption
+            temp_house.consumption = consumption
             temp_house.eliminate_anomalies_in_data()
             
-            filtered_pairs = [(timestamp, value) for timestamp, value in temp_house.consumption.items()]
+            filtered_consumption= {timestamp:value for timestamp, value in temp_house.consumption.items()}
             
-            if filtered_pairs:
-                new_consumption[appliance_type] = filtered_pairs
+            if filtered_consumption:
+                new_consumption[appliance_type] = filtered_consumption
 
         house_with_appliances.appliance_consumption = new_consumption
 
     def eliminate_appliance_with_five_days_of_no_consumption(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
         new_consumption = {}
 
-        for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
-            timestamps = [pair[0] for pair in pairs]
-            values = [pair[1] for pair in pairs]
-            
-            temp_consumption = dict(zip(timestamps, values))
-
+        for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
             temp_house = House(house_with_appliances.house_id)
-            temp_house.consumption = temp_consumption
+            temp_house.consumption = consumption
             
             if (temp_house.remove_houses_having_zero_for_a_period_of_time(is_appliance=True)==0):
-                filtered_pairs = [(timestamp, value) for timestamp, value in temp_house.consumption.items()]
-                new_consumption[appliance_type] = filtered_pairs        
+                filtered_consumption = {timestamp:value for timestamp, value in temp_house.consumption.items()}
+                new_consumption[appliance_type] = filtered_consumption
         house_with_appliances.appliance_consumption = new_consumption

@@ -30,9 +30,12 @@ class HouseWithAppliancesOnOffValues:
         for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
             off_pairs, on_pairs = [], []
             values=list(consumption.values())
+
             for i in range(0, len(values), self.chunk_size):
-                chunk_of_values_and_timestamps = list(zip(consumption.keys(), values[i:i+self.chunk_size]))
-                consumption_values = np.array(np.unique(values[i:i+self.chunk_size])).reshape(-1, 1)
+                timestamps_chunk = list(consumption.keys())[i:i+self.chunk_size]
+                values_chunk = values[i:i+self.chunk_size]
+                chunk_of_values_and_timestamps = list(zip(timestamps_chunk, values_chunk))
+                consumption_values = np.array(np.unique(values_chunk)).reshape(-1, 1)
                 scaler, kmeans, centroids = self._cluster_data(consumption_values)
 
                 off_label = np.argmin(centroids)
@@ -40,8 +43,8 @@ class HouseWithAppliancesOnOffValues:
 
                 off_pairs.extend(self._filter_by_cluster(chunk_of_values_and_timestamps, kmeans, scaler, off_label))
                 on_pairs.extend(self._filter_by_cluster(chunk_of_values_and_timestamps, kmeans, scaler, on_label))
-
-            labeled = {timestamp: 0 for timestamp, _ in off_pairs} | {timestamp: 1 for timestamp, _ in on_pairs}
+            
+            labeled = {timestamp: 0 for (timestamp, _) in off_pairs} | {timestamp: 1 for (timestamp, _) in on_pairs}
             dictionary_with_on_off_values[appliance_type] = labeled
         return dictionary_with_on_off_values
 
@@ -50,7 +53,7 @@ class HouseWithAppliancesOnOffValues:
         for appliance_type, pairs in dictionary_with_on_off_values.items():
             hours_count= {hour: 0 for hour in range(TOTAL_HOURS)}
             
-            for timestamp, state in pairs:
+            for timestamp, state in pairs.items():
                 hour = pd.to_datetime(timestamp).hour
                 
                 if (hour in NIGHT_HOURS and state == 0) or (hour not in NIGHT_HOURS and state == 1):
@@ -61,20 +64,20 @@ class HouseWithAppliancesOnOffValues:
     def count_off_values_per_appliance(self, dictionary_with_on_off_values: dict[str, dict[int, int]]) -> dict[str, int]:
         off_values_count = {}
         for appliance_type, pairs in dictionary_with_on_off_values.items():
-            off_count = sum(1 for _, state in pairs if state == 0)
+            off_count = sum(1 for _, state in pairs.items() if state == 0)
             off_values_count[appliance_type] = off_count
         return off_values_count
     
-    def gather_off_values_per_appliance(self, house_with_appliances: dict[str, dict[str, float]]) -> dict[str, list[int]]:
+    def gather_off_values_per_appliance(self, house_with_appliances: dict[str, dict[str, float]]) -> dict[str, np.ndarray[int]]:
         off_values_per_appliance = {}
-        values=[]
         for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
             values=[]
-            consumption_values = np.array([pair[1] for pair in pairs]).reshape(-1, 1)
+            consumption_values = np.array(np.trim_zeros(list(pairs.values()))).reshape(-1, 1)
             scaler, kmeans, centroids = self._cluster_data(consumption_values)
 
             off_label = np.argmin(centroids)
 
-            values.extend(self._filter_by_cluster(list(set(pairs[:len(pairs)])), kmeans, scaler, off_label))
-            off_values_per_appliance[appliance_type] = np.unique(np.trim_zeros([pair[1] for pair in values]))
+            values.extend(self._filter_by_cluster(list(zip(pairs.keys(), pairs.values())), kmeans, scaler, off_label))
+            off_values_per_appliance[appliance_type] = np.unique([pair[1] for pair in values])
         return off_values_per_appliance 
+        

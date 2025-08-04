@@ -38,7 +38,7 @@ class HouseWithAppliancesFacade:
 
         return houses_with_appliances
 
-    def see_on_off_patterns(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, list[tuple[str, int]]]:
+    def see_on_off_patterns(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, dict[str, int]]:
         return self.data_labeler.determine_on_off_periods(house_with_appliances)
 
     def show_hours_distribution(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, dict[int, int]]:
