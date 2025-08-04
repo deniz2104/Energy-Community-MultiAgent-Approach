@@ -12,46 +12,43 @@ class HouseWithAppliancesPlotter:
         fig = make_subplots(rows=len(house_with_appliances.appliance_consumption), cols=1, shared_xaxes=True, vertical_spacing=0.03)
 
         for i, (appliance_type, consumption) in enumerate(house_with_appliances.appliance_consumption.items()):
-            timestamps = [pair[0] for pair in consumption]
-            values = [pair[1] for pair in consumption]
+            timestamps = list(consumption.keys())
+            values = list(consumption.values())
             fig.add_trace(go.Scatter(x=timestamps, y=values, name=appliance_type), row=i+1, col=1)
 
         fig.update_layout(title_text="Appliances Consumption Over Time", showlegend=False)
         fig.show()
 
-    def plot_appliances_and_on_off_values(self,house_with_appliances: HouseWithAppliancesConsumption, dictionary_with_on_off_values: dict[str, list[tuple[str, int]]]) -> None:
+    def plot_appliances_and_on_off_values(self,house_with_appliances: HouseWithAppliancesConsumption, dictionary_with_on_off_values: dict[str, dict[str, int]]) -> None:
         fig = make_subplots(rows=len(house_with_appliances.appliance_consumption)*2, cols=1, shared_xaxes=True, vertical_spacing=0.03)
 
         for i, (appliance_type, consumption) in enumerate(house_with_appliances.appliance_consumption.items()):
-            timestamps = [pair[0] for pair in consumption]
-            values = [pair[1] for pair in consumption]
+            timestamps = list(consumption.keys())
+            values = list(consumption.values())
             fig.add_trace(go.Scatter(x=timestamps, y=values, name=appliance_type), row=i*2+1, col=1)
         
         for i, (appliance_type, on_off_points) in enumerate(dictionary_with_on_off_values.items()):
-            timestamps_for_on_values = [pair[0] for pair in on_off_points if pair[1] == 1]
-            on_values = [pair[1] for pair in on_off_points if pair[1] == 1]
+            timestamps_for_on_values = [timestamp for timestamp, value in on_off_points.items() if value == 1]
+            on_values = [value for value in on_off_points.values() if value == 1]
             fig.add_trace(go.Scatter(x=timestamps_for_on_values, y=on_values, mode='markers', name=f"{appliance_type} On values", marker=dict(color='green')), row=i*2+2, col=1)
 
-            timestamps_for_off_values = [pair[0] for pair in on_off_points if pair[1]==0] 
-            off_values = [pair[1] for pair in on_off_points if pair[1]==0]
+            timestamps_for_off_values = [timestamp for timestamp, value in on_off_points.items() if value == 0]
+            off_values = [value for value in on_off_points.values() if value == 0]
             fig.add_trace(go.Scatter(x=timestamps_for_off_values, y=off_values, mode='markers', name=f"{appliance_type} Off values", marker=dict(color='red')), row=i*2+2, col=1)   
         fig.show()
     def plot_appliance_histogram(self, hours_dictionary: dict[int, int], appliance_name: Optional[str] = None, is_night: bool = False) -> None:
-        hours_list = self._prepare_hours_data(hours_dictionary, NIGHT_HOURS, TOTAL_HOURS, is_night)
+        hours_list = self._prepare_hours_data(hours_dictionary,is_night)
 
         fig = self._create_histogram_figure(hours_list, appliance_name)
         fig = self._update_figure_layout(fig, appliance_name)
         
         fig.show()
 
-    def _prepare_hours_data(self, hours_dictionary: dict[str, int], night_hours: list[int], total_hours: int, is_night: bool = False) -> list[int]:
+    def _prepare_hours_data(self, hours_dictionary: dict[str, int], is_night: bool = False) -> list[int]:
         hours_list = []
-        if is_night:
-            all_hours = [hour for hour in range(total_hours) if hour in night_hours]
-        else:
-            all_hours = [hour for hour in range(total_hours) if hour not in night_hours]
-        
-        for hour in all_hours:
+        target_hours = NIGHT_HOURS if is_night else {h for h in range(TOTAL_HOURS) if h not in NIGHT_HOURS}
+
+        for hour in target_hours:
             count = hours_dictionary.get(hour, 0)
             if count > 0:
                 hours_list.extend([hour] * int(count))
