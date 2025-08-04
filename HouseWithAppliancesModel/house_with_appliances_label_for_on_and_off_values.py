@@ -22,29 +22,26 @@ class HouseWithAppliancesOnOffValues:
         centroids = scaler.inverse_transform(kmeans.cluster_centers_)
         return scaler,kmeans,centroids
 
-    def _filter_by_cluster(self,chunk:np.ndarray,kmeans:KMeans,scaler:StandardScaler,label:int) -> list[tuple[str, float]]:
-        return [data_point for data_point in chunk if kmeans.predict(scaler.transform([[data_point[1]]]))[0] == label]
+    def _filter_by_cluster(self,chunk_of_values:np.ndarray,kmeans:KMeans,scaler:StandardScaler,label:int) -> list[tuple[str, float]]:
+        return [data_point for data_point in chunk_of_values if kmeans.predict(scaler.transform([[data_point[1]]]))[0] == label]
 
     def determine_on_off_periods(self,house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, dict[int, int]]:
         dictionary_with_on_off_values = {}
-        for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
+        for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
             off_pairs, on_pairs = [], []
-            print(type(pairs))
-            
-            for i in range(0, len(pairs), self.chunk_size):
-                chunk = list(np.unique((pairs[i:i+self.chunk_size])))
-                print(chunk)
-                exit()
-                consumption_values = np.array([pair[1] for pair in chunk]).reshape(-1, 1)
+            values=list(consumption.values())
+            for i in range(0, len(values), self.chunk_size):
+                chunk_of_values_and_timestamps = list(zip(consumption.keys(), values[i:i+self.chunk_size]))
+                consumption_values = np.array(np.unique(values[i:i+self.chunk_size])).reshape(-1, 1)
                 scaler, kmeans, centroids = self._cluster_data(consumption_values)
 
                 off_label = np.argmin(centroids)
                 on_label = np.argmax(centroids)
 
-                off_pairs.extend(self._filter_by_cluster(chunk, kmeans, scaler, off_label))
-                on_pairs.extend(self._filter_by_cluster(chunk, kmeans, scaler, on_label))
+                off_pairs.extend(self._filter_by_cluster(chunk_of_values_and_timestamps, kmeans, scaler, off_label))
+                on_pairs.extend(self._filter_by_cluster(chunk_of_values_and_timestamps, kmeans, scaler, on_label))
 
-            labeled = [(timestamp, 0) for timestamp, _ in off_pairs] + [(timestamp, 1) for timestamp, _ in on_pairs]
+            labeled = {timestamp: 0 for timestamp, _ in off_pairs} | {timestamp: 1 for timestamp, _ in on_pairs}
             dictionary_with_on_off_values[appliance_type] = labeled
         return dictionary_with_on_off_values
 
