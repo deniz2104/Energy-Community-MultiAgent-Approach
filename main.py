@@ -5,8 +5,8 @@ from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumpt
 from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from HouseWithAppliancesModel.house_with_appliances_facade import HouseWithAppliancesFacade
 
-## sa nu uit sa fac dictionar din lista de dictionare => dictionar de dictionare => sa nu mai convertesc lista la dictionar si sa pot face .get pe el
-## habar nu mai am de ce am scris list(set(pairs[i:i+self.chunk_size])) aici
+## de verificat type hints in HouseWithAppliancesModel
+## de verificat functiile care fac plot in HouseWithAppliancesModel
 ## Trebuie sa generez in agent un nou profil generat
 ## Pot sa fac o scara cu un nivel de confidenta.
 ## 1 – toate appliance urile pornite
