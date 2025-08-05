@@ -9,7 +9,7 @@ class HousePlotter(BasePlotterInterface):
     def get_data_dict(self, house: House) -> dict[str, float]:
         return house.consumption
 
-    def get_object_id(self, house: House) -> str:
+    def get_object_id(self, house: House) -> int:
         return house.house_id
 
     def get_plot_title_prefix(self) -> str:
