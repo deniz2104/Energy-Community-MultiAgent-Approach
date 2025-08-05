@@ -4,6 +4,7 @@ from .house_with_appliances_preprocessing_all_houses import HouseWithAppliancesP
 from .house_with_appliances_resampling import HouseWithAppliancesResampling
 from .house_with_appliances_plotter import HouseWithAppliancesPlotter
 from .house_with_appliances_statistics import HouseWithAppliancesStatistics
+from .house_with_appliances_manage_data_after_labeling import HouseWithAppliancesOnOffValues
 from .house_with_appliances_label_for_on_and_off_values import HouseWithAppliancesOnOffValues
 from .determine_which_appliance_consumes_more import DetermineWhichApplianceConsumesMore
 from .house_with_appliances import HouseWithAppliancesConsumption
@@ -18,6 +19,7 @@ class HouseWithAppliancesFacade:
         self.plotter: HouseWithAppliancesPlotter = HouseWithAppliancesPlotter()
         self.data_labeler: HouseWithAppliancesOnOffValues = HouseWithAppliancesOnOffValues()
         self.statistics: HouseWithAppliancesStatistics = HouseWithAppliancesStatistics()
+        self.manage_data_after_labeling: HouseWithAppliancesOnOffValues = HouseWithAppliancesOnOffValues()
         self.determine_which_appliance_consumes_more: DetermineWhichApplianceConsumesMore = DetermineWhichApplianceConsumesMore()
 
     def build_houses_with_appliances(self, csv_path: str) -> list[HouseWithAppliancesConsumption]:
@@ -43,7 +45,7 @@ class HouseWithAppliancesFacade:
 
     def show_hours_distribution(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, dict[int, int]]:
         on_off_dict = self.data_labeler.determine_on_off_periods(house_with_appliances)
-        return self.data_labeler.count_on_off_values_per_time_period(on_off_dict)
+        return self.manage_data_after_labeling.count_on_off_values_per_time_period(on_off_dict)
 
     def plot_appliances_and_on_off_values(self, house_with_appliances: HouseWithAppliancesConsumption, on_off_dict: Optional[dict[str, dict[str, int]]] = None, plot_on_off: bool = True) -> None:
         self.plotter.plot_all_appliances_consumption_over_time(house_with_appliances)

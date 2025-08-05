@@ -46,9 +46,8 @@ class DetermineWhichApplianceConsumesMore:
     def determine_sigmoid_values_for_each_appliance(self, consumption_values: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
         sigmoid_values = {}
         for appliance_name, values in consumption_values.items():
-            if len(values) > 0:
-                scaled_values = MinMaxScaler(feature_range=(-1, 1)).fit_transform(values.reshape(-1, 1)).flatten()
-                sigmoid_values[appliance_name] = self._sigmoid(scaled_values)
+            scaled_values = MinMaxScaler(feature_range=(-1, 1)).fit_transform(values.reshape(-1, 1)).flatten()
+            sigmoid_values[appliance_name] = self._sigmoid(scaled_values)
         return sigmoid_values
 
     def gather_labels_and_counts(self, house_with_appliances: HouseWithAppliancesConsumption, off_values: dict[str, np.ndarray]) -> tuple[list[str], dict]:
