@@ -45,7 +45,7 @@ class HouseWithAppliancesFacade:
         on_off_dict = self.data_labeler.determine_on_off_periods(house_with_appliances)
         return self.data_labeler.count_on_off_values_per_time_period(on_off_dict)
 
-    def plot_appliances_and_on_off_values(self, house_with_appliances: HouseWithAppliancesConsumption, on_off_dict: Optional[dict[str, list[tuple[str, int]]]] = None, plot_on_off: bool = True) -> None:
+    def plot_appliances_and_on_off_values(self, house_with_appliances: HouseWithAppliancesConsumption, on_off_dict: Optional[dict[str, dict[str, int]]] = None, plot_on_off: bool = True) -> None:
         self.plotter.plot_all_appliances_consumption_over_time(house_with_appliances)
         if plot_on_off and on_off_dict is not None:
             self.plotter.plot_appliances_and_on_off_values(house_with_appliances, on_off_dict)

@@ -8,9 +8,9 @@ from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
 
 class HouseWithAppliancesOnOffValues:
     def __init__(self):
-        self.random_state = 42 
-        self.chunk_size = 168
-        self.number_of_clusters = 2
+        self.random_state :int = 42
+        self.chunk_size :int = 168
+        self.number_of_clusters :int = 2
 
     def _cluster_data(self,data_for_kmeans : np.ndarray) -> tuple[StandardScaler, KMeans, np.ndarray]:
         scaler = StandardScaler()
@@ -26,7 +26,7 @@ class HouseWithAppliancesOnOffValues:
         return [data_point for data_point in chunk_of_values if kmeans.predict(scaler.transform([[data_point[1]]]))[0] == label]
 
     def determine_on_off_periods(self,house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, dict[int, int]]:
-        dictionary_with_on_off_values = {}
+        dictionary_with_on_off_values :dict[str, dict[int, int]] = {}
         for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
             off_pairs, on_pairs = [], []
             values=list(consumption.values())
@@ -49,7 +49,7 @@ class HouseWithAppliancesOnOffValues:
         return dictionary_with_on_off_values
 
     def count_on_off_values_per_time_period(self,dictionary_with_on_off_values:dict[str, dict[int, int]]) -> dict[str, dict[int, int]]:
-        hour_dictionary ={}
+        hour_dictionary: dict[str, dict[int, int]] = {}
         for appliance_type, pairs in dictionary_with_on_off_values.items():
             hours_count= {hour: 0 for hour in range(TOTAL_HOURS)}
             
@@ -62,14 +62,14 @@ class HouseWithAppliancesOnOffValues:
         return hour_dictionary
 
     def count_off_values_per_appliance(self, dictionary_with_on_off_values: dict[str, dict[int, int]]) -> dict[str, int]:
-        off_values_count = {}
+        off_values_count: dict[str, int] = {}
         for appliance_type, pairs in dictionary_with_on_off_values.items():
             off_count = sum(1 for _, state in pairs.items() if state == 0)
             off_values_count[appliance_type] = off_count
         return off_values_count
     
     def gather_off_values_per_appliance(self, house_with_appliances: dict[str, dict[str, float]]) -> dict[str, np.ndarray[int]]:
-        off_values_per_appliance = {}
+        off_values_per_appliance: dict[str, np.ndarray[int]] = {}
         for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
             values=[]
             consumption_values = np.array(np.trim_zeros(list(pairs.values()))).reshape(-1, 1)

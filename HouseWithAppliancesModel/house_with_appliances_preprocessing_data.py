@@ -31,7 +31,7 @@ class HouseWithAppliancesPreprocessingData:
         house_with_appliances.appliance_consumption = appliances_with_enough_data
 
     def eliminate_anomalies_in_my_data(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
-        new_consumption = {}
+        new_consumption :dict[str, dict[str, float]] = {}
 
         for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
 
@@ -47,7 +47,7 @@ class HouseWithAppliancesPreprocessingData:
         house_with_appliances.appliance_consumption = new_consumption
 
     def eliminate_appliance_with_five_days_of_no_consumption(self, house_with_appliances: HouseWithAppliancesConsumption) -> None:
-        new_consumption = {}
+        new_consumption :dict[str, dict[str, float]] = {}
 
         for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
             temp_house = House(house_with_appliances.house_id)

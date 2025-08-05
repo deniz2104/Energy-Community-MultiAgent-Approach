@@ -6,7 +6,7 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
     def __init__(self) -> None:
         super().__init__()
     def build(self, csv_path: str) -> list[SolarRadiationHouse]:
-        solar_radiation_houses = {}
+        solar_radiation_houses: dict[int, SolarRadiationHouse] = {}
         rows = super().open_csv_file(csv_path)
 
         for house_id, timestamp, solar_radiation_consumption in rows:

@@ -6,7 +6,7 @@ class PowerEstimatedBuilder(SolarRadiationHouseBuilder):
     def __init__(self) -> None:
         pass
     def build(self,csv_path: str) -> list[PowerEstimator]:
-        power_estimated_houses ={}
+        power_estimated_houses: dict[int,PowerEstimator] ={}
         rows=super().open_csv_file(csv_path)
 
         for house_id, timestamp, power_estimated in rows:

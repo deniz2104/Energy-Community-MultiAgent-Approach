@@ -25,7 +25,7 @@ class SolarRadiationHousePreprocessingData:
 
     def filtrate_solar_radiation_houses_by_number_of_values(self, solar_radiation_houses: list[SolarRadiationHouse], consumption_houses: list[House]) -> list[SolarRadiationHouse]:
         consumption_dict = {house.house_id: house for house in consumption_houses}
-        filtered_solar_radiation_houses = []
+        filtered_solar_radiation_houses :list[SolarRadiationHouse] = []
         for house in solar_radiation_houses:
             if house.house_id in consumption_dict:
                 consumption_house = consumption_dict[house.house_id]
@@ -37,7 +37,7 @@ class SolarRadiationHousePreprocessingData:
 
     def filtrate_solar_radiation_houses_having_zeros_for_a_period_of_time(self, solar_radiation_houses: list[SolarRadiationHouse], consumption_houses: list[House]) -> list[SolarRadiationHouse]:
         consumption_dict = {house.house_id: house for house in consumption_houses}
-        filtered_solar_radiation_houses = []
+        filtered_solar_radiation_houses : list[SolarRadiationHouse] = []
         
         for house in solar_radiation_houses:
             if house.house_id in consumption_dict:

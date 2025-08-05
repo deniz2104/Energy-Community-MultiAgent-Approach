@@ -27,7 +27,8 @@ class SolarRadiationHouseFacade:
         solar_radiation_houses = self.preprocessor.filtrate_solar_radiation_houses_by_number_of_values(solar_radiation_houses, houses)
 
         solar_radiation_house_dict = {house.house_id: house for house in solar_radiation_houses}
-        houses_to_remove = []
+        
+        houses_to_remove : list[House] = []
         for house in houses:
             if house.house_id not in solar_radiation_house_dict:
                 houses_to_remove.append(house)

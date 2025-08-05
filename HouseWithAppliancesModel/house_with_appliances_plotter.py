@@ -45,7 +45,7 @@ class HouseWithAppliancesPlotter:
         fig.show()
 
     def _prepare_hours_data(self, hours_dictionary: dict[str, int], is_night: bool = False) -> list[int]:
-        hours_list = []
+        hours_list : list[int] = []
         target_hours = NIGHT_HOURS if is_night else {h for h in range(TOTAL_HOURS) if h not in NIGHT_HOURS}
 
         for hour in target_hours:
