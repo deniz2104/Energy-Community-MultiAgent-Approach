@@ -9,7 +9,7 @@ class ConsumptionDataProcessor:
     def _sigmoid(self, x: np.ndarray) -> np.ndarray: 
         return 1 / (1 + np.exp(-x))
 
-    def _gather_consumption_values_for_each_appliance(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, np.ndarray]:
+    def gather_consumption_values_for_each_appliance(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, np.ndarray]:
         consumption_values: dict[str, np.ndarray] = {}
         for appliance_name, consumption in house_with_appliances.appliance_consumption.items():
             values = np.array(list(consumption.values()))
@@ -17,7 +17,7 @@ class ConsumptionDataProcessor:
         return consumption_values
 
     def eliminate_off_values_from_each_appliance(self, house_with_appliances: HouseWithAppliancesConsumption, off_consumption_values: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
-        consumption_values = self._gather_consumption_values_for_each_appliance(house_with_appliances)
+        consumption_values = self.gather_consumption_values_for_each_appliance(house_with_appliances)
         for appliance_name, values in consumption_values.items():
             if appliance_name in off_consumption_values:
                 off_values_per_appliance = off_consumption_values[appliance_name]
