@@ -4,7 +4,7 @@ from PowerEstimatedModel.power_estimated_facade import PowerEstimatedFacade
 from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumptionBuilder
 from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficiencyBuilder
 from HouseWithAppliancesModel.house_with_appliances_facade import HouseWithAppliancesFacade
-
+from RecommendationModel.recommend_based_on_sigmoid_threshold import RecommendationModel
 ##TODO:!!de facut o functie care determina de cate ori voi actiona si voi da recomandare (de facut pe approach ul cu sigmoid si pe approach ul cu consumul mediu)
 ##TODO:!!la aia cu consumul mediu sa elimin valorile off si apoi facem media si determinam
 
@@ -35,5 +35,8 @@ if __name__ == "__main__":
     house_with_appliances_facade = HouseWithAppliancesFacade()
     #appliances = appliance_facade.process_appliances_pipeline("CSVs/appliance_consumption_data.csv", houses, export_path="CSVs/appliance_consumption_preprocessed.csv")
     houses_with_appliances = house_with_appliances_facade.builder.build("CSVs/appliance_consumption_preprocessed.csv")
-    for house in houses_with_appliances[:1]:
-        house_with_appliances_facade.show_sigmoid_distribution(house)
+    recommendation_model = RecommendationModel()
+    for house in houses_with_appliances:
+        appliance_thresholds = house_with_appliances_facade.determine_appliance_thresholds(house)
+        recommendation = recommendation_model.make_dictionary_of_percentages_per_hour(house, appliance_thresholds)
+        print(recommendation)
