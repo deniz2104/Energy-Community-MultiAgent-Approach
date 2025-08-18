@@ -45,6 +45,6 @@ class ManagerAgent(Agent):
         self.current_recommendation=self.make_recommendation()
         self.recommendation_history.append(self.current_recommendation)
 
-        if self.model.step_count > 0:
+        if len(self.model.simulation_data) > 0:
             last_feedback = self.model.simulation_data[-1]["followed_recommendation"]
             self.receive_feedback(last_feedback)

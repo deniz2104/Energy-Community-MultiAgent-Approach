@@ -34,17 +34,22 @@ class HouseModel(Model):
 
     def step(self):
         manager_agents= [agent for agent in self.schedule.agents if isinstance(agent, ManagerAgent)]
-        self.agents.do("step",agents=manager_agents)
+        for manager in manager_agents:
+            manager.step()
 
-        recommendation = manager_agents[0].current_recommendation
+        recommendations = manager_agents[0].current_recommendation
         house_agents= [agent for agent in self.schedule.agents if isinstance(agent, HouseAgent)]
         for house in house_agents:
-            house.get_recommendation(recommendation)
+            house_recommendation = recommendations.get(house.unique_id, "maintain")
+            house.get_recommendation(house_recommendation)
             
-        self.agents.do("step",agents=house_agents)
+        for house in house_agents:
+            house.step()
+            
         self.step_count += 1
-        self.simulation_data.append({
-            "step": self.step_count,
-            "recommendation": recommendation,
-            "followed_recommendation": manager_agents[0].feedback_history[-1]
-        })
+        if manager_agents[0].feedback_history:
+            self.simulation_data.append({
+                "step": self.step_count,
+                "recommendation": recommendations,
+                "followed_recommendation": manager_agents[0].feedback_history[-1]
+            })
