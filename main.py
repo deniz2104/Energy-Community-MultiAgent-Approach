@@ -34,7 +34,6 @@ if __name__ == "__main__":
     self_sufficiency_house = self_sufficiency_builder.build_self_sufficiency(houses, power_estimated)
 
     house_with_appliances_facade = HouseWithAppliancesFacade()
-    #appliances = appliance_facade.process_appliances_pipeline("CSVs/appliance_consumption_data.csv", houses, export_path="CSVs/appliance_consumption_preprocessed.csv")
     houses_with_appliances = house_with_appliances_facade.builder.build("CSVs/appliance_consumption_preprocessed.csv")
     
     recommendation_model_facade = RecommendationFacade()

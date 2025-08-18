@@ -1,4 +1,3 @@
-import time
 import csv
 from database_house import DatabaseHandler
 from HelperFiles.file_to_get_house_ids import house_ids
