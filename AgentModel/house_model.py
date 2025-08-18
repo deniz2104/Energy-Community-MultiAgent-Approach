@@ -1,21 +1,31 @@
 from mesa import Model,time
 import random
-from .house_agent import HouseAgent
-from .manager_agent import ManagerAgent
+from AgentModel.house_agent import HouseAgent
+from AgentModel.manager_agent import ManagerAgent
+
 class HouseModel(Model):
-    def __init__(self,n,house_obj,seed=None):
+    def __init__(self,n,house_obj,recommendation_dictionaries=None,seed=None):
         super().__init__(seed=seed)
         self.num_agents = n
         self.random = random.Random(seed)
         self.step_count=0
         self.schedule = time.RandomActivation(self)
         self.simulation_data = []
+        self.recommendation_dictionaries = recommendation_dictionaries if recommendation_dictionaries is not None else {}
         self.create_manager()
         self.create_agents(house_obj)
 
     def create_agents(self,house_obj):
         for house in house_obj:
-            agent = HouseAgent(model=self, unique_id=house.house_id, house_obj=house, agent_type="ideal")
+            house_recommendation_dict = self.recommendation_dictionaries.get(house.house_id, {})
+            
+            agent = HouseAgent(
+                unique_id=house.house_id,
+                model=self, 
+                house_obj=house, 
+                agent_type="ideal",
+                recommendation_dictionary=house_recommendation_dict
+            )
             self.schedule.add(agent)
 
     def create_manager(self):
@@ -30,6 +40,7 @@ class HouseModel(Model):
         house_agents= [agent for agent in self.schedule.agents if isinstance(agent, HouseAgent)]
         for house in house_agents:
             house.get_recommendation(recommendation)
+            
         self.agents.do("step",agents=house_agents)
         self.step_count += 1
         self.simulation_data.append({

@@ -52,17 +52,21 @@ class RecommendationModel:
         whole_timestamp = self.set_timestamp(house_with_appliances)
         self.set_threshold(appliance_thresholds)
         dictionary_of_consumption_along_with_sigmoid = self.set_dictionary_of_consumption_along_with_sigmoid(house_with_appliances)
-        count_recommendation = 0
-        
+        recommendation_dictionary: dict[int, int] = {}
+        count=0
+
         for timestamp in whole_timestamp:
             count_of_appliances = self._count_appliances_values_above_threshold(
                 timestamp, house_with_appliances, appliance_thresholds, dictionary_of_consumption_along_with_sigmoid
             )
                     
             if count_of_appliances >= self.threshold:
-                count_recommendation += 1
-        return count_recommendation
-    
+                recommendation_dictionary[count] = 1
+            else : recommendation_dictionary[count] = 0
+            count += 1
+            
+        return recommendation_dictionary
+
     def see_hour_distribution_per_given_recommendation(self,house_with_appliances,appliance_thresholds):
         hour_distribution = {hour: 0 for hour in range(TOTAL_HOURS)}
         total_hour_distribution = {hour: 0 for hour in range(TOTAL_HOURS)}

@@ -1,7 +1,6 @@
-from typing import Optional
-from .recommendation_based_on_sigmoid_threshold import RecommendationModel
-from .recommendation_analytics import RecommendationAnalytics
-from .recommendation_plotter import RecommendationPlotter
+from RecommendationModel.recommendation_based_on_sigmoid_threshold import RecommendationModel
+from RecommendationModel.recommendation_analytics import RecommendationAnalytics
+from RecommendationModel.recommendation_plotter import RecommendationPlotter
 
 class RecommendationFacade:
     def __init__(self) -> None:
@@ -9,7 +8,7 @@ class RecommendationFacade:
         self.analytics: RecommendationAnalytics = RecommendationAnalytics()
         self.plotter: RecommendationPlotter = RecommendationPlotter()
 
-    def generate_recommendations(self, house_with_appliances, appliance_thresholds) -> int:
+    def generate_recommendations(self, house_with_appliances, appliance_thresholds) -> dict[int,int]:
         return self.recommendation_model.give_recommendation_based_on_sigmoid_threshold(house_with_appliances, appliance_thresholds)
 
     def get_recommendation_percentage(self, house_with_appliances, appliance_thresholds) -> float:

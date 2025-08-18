@@ -1,7 +1,9 @@
 from mesa import Agent
-from .house_agent import HouseAgent
+
 class ManagerAgent(Agent):
+
 ## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
+    
     def __init__(self,unique_id,model):
         super().__init__(unique_id,model)
 
@@ -13,25 +15,35 @@ class ManagerAgent(Agent):
         current_step=self.model.step_count
         current_week= current_step // 168
 
+        from AgentModel.house_agent import HouseAgent
         houses = [agent for agent in self.model.schedule.agents if isinstance(agent, HouseAgent)]
+        recommendations = {}
+        
         for house in houses:
-            current_consumption = house.base_consumption[current_step]
+            current_consumption = house.reference_consumption[current_step]
             weekly_avg = house.weekly_consumption[current_week]
 
-            if current_consumption > 1.1*weekly_avg:
-                house.current_recommendation = "increase"
-            elif current_consumption < 0.9*weekly_avg:
-                house.current_recommendation = "decrease"
+            if house.recommendation_dictionary.get(current_step,0)==1:
+                if current_consumption > 1.1 * weekly_avg:
+                    recommendation = "increase"
+                elif current_consumption < 0.9 * weekly_avg:
+                    recommendation = "decrease"
+                else:
+                    recommendation = "maintain"
             else:
-                house.current_recommendation = "maintain"
+                recommendation = "maintain"
+            
+            house.current_recommendation = recommendation
+            recommendations[house.unique_id] = recommendation
+        
+        return recommendations
 
     def receive_feedback(self,follow_recommendation):
         self.feedback_history.append(1 if follow_recommendation else 0)
     
     def step(self):
-        recommendation = self.make_recommendation()
-        self.current_recommendation=recommendation
-        self.recommendation_history.append(recommendation)
+        self.current_recommendation=self.make_recommendation()
+        self.recommendation_history.append(self.current_recommendation)
 
         if self.model.step_count > 0:
             last_feedback = self.model.simulation_data[-1]["followed_recommendation"]
