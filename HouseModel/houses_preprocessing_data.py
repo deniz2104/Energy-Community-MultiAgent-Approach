@@ -1,9 +1,9 @@
-from .house_preprocessing_data import HousePreprocessingData
-from .house import House
+from HouseModel.house_preprocessing_data import HousePreprocessingData
+from HouseModel.house import House
 
 class HousesPreprocessingData:
     def __init__(self) -> None:
-        self.house_preprocessing: HousePreprocessingData = HousePreprocessingData()
+        self.house_preprocessing = HousePreprocessingData()
 
     def remove_houses_with_few_data_points(self, houses: list[House]) -> list[House]:
         houses_with_enough_data = [house for house in houses if len(house.consumption) >= 50000]

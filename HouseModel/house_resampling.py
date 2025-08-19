@@ -1,4 +1,4 @@
-from .house import House
+from HouseModel.house import House
 from collections import OrderedDict
 import pandas as pd
 

@@ -1,5 +1,5 @@
 import csv
-from .house import House
+from HouseModel.house import House
 
 class HouseBuilder():
     def __init__(self) -> None:
@@ -7,7 +7,7 @@ class HouseBuilder():
         
     def open_csv_file(self, csv_path: str) -> list[tuple[int, str, float]]:
         results: list[tuple[int, str, float]] = []
-        with open(csv_path, 'r', newline='') as file:
+        with open(csv_path, 'r', newline='', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 house_id = int(row['HouseID'])
@@ -28,7 +28,7 @@ class HouseBuilder():
         return list(houses.values())
 
     def export_to_csv(self, houses: list[House], file_path: str) -> None:
-         with open(file_path, 'w', newline='') as file:
+        with open(file_path, 'w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
             for house in houses:

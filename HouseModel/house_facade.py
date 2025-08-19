@@ -1,19 +1,19 @@
 from typing import Optional
-from .house_builder import HouseBuilder
-from .houses_preprocessing_data import HousesPreprocessingData
-from .house_resampling import HouseResampler
-from .house_plotter import HousePlotter
-from .house_useful_stats import HouseStatistics
-from .house import House
+from HouseModel.house_builder import HouseBuilder
+from HouseModel.houses_preprocessing_data import HousesPreprocessingData
+from HouseModel.house_resampling import HouseResampler
+from HouseModel.house_plotter import HousePlotter
+from HouseModel.house_useful_stats import HouseStatistics
+from HouseModel.house import House
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class HouseFacade:
     def __init__(self) -> None:
-        self.builder: HouseBuilder = HouseBuilder()
-        self.houses_preprocessor: HousesPreprocessingData = HousesPreprocessingData()
-        self.resampler: HouseResampler = HouseResampler()
-        self.plotter: HousePlotter = HousePlotter()
-        self.statistics: HouseStatistics = HouseStatistics()
+        self.builder = HouseBuilder()
+        self.houses_preprocessor = HousesPreprocessingData()
+        self.resampler = HouseResampler()
+        self.plotter = HousePlotter()
+        self.statistics = HouseStatistics()
 
     def build_houses(self, csv_path: str) -> list[House]:
         return self.builder.build(csv_path)

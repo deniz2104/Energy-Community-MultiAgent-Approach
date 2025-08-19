@@ -1,5 +1,5 @@
 from typing import Optional
-from .house import House
+from HouseModel.house import House
 
 class HouseHelperFile:
     def __init__(self) -> None:

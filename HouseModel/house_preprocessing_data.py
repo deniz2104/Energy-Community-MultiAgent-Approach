@@ -3,7 +3,7 @@ from sklearn.ensemble import IsolationForest
 from scipy.stats.mstats import winsorize
 import numpy as np
 from typing import Optional
-from .house import House
+from HouseModel.house import House
 
 class HousePreprocessingData:
     def __init__(self) -> None:
@@ -15,7 +15,7 @@ class HousePreprocessingData:
         days_diff = ending_date - pd.Timedelta(days=(ending_date-starting_date).days - 365)
         if days_diff:
             timestamps_period = [t for t in pd.to_datetime(list(house.consumption.keys())) if t >= days_diff]
-            self.consumption = {t: v for t, v in house.consumption.items() if pd.Timestamp(t) not in timestamps_period}
+            house.consumption = {t: v for t, v in house.consumption.items() if pd.Timestamp(t) not in timestamps_period}
 
     def eliminate_anomalies_in_data(self, house: House) -> None:
         df = pd.DataFrame(list(house.consumption.items()), columns=['Timestamp', 'Consumption'])
@@ -32,7 +32,7 @@ class HousePreprocessingData:
         original_data = list(house.consumption.values())
         data = winsorize(np.array(original_data), limits=[0, 0.003])
         data = data.tolist()
-        house.consumption = {k: v for k, v in zip(house.consumption.keys(), data)}
+        house.consumption = dict(zip(house.consumption.keys(), data))
 
     def count_zero_for_house(self, house: House) -> int:
         return sum(value == 0 for value in house.consumption.values())

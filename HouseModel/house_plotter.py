@@ -1,16 +1,13 @@
 from typing import Optional
 from HelperFiles.base_plotter_interface import BasePlotterInterface
-from .house import House
+from HouseModel.house import House
 
 class HousePlotter(BasePlotterInterface):
-    def __init__(self) -> None:
-        super().__init__()
+    def get_data_dict(self, data_object: House) -> dict[str, float]:
+        return data_object.consumption
 
-    def get_data_dict(self, house: House) -> dict[str, float]:
-        return house.consumption
-
-    def get_object_id(self, house: House) -> int:
-        return house.house_id
+    def get_object_id(self, data_object: House) -> int:
+        return data_object.house_id
 
     def get_plot_title_prefix(self) -> str:
         return "House ID"

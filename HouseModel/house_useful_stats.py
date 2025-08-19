@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import Optional
-from .house import House
+from HouseModel.house import House
 
 class HouseStatistics:
     def __init__(self) -> None:
