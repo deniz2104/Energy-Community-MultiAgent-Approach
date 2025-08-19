@@ -1,10 +1,8 @@
 from HouseModel.house_builder import HouseBuilder
-from .solar_radiation_house import SolarRadiationHouse
+from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
 from HelperFiles.file_to_handle_absolute_path_imports import *
 import csv
 class SolarRadiationHouseBuilder(HouseBuilder) :
-    def __init__(self) -> None:
-        super().__init__()
     def build(self, csv_path: str) -> list[SolarRadiationHouse]:
         solar_radiation_houses: dict[int, SolarRadiationHouse] = {}
         rows = super().open_csv_file(csv_path)
@@ -15,7 +13,7 @@ class SolarRadiationHouseBuilder(HouseBuilder) :
             solar_radiation_houses[house_id].add_solar_radiation(timestamp, solar_radiation_consumption)
         return list(solar_radiation_houses.values())
     def export_to_csv_solar_radiation(self, solar_radiation_houses: list[SolarRadiationHouse], file_path: str) -> None:
-        with open(file_path, 'w', newline='') as file:
+        with open(file_path, 'w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
             for house in solar_radiation_houses:

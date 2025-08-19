@@ -1,14 +1,15 @@
 import pandas as pd
 from HouseModel.house_helper_file import HouseHelperFile
 from HouseModel.house import House
-from .solar_radiation_house import SolarRadiationHouse
+from typing import Final
+from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
 
 class SolarRadiationHousePreprocessingData:
     def __init__(self) -> None:
-        self.threshold: float = 0.95
-        
-    def _change_timing_for_solar_radiation_data(self, house: House) -> None:
-        if house.house_id != self.house_id:
+        self.threshold: Final[float] = 0.95
+
+    def _change_timing_for_solar_radiation_data(self, house: House, solar_radiation_house: SolarRadiationHouse) -> None:
+        if house.house_id != solar_radiation_house.house_id:
             return
 
         helper_method = HouseHelperFile()
@@ -18,8 +19,8 @@ class SolarRadiationHousePreprocessingData:
             starting_time = pd.to_datetime(starting_time)
             ending_time = pd.to_datetime(ending_time)
         
-            self.solar_radiation = {
-                t: v for t, v in self.solar_radiation.items()
+            solar_radiation_house.solar_radiation = {
+                t: v for t, v in solar_radiation_house.solar_radiation.items()
                 if starting_time <= pd.to_datetime(t) <= ending_time
         }
 
@@ -53,6 +54,6 @@ class SolarRadiationHousePreprocessingData:
         for solar_house in solar_houses:
             if solar_house.house_id in consumption_dict:
                 consumption_house = consumption_dict[solar_house.house_id]
-                self._change_timing_for_solar_radiation_data(consumption_house)
+                self._change_timing_for_solar_radiation_data(consumption_house, solar_house)
             else:
                 print(f"No matching consumption data for solar house {solar_house.house_id}")

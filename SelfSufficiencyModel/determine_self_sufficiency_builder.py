@@ -1,4 +1,4 @@
-from .determine_self_sufficiency import SelfSufficiency
+from SelfSufficiencyModel.determine_self_sufficiency import SelfSufficiency
 from HouseModel.house import House
 from PowerEstimatedModel.power_estimated import PowerEstimator
 

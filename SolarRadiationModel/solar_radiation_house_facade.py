@@ -1,18 +1,18 @@
 from typing import Optional
 from HouseModel.house_builder import HouseBuilder
 from HouseModel.house import House
-from .solar_radiation_house_builder import SolarRadiationHouseBuilder
-from .solar_radiation_house_preprocessing_data import SolarRadiationHousePreprocessingData
-from .solar_radiation_plotter import SolarRadiationPlotter
-from .solar_radiation_house import SolarRadiationHouse
+from SolarRadiationModel.solar_radiation_house_builder import SolarRadiationHouseBuilder
+from SolarRadiationModel.solar_radiation_house_preprocessing_data import SolarRadiationHousePreprocessingData
+from SolarRadiationModel.solar_radiation_plotter import SolarRadiationPlotter
+from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class SolarRadiationHouseFacade:
     def __init__(self) -> None:
-        self.builder: SolarRadiationHouseBuilder = SolarRadiationHouseBuilder()
-        self.preprocessor: SolarRadiationHousePreprocessingData = SolarRadiationHousePreprocessingData()
-        self.house_builder: HouseBuilder = HouseBuilder()
-        self.plotter: SolarRadiationPlotter = SolarRadiationPlotter()
+        self.builder = SolarRadiationHouseBuilder()
+        self.preprocessor = SolarRadiationHousePreprocessingData()
+        self.house_builder = HouseBuilder()
+        self.plotter = SolarRadiationPlotter()
 
     def build_solar_radiation_data(self, csv_path: str) -> list[SolarRadiationHouse]:
         return self.builder.build(csv_path)
