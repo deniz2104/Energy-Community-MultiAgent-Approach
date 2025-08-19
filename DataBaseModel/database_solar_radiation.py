@@ -1,12 +1,6 @@
 import csv
-import time
 from database_house import DatabaseHandler
 class SolarRadiationDatabaseHandler(DatabaseHandler):
-
-    def __init__(self) -> None:
-        pass
-    def read_database(self, database_path: str) -> None:
-        super().read_database(database_path)
     def extract_solar_radiation_data(self) -> list[tuple]:
         self.cursor.execute("""
             SELECT h.ID,WD.EpochTime, WD.TotalSolarConsumption
@@ -21,16 +15,13 @@ class SolarRadiationDatabaseHandler(DatabaseHandler):
             ORDER BY h.ID;
         """)
         rows= self.cursor.fetchall()
-        return super().convert_rows_to_correct_format(rows)
+        return rows
 
-    def write_to_csv(self, data: list[tuple], file_path: str) -> None:
-        with open(file_path, 'w', newline='') as file:
+    def write_to_csv(self, rows: list[tuple], file_path: str) -> None:
+        with open(file_path, 'w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
-            writer.writerows(data)
-
-    def close_connection(self) -> None:
-        super().close_connection()
+            writer.writerows(rows)
 
 if __name__ == "__main__":
     handler=SolarRadiationDatabaseHandler()

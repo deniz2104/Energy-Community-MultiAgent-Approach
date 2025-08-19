@@ -1,10 +1,11 @@
+from typing import Optional
 from mesa import Model,time
 import random
 from AgentModel.house_agent import HouseAgent
 from AgentModel.manager_agent import ManagerAgent
 
 class HouseModel(Model):
-    def __init__(self,n,house_obj,recommendation_dictionaries=None,seed=None):
+    def __init__(self,n,house_obj,recommendation_dictionaries: Optional[dict[int,int]]=None,seed: Optional[int]=None)-> None:
         super().__init__(seed=seed)
         self.num_agents = n
         self.random = random.Random(seed)
@@ -15,7 +16,7 @@ class HouseModel(Model):
         self.create_manager()
         self.create_agents(house_obj)
 
-    def create_agents(self,house_obj):
+    def create_agents(self,house_obj)-> None:
         for house in house_obj:
             house_recommendation_dict = self.recommendation_dictionaries.get(house.house_id, {})
             
@@ -28,16 +29,16 @@ class HouseModel(Model):
             )
             self.schedule.add(agent)
 
-    def create_manager(self):
+    def create_manager(self)-> None:
         manager_agent = ManagerAgent(unique_id=1,model=self)
         self.schedule.add(manager_agent)
 
-    def step(self):
+    def step(self) -> None:
         manager_agents= [agent for agent in self.schedule.agents if isinstance(agent, ManagerAgent)]
         for manager in manager_agents:
             manager.step()
 
-        recommendations = manager_agents[0].current_recommendation
+        recommendations :dict[int,int]= manager_agents[0].current_recommendation
         house_agents= [agent for agent in self.schedule.agents if isinstance(agent, HouseAgent)]
         for house in house_agents:
             house_recommendation = recommendations.get(house.unique_id, "maintain")

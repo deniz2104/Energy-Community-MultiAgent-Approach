@@ -1,3 +1,4 @@
+from typing import Optional
 from mesa import Agent
 
 class ManagerAgent(Agent):
@@ -7,11 +8,11 @@ class ManagerAgent(Agent):
     def __init__(self,unique_id,model):
         super().__init__(unique_id,model)
 
-        self.current_recommendation = None
-        self.recommendation_history = []
+        self.current_recommendation : Optional[str] = None
+        self.recommendation_history :list[int,dict[int,int]] = []
         self.feedback_history = []
 
-    def make_recommendation(self):
+    def make_recommendation(self)->dict[int,int]:
         current_step=self.model.step_count
         current_week= current_step // 168
 
@@ -38,11 +39,11 @@ class ManagerAgent(Agent):
         
         return recommendations
 
-    def receive_feedback(self,follow_recommendation):
+    def receive_feedback(self,follow_recommendation)->None:
         self.feedback_history.append(1 if follow_recommendation else 0)
-    
-    def step(self):
-        self.current_recommendation=self.make_recommendation()
+
+    def step(self) -> None:
+        self.current_recommendation = self.make_recommendation()
         self.recommendation_history.append(self.current_recommendation)
 
         if len(self.model.simulation_data) > 0:

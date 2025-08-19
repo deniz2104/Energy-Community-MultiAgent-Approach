@@ -2,11 +2,7 @@ import csv
 from database_house import DatabaseHandler
 from HelperFiles.file_to_get_house_ids import house_ids
 
-class DatabaseHandlerAppliance(DatabaseHandler):
-    def __init__(self) -> None:
-        pass
-    def read_database(self, database_path: str) -> None:
-        super().read_database(database_path)
+class DatabaseHandlerAppliance(DatabaseHandler):        
     def extract_data(self) -> list[tuple]:
         self.cursor.execute("""
         SELECT DISTINCT
@@ -27,16 +23,13 @@ class DatabaseHandlerAppliance(DatabaseHandler):
         ORDER BY h.ID;
         """.format(','.join(['?']*len(house_ids))), house_ids)
         rows = self.cursor.fetchall()
-        return super().convert_rows_to_correct_format(rows)
+        return rows
 
-    def write_to_csv(self, data: list[tuple], file_path: str) -> None:
-        with open(file_path, 'w', newline='') as file:
+    def write_to_csv(self, rows: list[tuple], file_path: str) -> None:
+        with open(file_path, 'w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(['HouseID', 'EpochTime','Appliance_ID','Appliance_Name','TotalConsumption'])
-            writer.writerows(data)
-
-    def close_connection(self) -> None:
-        super().close_connection()
+            writer.writerows(rows)
 
 if __name__ == "__main__":
     db_handler = DatabaseHandlerAppliance()
