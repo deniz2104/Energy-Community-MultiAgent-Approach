@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional,Final
 from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
 
 class PowerEstimator(SolarRadiationHouse):
@@ -6,9 +6,9 @@ class PowerEstimator(SolarRadiationHouse):
         super().__init__(house_id)
         self.power_estimated: dict[str, float] = {}
         self.NEEG: Optional[float] = None
-        self.f: float = 0.8
-        self.GTSTC: int = 1000
-        self.number_of_panels: int = 10
+        self.f: Final[float] = 0.8
+        self.GTSTC: Final[int] = 1000
+        self.number_of_panels: Final[int] = 10
 
     def add_power_estimated(self, timestamp: str, solar_radiation_value: float, Pmax: int = 575) -> None:
         self.power_estimated[timestamp] = Pmax * self.f * self.number_of_panels * (solar_radiation_value / self.GTSTC)

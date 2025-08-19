@@ -1,5 +1,5 @@
 from SolarRadiationModel.solar_radiation_house_builder import SolarRadiationHouseBuilder
-from .power_estimated import PowerEstimator
+from PowerEstimatedModel.power_estimated import PowerEstimator
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class PowerEstimatedBuilder(SolarRadiationHouseBuilder):

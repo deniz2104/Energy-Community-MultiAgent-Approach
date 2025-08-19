@@ -1,13 +1,13 @@
 from typing import Optional
-from .power_estimated_builder import PowerEstimatedBuilder
-from .power_estimated_plotter import PowerEstimatedPlotter
-from .power_estimated import PowerEstimator
+from PowerEstimatedModel.power_estimated_builder import PowerEstimatedBuilder
+from PowerEstimatedModel.power_estimated_plotter import PowerEstimatedPlotter
+from PowerEstimatedModel.power_estimated import PowerEstimator
 from HouseModel.house import House
 
 class PowerEstimatedFacade:
     def __init__(self) -> None:
-        self.builder: PowerEstimatedBuilder = PowerEstimatedBuilder()
-        self.plotter: PowerEstimatedPlotter = PowerEstimatedPlotter()
+        self.builder= PowerEstimatedBuilder()
+        self.plotter= PowerEstimatedPlotter()
 
     def build_power_estimated_data(self, csv_path: str) -> list[PowerEstimator]:
         return self.builder.build(csv_path)

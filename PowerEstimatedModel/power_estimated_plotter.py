@@ -7,14 +7,11 @@ from HelperFiles.base_plotter_interface import BasePlotterInterface
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class PowerEstimatedPlotter(BasePlotterInterface):
-    def __init__(self) -> None:
-        super().__init__()
+    def get_data_dict(self, data_object: PowerEstimator) -> dict[str, float]:
+        return data_object.power_estimated
 
-    def get_data_dict(self, power_house: PowerEstimator) -> dict[str, float]:
-        return power_house.power_estimated
-
-    def get_object_id(self, power_house: PowerEstimator) -> int:
-        return power_house.house_id
+    def get_object_id(self, data_object: PowerEstimator) -> int:
+        return data_object.house_id
 
     def get_plot_title_prefix(self) -> str:
         return "Power Estimated House ID"
