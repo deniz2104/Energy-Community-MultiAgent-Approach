@@ -46,5 +46,5 @@ class HouseFacade:
         else:
             self.plotter.plot_consumption_over_time(house, month=month, day=day)
 
-    def get_house_statistics(self, house: House) -> dict[str, float]:
-        return self.statistics.get_weekly_consumption_by_month(house)
+    def get_house_statistics(self, house: House):
+        self.statistics.get_weekly_consumption_by_month(house)

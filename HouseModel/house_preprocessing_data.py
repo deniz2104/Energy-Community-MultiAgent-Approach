@@ -10,11 +10,12 @@ class HousePreprocessingData:
         self.days_difference: int = 12
 
     def eliminate_days_after_a_year_per_house(self, house: House) -> None:
-        starting_date = min(pd.to_datetime(list(house.consumption.keys())))
-        ending_date = max(pd.to_datetime(list(house.consumption.keys())))
-        days_diff = ending_date - pd.Timedelta(days=(ending_date-starting_date).days - 365)
-        if days_diff:
-            timestamps_period = [t for t in pd.to_datetime(list(house.consumption.keys())) if t >= days_diff]
+        timestamps= list(house.consumption.keys())
+        starting_date = pd.Timestamp(timestamps[0])
+        ending_date = pd.Timestamp(timestamps[-1])
+        threshold_day = ending_date - pd.Timedelta(days=(ending_date-starting_date).days - 365)
+        if threshold_day:
+            timestamps_period = [t for t in timestamps if pd.Timestamp(t) >= threshold_day]
             house.consumption = {t: v for t, v in house.consumption.items() if pd.Timestamp(t) not in timestamps_period}
 
     def eliminate_anomalies_in_data(self, house: House) -> None:

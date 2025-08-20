@@ -18,7 +18,7 @@ class HouseResampler:
         return timestamps, consumption
 
     def resampling_houses_based_on_time_period(self, houses: list[House]) -> list[House]:
-        resampled_houses: dict[str, House] = {}
+        resampled_houses: dict[int, House] = {}
         for house in houses:
             timestamps, consumption = self._resample_house(house)
             resampled_house = House(house.house_id)

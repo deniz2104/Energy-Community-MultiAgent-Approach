@@ -1,13 +1,15 @@
+from calendar import c
 import pandas as pd
 from HouseModel.house_helper_file import HouseHelperFile
 from HouseModel.house import House
+from HouseModel.house_preprocessing_data import HousePreprocessingData
 from typing import Final
 from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
-## aici am de vazut ce se intampla cu functia aia, o mosteneam din house, dar aparent nu;
 
 class SolarRadiationHousePreprocessingData:
     def __init__(self) -> None:
         self.threshold: Final[float] = 0.95
+        self.house_preprocessing = HousePreprocessingData()
 
     def _change_timing_for_solar_radiation_data(self, house: House, solar_radiation_house: SolarRadiationHouse) -> None:
         if house.house_id != solar_radiation_house.house_id:
@@ -43,8 +45,8 @@ class SolarRadiationHousePreprocessingData:
         
         for house in solar_radiation_houses:
             if house.house_id in consumption_dict:
-                house.consumption = house.solar_radiation.copy()
-                zero_count = house.remove_houses_having_zero_for_a_period_of_time()
+                consumption_house = consumption_dict[house.house_id]
+                zero_count = self.house_preprocessing.remove_houses_having_zero_for_a_period_of_time(consumption_house)
                 if zero_count == 0:
                     filtered_solar_radiation_houses.append(house)
         return filtered_solar_radiation_houses

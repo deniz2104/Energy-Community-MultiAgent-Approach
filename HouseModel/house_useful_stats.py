@@ -1,5 +1,4 @@
 import pandas as pd
-from typing import Optional
 from HouseModel.house import House
 
 class HouseStatistics:
@@ -14,10 +13,10 @@ class HouseStatistics:
         df['Month'] = df.index.strftime('%Y-%m')
         
         weekly_stats = df.groupby(['Month', pd.Grouper(freq='W')])['Consumption'].mean()
-        
-        current_month: Optional[str] = None
+
+        current_month: str = ""
         for month, value in weekly_stats.items():
             if month != current_month:
                 print(f"\n=== Month: {month} ===")
-                current_month = month
+                current_month = str(month)
             print(f"Week: {month[1].strftime('%Y-%m-%d')}, Average Consumption: {value:.2f}")
