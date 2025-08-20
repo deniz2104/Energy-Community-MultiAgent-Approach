@@ -1,14 +1,15 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
-from .house_with_appliances import HouseWithAppliancesConsumption
-from .consumption_data_processor import ConsumptionDataProcessor
-from .sigmoid_analyzer import SigmoidAnalyzer
+from typing import Final
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.consumption_data_processor import ConsumptionDataProcessor
+from HouseWithAppliancesModel.sigmoid_analyzer import SigmoidAnalyzer
 
 class ConsumptionClusterer:
     def __init__(self) -> None:
-        self.number_of_clusters = 2
-        self.random_state = 42
+        self.number_of_clusters: Final[int] = 2
+        self.random_state: Final[int] = 42
         self._data_processor = ConsumptionDataProcessor()
         self._sigmoid_analyzer = SigmoidAnalyzer()
 
@@ -37,7 +38,7 @@ class ConsumptionClusterer:
         
         return off_pairs, on_pairs
 
-    def determine_threshold(self, house_with_appliances: HouseWithAppliancesConsumption, off_values: dict[str, np.ndarray] = None) -> dict[str, float]:
+    def determine_threshold(self, house_with_appliances: HouseWithAppliancesConsumption, off_values: dict[str, np.ndarray]) -> dict[str, float]:
         """Calculate consumption thresholds for each appliance using clustering analysis."""        
         all_consumption_values = self._data_processor.eliminate_off_values_from_each_appliance(house_with_appliances, off_values)
         

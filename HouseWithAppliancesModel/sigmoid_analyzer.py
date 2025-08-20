@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.graph_objects as go
-from .house_with_appliances import HouseWithAppliancesConsumption
-from .consumption_data_processor import ConsumptionDataProcessor
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.consumption_data_processor import ConsumptionDataProcessor
 
 class SigmoidAnalyzer:
     def __init__(self) -> None:
@@ -22,8 +22,8 @@ class SigmoidAnalyzer:
 
     def plot_sigmoid_distribution_bins(self, house_with_appliances: HouseWithAppliancesConsumption, off_values: dict[str, np.ndarray]) -> None:
         bin_labels, counts = self.gather_labels_and_counts(house_with_appliances, off_values)
-        for appliance_name in counts:
-            go.Figure(data=[go.Bar(x=bin_labels, y=counts[appliance_name])]).show()
+        for _, count in counts.items():
+            go.Figure(data=[go.Bar(x=bin_labels, y=count)]).show()
 
     def determine_top_margin_for_sigmoid(self, sigmoid_values: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
         filtered_sigmoid_values: dict[str, np.ndarray] = {}

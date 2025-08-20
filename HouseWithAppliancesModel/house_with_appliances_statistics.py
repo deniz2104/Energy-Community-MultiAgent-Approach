@@ -1,17 +1,17 @@
 import pandas as pd
 from HelperFiles.hours_for_day_and_night import NIGHT_HOURS, TOTAL_HOURS
-from .house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 
 class HouseWithAppliancesStatistics:
     def __init__(self) -> None:
         self.period: int = 365
 
-    def get_mean_consumption_by_hour(self, houses_with_appliances: HouseWithAppliancesConsumption, dictionary_with_on_off_values: dict[str, dict[int, int]], hours_distribution: dict[str, dict[int, int]], is_night: bool = False) -> dict[str, dict[int, float]]:
+    def get_mean_consumption_by_hour(self, houses_with_appliances: HouseWithAppliancesConsumption, dictionary_with_on_off_values: dict[str, dict[str, int]], hours_distribution: dict[str, dict[int, int]], is_night: bool = False) -> dict[str, dict[int, float]]:
         mean_consumption_by_hour : dict[str,dict[int,float]] = {}
 
         for appliance_type, consumption in houses_with_appliances.appliance_consumption.items():
             target_hours = NIGHT_HOURS if is_night else {h for h in range(TOTAL_HOURS) if h not in NIGHT_HOURS}
-            hours = {hour: 0 for hour in target_hours}
+            hours = {hour: 0.0 for hour in target_hours}
             target_status = 0 if is_night else 1
             
             for timestamp, value in consumption.items():

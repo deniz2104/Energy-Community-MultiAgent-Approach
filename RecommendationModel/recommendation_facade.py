@@ -4,9 +4,9 @@ from RecommendationModel.recommendation_plotter import RecommendationPlotter
 
 class RecommendationFacade:
     def __init__(self) -> None:
-        self.recommendation_model: RecommendationModel = RecommendationModel()
-        self.analytics: RecommendationAnalytics = RecommendationAnalytics()
-        self.plotter: RecommendationPlotter = RecommendationPlotter()
+        self.recommendation_model= RecommendationModel()
+        self.analytics= RecommendationAnalytics()
+        self.plotter= RecommendationPlotter()
 
     def generate_recommendations(self, house_with_appliances, appliance_thresholds) -> dict[int,int]:
         return self.recommendation_model.give_recommendation_based_on_sigmoid_threshold(house_with_appliances, appliance_thresholds)

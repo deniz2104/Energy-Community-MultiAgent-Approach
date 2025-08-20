@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-from .house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 
 class ConsumptionDataProcessor:
     def __init__(self) -> None:

@@ -1,7 +1,7 @@
 import pandas as pd
 from HouseModel.house import House
 from HouseModel.house_helper_file import HouseHelperFile
-from .house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class HouseWithAppliancesPreprocessingData:

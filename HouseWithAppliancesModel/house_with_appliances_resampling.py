@@ -1,5 +1,5 @@
 import pandas as pd
-from .house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 
 class HouseWithAppliancesResampling:
     def __init__(self) -> None:
@@ -21,11 +21,12 @@ class HouseWithAppliancesResampling:
                 
                 for _, row in df_hourly.iterrows():
                     resampled_appliance.add_appliance_consumption(
-                        row['timestamp'], appliance_type, row['consumption'])
-                
+                        str(row['timestamp']), appliance_type, row['consumption'])
+
                 if appliance_type in resampled_appliance.appliance_consumption:
-                    sorted_consumption = sorted(resampled_appliance.appliance_consumption[appliance_type], 
-                                            key=lambda x: x[0])
+                    sorted_consumption = dict(sorted(resampled_appliance.appliance_consumption[appliance_type].items(), 
+                                            key=lambda x: x[0]))
+                    # Convert list of tuples back to the expected format
                     resampled_appliance.appliance_consumption[appliance_type] = sorted_consumption
         
         return list(resampled_houses_with_appliances.values())
