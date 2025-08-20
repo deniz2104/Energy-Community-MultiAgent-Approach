@@ -61,11 +61,12 @@ class BasePlotterInterface(ABC):
             fig.show()
     
     def plot_over_time_range(self, data_object: Any, time_stamp_1: str, time_stamp_2: str) -> None:
-        time_stamp_1 = pd.to_datetime(time_stamp_1)
-        time_stamp_2 = pd.to_datetime(time_stamp_2)
-        
+        start_timestamp = pd.Timestamp(time_stamp_1)
+        end_timestamp = pd.Timestamp(time_stamp_2)
+
         data_dict = self.get_data_dict(data_object)
-        timestamps_period = [t for t in pd.to_datetime(list(data_dict.keys())) if time_stamp_1 <= t <= time_stamp_2]
+        timestamps=list(data_dict.keys())
+        timestamps_period = [t for t in timestamps if start_timestamp <= pd.Timestamp(t) <= end_timestamp]
         values_period = [data_dict[str(t)] for t in timestamps_period]
         
         object_id = self.get_object_id(data_object)
@@ -74,6 +75,6 @@ class BasePlotterInterface(ABC):
         fig = px.line(
             x=timestamps_period, 
             y=values_period, 
-            title=f'{title_prefix}: {object_id} - {time_stamp_1.date()} to {time_stamp_2.date()}'
+            title=f'{title_prefix}: {object_id} - {start_timestamp.date()} to {end_timestamp.date()}'
         )
         fig.show()

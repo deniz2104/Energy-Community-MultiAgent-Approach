@@ -1,4 +1,5 @@
 from HouseWithAppliancesModel.consumption_data_processor import ConsumptionDataProcessor
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 from RecommendationModel.recommendation_based_on_sigmoid_threshold import RecommendationModel
 
 class RecommendationAnalytics:
@@ -6,7 +7,7 @@ class RecommendationAnalytics:
         self._recommendation_model = RecommendationModel()
         self._data_processor = ConsumptionDataProcessor()
 
-    def make_percentage_of_overall_recommendations(self, house_with_appliances, appliance_thresholds) -> float:
+    def make_percentage_of_overall_recommendations(self, house_with_appliances : HouseWithAppliancesConsumption, appliance_thresholds:dict[str,float]) -> float:
         recommendation_dictionary = self._recommendation_model.give_recommendation_based_on_sigmoid_threshold(house_with_appliances, appliance_thresholds)
         total_timestamps = len(self._recommendation_model.get_timestamp(house_with_appliances))
 
@@ -14,7 +15,7 @@ class RecommendationAnalytics:
         
         return (number_of_recommendations / total_timestamps) * 100
 
-    def make_dictionary_of_recommendations_percentages_per_hour(self, house_with_appliances, appliance_thresholds) -> dict[int, float]:
+    def make_dictionary_of_recommendations_percentages_per_hour(self, house_with_appliances: HouseWithAppliancesConsumption, appliance_thresholds:dict[str,float]) -> dict[int, float]:
         total_hour_distribution, hour_distribution = self._recommendation_model.see_hour_distribution_per_given_recommendation(house_with_appliances, appliance_thresholds)
 
         return {
@@ -22,7 +23,7 @@ class RecommendationAnalytics:
             for hour, count in hour_distribution.items()
         }
 
-    def make_percentage_of_recommendations_per_appliance(self, house_with_appliances, appliance_thresholds) -> dict[str, float]:
+    def make_percentage_of_recommendations_per_appliance(self, house_with_appliances: HouseWithAppliancesConsumption, appliance_thresholds:dict[str,float]) -> dict[str, float]:
         number_of_recommendations = self._recommendation_model.see_how_many_recommendations_are_going_to_be_made(house_with_appliances, appliance_thresholds)
         percentage_of_recommendations = {}
         consumption_for_each_appliance = self._data_processor.gather_consumption_values_for_each_appliance(house_with_appliances)
