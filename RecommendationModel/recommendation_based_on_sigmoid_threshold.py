@@ -2,11 +2,11 @@ import pandas as pd
 from HouseWithAppliancesModel.consumption_data_processor import ConsumptionDataProcessor
 from HelperFiles.hours_for_day_and_night import TOTAL_HOURS
 class RecommendationModel:
-    def __init__(self):
-        self.threshold = None
+    def __init__(self) -> None:
+        self.threshold :int = 0
         self.data_processor = ConsumptionDataProcessor()
 
-    def make_dictionary_from_consumption_and_sigmoid_values_for_each_appliance(self,house_with_appliances):
+    def make_dictionary_from_consumption_and_sigmoid_values_for_each_appliance(self,house_with_appliances) -> dict[str,dict[float, float]]:
         consumption_for_each_appliance= self.data_processor.gather_consumption_values_for_each_appliance(house_with_appliances)
         sigmoid_values_for_each_appliance= self.data_processor.determine_sigmoid_values_for_each_appliance(consumption_for_each_appliance)
         consumption_mapped_to_sigmoid_values = {}
@@ -14,8 +14,8 @@ class RecommendationModel:
             if appliance_name not in consumption_mapped_to_sigmoid_values:
                 consumption_mapped_to_sigmoid_values[appliance_name] = dict(zip(consumption_for_each_appliance[appliance_name], sigmoid_values_for_each_appliance[appliance_name]))
         return consumption_mapped_to_sigmoid_values
-    
-    def see_how_many_recommendations_are_going_to_be_made(self, house_with_appliances, appliance_thresholds):
+
+    def see_how_many_recommendations_are_going_to_be_made(self, house_with_appliances, appliance_thresholds) -> dict[str, int]:
         consumption_mapped_to_sigmoid_values = self.make_dictionary_from_consumption_and_sigmoid_values_for_each_appliance(house_with_appliances)
         number_of_recommendations = {}
         for appliance_name, consumption_dict in consumption_mapped_to_sigmoid_values.items():
@@ -23,22 +23,22 @@ class RecommendationModel:
                 if sigmoid_value >= appliance_thresholds.get(appliance_name, 0):
                     number_of_recommendations[appliance_name] = number_of_recommendations.get(appliance_name, 0) + 1
         return number_of_recommendations
-    
-    def get_timestamp(self, house_with_appliances):
-        
+
+    def get_timestamp(self, house_with_appliances) -> list[int]:
+
         first_appliance = next(iter(house_with_appliances.appliance_consumption.values()))
         return list(first_appliance.keys())
 
-    def set_threshold(self, appliance_thresholds):
+    def set_threshold(self, appliance_thresholds) -> None:
         self.threshold = len(appliance_thresholds) // 2 + len(appliance_thresholds) % 2
 
-    def set_timestamp(self, house_with_appliances):
+    def set_timestamp(self, house_with_appliances) -> list[int]:
         return self.get_timestamp(house_with_appliances)
 
-    def set_dictionary_of_consumption_along_with_sigmoid(self,house_with_appliances):
+    def set_dictionary_of_consumption_along_with_sigmoid(self,house_with_appliances) -> dict[str,dict[float, float]]:
         return self.make_dictionary_from_consumption_and_sigmoid_values_for_each_appliance(house_with_appliances)
 
-    def _count_appliances_values_above_threshold(self, timestamp, house_with_appliances, appliance_thresholds, dictionary_of_consumption_along_with_sigmoid):
+    def _count_appliances_values_above_threshold(self, timestamp, house_with_appliances, appliance_thresholds, dictionary_of_consumption_along_with_sigmoid) -> int:
         count_of_appliances = 0
         for appliance_type, consumption in house_with_appliances.appliance_consumption.items():
             consumption_value = consumption.get(timestamp, 0)

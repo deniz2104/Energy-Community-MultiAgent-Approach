@@ -1,13 +1,13 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from HelperFiles.file_to_handle_absolute_path_imports import *
-from HelperFiles.hours_for_day_and_night import TOTAL_HOURS,NIGHT_HOURS
+from HelperFiles.hours_for_day_and_night import TOTAL_HOURS
 
 class RecommendationPlotter:
     def __init__(self):
         pass
 
-    def plot_hours_recommendation_histogram(self, dictionary_of_recommendations_percentages_per_hour: dict[int, int]) -> None:
+    def plot_hours_recommendation_histogram(self, dictionary_of_recommendations_percentages_per_hour: dict[int, float]) -> None:
         hours_list = self._prepare_hours_data(dictionary_of_recommendations_percentages_per_hour)
 
         fig = self._create_histogram_figure(hours_list)
@@ -24,7 +24,7 @@ class RecommendationPlotter:
         fig.update_layout(title_text="Appliances Recommendation Percentages Over Time", showlegend=False)
         fig.show()
 
-    def _prepare_hours_data(self, dictionary_of_recommendations_percentages_per_hour: dict[int, int]) -> list[int]:
+    def _prepare_hours_data(self, dictionary_of_recommendations_percentages_per_hour: dict[int, float]) -> list[int]:
         hours_list : list[int] = []
 
         for hour in range(TOTAL_HOURS):
