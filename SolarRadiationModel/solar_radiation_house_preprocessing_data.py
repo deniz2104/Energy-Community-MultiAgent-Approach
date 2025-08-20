@@ -3,6 +3,7 @@ from HouseModel.house_helper_file import HouseHelperFile
 from HouseModel.house import House
 from typing import Final
 from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
+## aici am de vazut ce se intampla cu functia aia, o mosteneam din house, dar aparent nu;
 
 class SolarRadiationHousePreprocessingData:
     def __init__(self) -> None:

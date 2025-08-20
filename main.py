@@ -8,6 +8,10 @@ from RecommendationModel.recommendation_facade import RecommendationFacade
 from AgentModel.house_model import HouseModel
 from AgentModel.house_agent import HouseAgent
 from AgentModel.manager_agent import ManagerAgent
+# in solar radiation model am scris o prostie, eu nu am functia aia
+# in recommendationModel nu mai stiu ce am vrut sa sciru, nu se apeleaza functile alea
+# de rezolvat erori de linter in HouseModel si in RecommendationModel
+
 ## Trebuie sa generez in agent un nou profil generat
 ## la final ar fi good practice sa fac si un __init__.py si un devcontainer
 
@@ -44,18 +48,14 @@ if __name__ == "__main__":
         recommendation_dict = recommendation_model_facade.generate_recommendations(house, appliances_thresholds)
         recommendation_dictionaries[house.house_id] = recommendation_dict
 
-    agent_model = HouseModel(
-        n=1, 
-        house_obj=houses[:1], 
-        recommendation_dictionaries=recommendation_dictionaries
-    )
-    
+    agent_model = HouseModel(n=1, house_obj=houses[:1], recommendation_dictionaries=recommendation_dictionaries)
+
     simulation_steps = 168
     for i in range(simulation_steps):
         agent_model.step()
-    
-    house_agents = [agent for agent in agent_model.schedule.agents if isinstance(agent, HouseAgent)]
-    manager_agents = [agent for agent in agent_model.schedule.agents if isinstance(agent, ManagerAgent)]
+
+    house_agents: list[HouseAgent] = [agent for agent in agent_model.schedule.agents if isinstance(agent, HouseAgent)]
+    manager_agents: list[ManagerAgent] = [agent for agent in agent_model.schedule.agents if isinstance(agent, ManagerAgent)]
     
     house_agent = house_agents[0] if house_agents else None
     manager_agent = manager_agents[0] if manager_agents else None

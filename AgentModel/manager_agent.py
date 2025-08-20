@@ -1,25 +1,24 @@
-from typing import Optional
 from mesa import Agent
+from AgentModel.house_agent import HouseAgent
 
 class ManagerAgent(Agent):
 
 ## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
-    
-    def __init__(self,unique_id,model):
-        super().__init__(unique_id,model)
 
-        self.current_recommendation : Optional[str] = None
-        self.recommendation_history :list[int,dict[int,int]] = []
+    def __init__(self, unique_id, model) -> None:
+        super().__init__(unique_id, model)
+
+        self.current_recommendation : dict[int,str]= {}
+        self.recommendation_history :list[dict[int,str]] = []
         self.feedback_history = []
 
-    def make_recommendation(self)->dict[int,int]:
+    def make_recommendation(self)->dict[int,str]:
         current_step=self.model.step_count
         current_week= current_step // 168
 
-        from AgentModel.house_agent import HouseAgent
         houses = [agent for agent in self.model.schedule.agents if isinstance(agent, HouseAgent)]
         recommendations = {}
-        
+               
         for house in houses:
             current_consumption = house.reference_consumption[current_step]
             weekly_avg = house.weekly_consumption[current_week]

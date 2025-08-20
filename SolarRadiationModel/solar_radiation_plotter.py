@@ -1,16 +1,13 @@
 from HelperFiles.file_to_handle_absolute_path_imports import *
 from HelperFiles.base_plotter_interface import BasePlotterInterface
-from .solar_radiation_house import SolarRadiationHouse
+from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
 
 class SolarRadiationPlotter(BasePlotterInterface):
-    def __init__(self) -> None:
-        super().__init__()
+    def get_data_dict(self, data_object: SolarRadiationHouse) -> dict[str, float]:
+        return data_object.solar_radiation
 
-    def get_data_dict(self, solar_house: SolarRadiationHouse) -> dict[str, float]:
-        return solar_house.solar_radiation
-
-    def get_object_id(self, solar_house: SolarRadiationHouse) -> int:
-        return solar_house.house_id
+    def get_object_id(self, data_object: SolarRadiationHouse) -> int:
+        return data_object.house_id
 
     def get_plot_title_prefix(self) -> str:
         return "Solar Radiation House ID"

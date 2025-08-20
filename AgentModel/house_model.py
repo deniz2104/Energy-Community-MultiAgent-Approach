@@ -20,12 +20,17 @@ class HouseModel(Model):
         for house in house_obj:
             house_recommendation_dict = self.recommendation_dictionaries.get(house.house_id, {})
             
+            if isinstance(house_recommendation_dict, dict):
+                recommendation_dict = house_recommendation_dict
+            else:
+                recommendation_dict = {}
+            
             agent = HouseAgent(
                 unique_id=house.house_id,
                 model=self, 
                 house_obj=house, 
                 agent_type="ideal",
-                recommendation_dictionary=house_recommendation_dict
+                recommendation_dictionary=recommendation_dict
             )
             self.schedule.add(agent)
 
@@ -38,7 +43,7 @@ class HouseModel(Model):
         for manager in manager_agents:
             manager.step()
 
-        recommendations :dict[int,int]= manager_agents[0].current_recommendation
+        recommendations :dict[int,str]= manager_agents[0].current_recommendation
         house_agents= [agent for agent in self.schedule.agents if isinstance(agent, HouseAgent)]
         for house in house_agents:
             house_recommendation = recommendations.get(house.unique_id, "maintain")

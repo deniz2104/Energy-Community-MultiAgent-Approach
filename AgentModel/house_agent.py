@@ -3,7 +3,7 @@ from statistics import mean
 from typing import Optional
 
 class HouseAgent(Agent):
-    def __init__(self,unique_id : int,model,house_obj,agent_type="ideal",recommendation_dictionary : Optional[dict[int,int]]=None) -> None:
+    def __init__(self,unique_id : int,model,house_obj,agent_type="ideal",recommendation_dictionary : Optional[dict[int,int]]= None) -> None:
         super().__init__(unique_id,model)
 
         common_timestamps : list[int] = self.define_common_timestamps(house_obj)
@@ -21,9 +21,9 @@ class HouseAgent(Agent):
         self.weekly_consumption : dict[int,float] = self.define_weekly_consumption()
         self.agent_type : str = agent_type
         self.simulated_consumption : dict[int,float] = {}
-        self.current_recommendation : Optional[str] = None
+        self.current_recommendation = "maintain"
         self.followed_recommendation : bool = False
-        self.last_action : str = "maintain"
+        self.last_action = "maintain"
 
         self.recommendation_dictionary = recommendation_dictionary if recommendation_dictionary is not None else {}
 
@@ -34,7 +34,7 @@ class HouseAgent(Agent):
         for i in range(len(self.base_consumption)//168):
             weekly_consumption[i] = mean(list(self.base_consumption.values())[i*168:(i+1)*168])
         if((len(self.base_consumption)-len(weekly_consumption)*168) % 168!= 0):
-               weekly_consumption[len(weekly_consumption)] = mean(list(self.base_consumption.values())[-(len(self.base_consumption)-len(weekly_consumption)*168):])
+            weekly_consumption[len(weekly_consumption)] = mean(list(self.base_consumption.values())[-(len(self.base_consumption)-len(weekly_consumption)*168):])
         return weekly_consumption
 
     def define_common_timestamps(self, house_obj) -> list[int]:
@@ -48,9 +48,9 @@ class HouseAgent(Agent):
         self.consume_as_expected=0.0
         
     def get_recommendation(self,recommendation) -> None: 
-        self.current_recommendation = recommendation
-    
-    def decide_action(self) -> str:
+        self.current_recommendation = recommendation if recommendation else "maintain"
+
+    def decide_action(self) -> Optional[str]:
         will_follow_recommendation = self.model.random.random() < self.follow_recommendation
         self.followed_recommendation = will_follow_recommendation
 
