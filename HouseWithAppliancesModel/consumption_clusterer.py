@@ -33,9 +33,8 @@ class ConsumptionClusterer:
         on_label = np.argmax(centroids)
 
         off_pairs, on_pairs = [], []
-        off_pairs.extend(self._filter_by_cluster(sigmoid_values, kmeans, scaler, off_label))
-        on_pairs.extend(self._filter_by_cluster(sigmoid_values, kmeans, scaler, on_label))
-        
+        off_pairs.extend(self._filter_by_cluster(sigmoid_values, kmeans, scaler, int(off_label)))
+        on_pairs.extend(self._filter_by_cluster(sigmoid_values, kmeans, scaler, int(on_label)))
         return off_pairs, on_pairs
 
     def determine_threshold(self, house_with_appliances: HouseWithAppliancesConsumption, off_values: dict[str, np.ndarray]) -> dict[str, float]:

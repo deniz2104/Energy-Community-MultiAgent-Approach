@@ -1,9 +1,8 @@
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import numpy as np
-from .house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 from HelperFiles.file_to_handle_absolute_path_imports import *
-from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
 
 class HouseWithAppliancesOnOffValues:
     def __init__(self):
@@ -21,7 +20,7 @@ class HouseWithAppliancesOnOffValues:
         centroids = scaler.inverse_transform(kmeans.cluster_centers_)
         return scaler,kmeans,centroids
 
-    def filter_by_cluster(self,chunk_of_values:np.ndarray,kmeans:KMeans,scaler:StandardScaler,label:int) -> list[tuple[str, float]]:
+    def filter_by_cluster(self,chunk_of_values: list[tuple[str, float]], kmeans: KMeans, scaler: StandardScaler, label: int) -> list[tuple[str, float]]:
         return [data_point for data_point in chunk_of_values if kmeans.predict(scaler.transform([[data_point[1]]]))[0] == label]
 
     def determine_on_off_periods(self,house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, dict[int, int]]:
@@ -40,8 +39,8 @@ class HouseWithAppliancesOnOffValues:
                 off_label = np.argmin(centroids)
                 on_label = np.argmax(centroids)
 
-                off_pairs.extend(self.filter_by_cluster(chunk_of_values_and_timestamps, kmeans, scaler, off_label))
-                on_pairs.extend(self.filter_by_cluster(chunk_of_values_and_timestamps, kmeans, scaler, on_label))
+                off_pairs.extend(self.filter_by_cluster(chunk_of_values_and_timestamps, kmeans, scaler, int(off_label)))
+                on_pairs.extend(self.filter_by_cluster(chunk_of_values_and_timestamps, kmeans, scaler, int(on_label)))
             
             labeled = {timestamp: 0 for (timestamp, _) in off_pairs} | {timestamp: 1 for (timestamp, _) in on_pairs}
             dictionary_with_on_off_values[appliance_type] = labeled

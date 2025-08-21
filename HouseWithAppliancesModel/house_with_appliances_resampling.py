@@ -26,7 +26,6 @@ class HouseWithAppliancesResampling:
                 if appliance_type in resampled_appliance.appliance_consumption:
                     sorted_consumption = dict(sorted(resampled_appliance.appliance_consumption[appliance_type].items(), 
                                             key=lambda x: x[0]))
-                    # Convert list of tuples back to the expected format
                     resampled_appliance.appliance_consumption[appliance_type] = sorted_consumption
         
         return list(resampled_houses_with_appliances.values())

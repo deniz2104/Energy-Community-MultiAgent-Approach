@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from HelperFiles.file_to_handle_absolute_path_imports import *
 from HelperFiles.hours_for_day_and_night import TOTAL_HOURS,NIGHT_HOURS
-from .house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 
 class HouseWithAppliancesPlotter:
     def __init__(self) -> None:
@@ -36,6 +36,7 @@ class HouseWithAppliancesPlotter:
             off_values = [value for value in on_off_points.values() if value == 0]
             fig.add_trace(go.Scatter(x=timestamps_for_off_values, y=off_values, mode='markers', name=f"{appliance_type} Off values", marker=dict(color='red')), row=i*2+2, col=1)   
         fig.show()
+
     def plot_appliance_histogram(self, hours_dictionary: dict[int, int], appliance_name: Optional[str] = None, is_night: bool = False) -> None:
         hours_list = self._prepare_hours_data(hours_dictionary,is_night)
 
@@ -44,7 +45,7 @@ class HouseWithAppliancesPlotter:
         
         fig.show()
 
-    def _prepare_hours_data(self, hours_dictionary: dict[str, int], is_night: bool = False) -> list[int]:
+    def _prepare_hours_data(self, hours_dictionary: dict[int, int], is_night: bool = False) -> list[int]:
         hours_list : list[int] = []
         target_hours = NIGHT_HOURS if is_night else {h for h in range(TOTAL_HOURS) if h not in NIGHT_HOURS}
 

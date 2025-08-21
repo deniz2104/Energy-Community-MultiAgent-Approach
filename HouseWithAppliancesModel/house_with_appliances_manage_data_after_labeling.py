@@ -1,6 +1,6 @@
-from HelperFiles.file_to_handle_absolute_path_imports import *
 from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
-from .house_with_appliances_label_for_on_and_off_values import HouseWithAppliancesOnOffValues
+from HouseWithAppliancesModel.house_with_appliances_label_for_on_and_off_values import HouseWithAppliancesOnOffValues
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 import pandas as pd
 import numpy as np
 
@@ -27,14 +27,14 @@ class HouseWithAppliancesManageDataAfterLabeling:
             off_values_count[appliance_type] = off_count
         return off_values_count
     
-    def gather_off_values_per_appliance(self, house_with_appliances: dict[str, dict[str, float]]) -> dict[str, np.ndarray[int]]:
-        off_values_per_appliance: dict[str, np.ndarray[int]] = {}
+    def gather_off_values_per_appliance(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, np.ndarray]:
+        off_values_per_appliance: dict[str, np.ndarray] = {}
         for appliance_type, pairs in house_with_appliances.appliance_consumption.items():
-            values : list[float] = []
+            values: list[tuple[str, float]] = []
             consumption_values = np.array(np.trim_zeros(list(pairs.values()))).reshape(-1, 1)
             scaler, kmeans, centroids = self.helper_class.cluster_data(consumption_values)
 
-            off_label = np.argmin(centroids)
+            off_label = int(np.argmin(centroids))
 
             values.extend(self.helper_class.filter_by_cluster(list(pairs.items()), kmeans, scaler, off_label))
             off_values_per_appliance[appliance_type] = np.unique([pair[1] for pair in values])

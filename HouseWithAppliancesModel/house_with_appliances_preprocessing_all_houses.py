@@ -1,5 +1,5 @@
-from .house_with_appliances import HouseWithAppliancesConsumption
-from .house_with_appliances_preprocessing_data import HouseWithAppliancesPreprocessingData
+from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
+from HouseWithAppliancesModel.house_with_appliances_preprocessing_data import HouseWithAppliancesPreprocessingData
 from HelperFiles.file_to_handle_absolute_path_imports import *
 from HouseModel.house import House
 
