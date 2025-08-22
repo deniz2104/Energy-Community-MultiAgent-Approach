@@ -3,6 +3,6 @@ class RunModel:
         self.agent_model = agent_model
         self.simulation_steps = simulation_steps
 
-    def run(self):
+    def run(self) -> None:
         for _ in range(self.simulation_steps):
             self.agent_model.step()

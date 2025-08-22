@@ -4,8 +4,8 @@ class AgentActionStatistics:
         self.manager_agent = manager_agent
         self.simulation_steps = simulation_steps
     
-    def calculate_action_statistics(self):
-        actions_taken = [self.house_agent.last_action] + [
+    def calculate_action_statistics(self) -> dict[str,int]:
+        actions_taken : list[str] = [self.house_agent.last_action] + [
             rec.get(self.house_agent.unique_id, "maintain") 
             for rec in self.manager_agent.recommendation_history[:-1]
         ]
@@ -20,8 +20,8 @@ class AgentActionStatistics:
             "maintain_actions": maintain_actions,
             "total_actions": len(actions_taken)
         }
-    
-    def print_action_statistics(self):
+
+    def print_action_statistics(self) -> None:
         stats = self.calculate_action_statistics()
         
         print("--- AGENT ACTIONS ---")

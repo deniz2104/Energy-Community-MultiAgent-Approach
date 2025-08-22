@@ -1,4 +1,7 @@
+from logging import Manager
+from AgentModel.house_agent import HouseAgent
 from AgentModel.instantiate_agents import InstantiateAgents
+from AgentModel.manager_agent import ManagerAgent
 from AgentModel.run_model import RunModel
 from AgentModel.agent_action_statistics import AgentActionStatistics
 from AgentModel.consumption_statistics import ConsumptionStatistics
@@ -14,8 +17,8 @@ class AgentStatistics:
         self.action_statistics = None
         self.consumption_statistics = None
         self.recommendation_statistics = None
-    
-    def run_simulation_and_generate_statistics(self):
+
+    def run_simulation_and_generate_statistics(self) -> tuple[HouseAgent, ManagerAgent]:
         house_agent, manager_agent = self.instantiate_agents.instantiate_agents()
         
         self.run_model.run()
@@ -26,7 +29,7 @@ class AgentStatistics:
         
         return house_agent, manager_agent
     
-    def print_all_statistics(self):
+    def print_all_statistics(self) -> None:
         if self.action_statistics is None or self.consumption_statistics is None or self.recommendation_statistics is None:
             print("Simulation not run yet. Please run the simulation first.")
             return
@@ -36,10 +39,10 @@ class AgentStatistics:
         self.action_statistics.print_action_statistics()
         print()
         self.consumption_statistics.print_consumption_statistics()
-    
-    def get_all_statistics(self):
+
+    def get_all_statistics(self) -> dict[str, float | None]:
         if not all([self.action_statistics, self.consumption_statistics, self.recommendation_statistics]):
-            return None
+            return {}
             
         stats = {}
         

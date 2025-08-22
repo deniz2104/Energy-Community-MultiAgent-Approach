@@ -3,8 +3,8 @@ class RecommendationStatistics:
         self.house_agent = house_agent
         self.manager_agent = manager_agent
         self.simulation_steps = simulation_steps
-    
-    def calculate_recommendation_statistics(self):
+
+    def calculate_recommendation_statistics(self) -> dict[str, float | None]:
         total_recommendations = len([r for r in self.manager_agent.recommendation_history if r])
         recommendations_given = sum(
             1 for step_rec in self.manager_agent.recommendation_history 
@@ -20,8 +20,8 @@ class RecommendationStatistics:
             "recommendations_given": recommendations_given,
             "recommendation_rate": recommendation_rate
         }
-    
-    def print_recommendation_statistics(self):
+
+    def print_recommendation_statistics(self) -> None:
         stats = self.calculate_recommendation_statistics()
         
         print("--- RECOMMENDATION STATS ---")

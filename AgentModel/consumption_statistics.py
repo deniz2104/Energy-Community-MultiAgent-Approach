@@ -2,11 +2,11 @@ class ConsumptionStatistics:
     def __init__(self, house_agent, simulation_steps: int) -> None:
         self.house_agent = house_agent
         self.simulation_steps = simulation_steps
-    
-    def calculate_consumption_impact(self):
+
+    def calculate_consumption_impact(self) -> dict[str, float | None]:
         if not self.house_agent.simulated_consumption:
-            return None
-            
+            return {}
+
         original_consumption = sum(
             self.house_agent.reference_consumption[i] 
             for i in range(min(self.simulation_steps, len(self.house_agent.reference_consumption)))
@@ -17,8 +17,8 @@ class ConsumptionStatistics:
             "original_consumption": original_consumption,
             "simulated_consumption": simulated_consumption,
         }
-    
-    def calculate_consumption_differences(self):
+
+    def calculate_consumption_differences(self) -> float | None:
         if not self.house_agent.simulated_consumption:
             return None
         
@@ -29,7 +29,7 @@ class ConsumptionStatistics:
             cumulative_differences += simulated - original
         return cumulative_differences / self.simulation_steps
 
-    def calculate_baseline_profile(self):
+    def calculate_baseline_profile(self) -> dict[str, float]:
         weekly_avg = sum(self.house_agent.weekly_consumption.values()) / len(self.house_agent.weekly_consumption)
         total_weeks = len(self.house_agent.weekly_consumption)
         
@@ -37,8 +37,8 @@ class ConsumptionStatistics:
             "weekly_average_consumption": weekly_avg,
             "total_weeks_in_data": total_weeks
         }
-    
-    def print_consumption_statistics(self):
+
+    def print_consumption_statistics(self) -> None:
         impact_stats = self.calculate_consumption_impact()
         baseline_stats = self.calculate_baseline_profile()
         percentage_change = self.calculate_consumption_differences()
