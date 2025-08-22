@@ -27,10 +27,10 @@ class AgentStatistics:
         return house_agent, manager_agent
     
     def print_all_statistics(self):
-        if not all([self.action_statistics, self.consumption_statistics, self.recommendation_statistics]):
-            print("Statistics not initialized. Run simulation first.")
+        if self.action_statistics is None or self.consumption_statistics is None or self.recommendation_statistics is None:
+            print("Simulation not run yet. Please run the simulation first.")
             return
-            
+
         self.recommendation_statistics.print_recommendation_statistics()
         print()
         self.action_statistics.print_action_statistics()
@@ -42,14 +42,17 @@ class AgentStatistics:
             return None
             
         stats = {}
-        stats.update(self.recommendation_statistics.calculate_recommendation_statistics())
-        stats.update(self.action_statistics.calculate_action_statistics())
         
-        consumption_impact = self.consumption_statistics.calculate_consumption_impact()
-        if consumption_impact:
-            stats.update(consumption_impact)
-            
-        baseline_profile = self.consumption_statistics.calculate_baseline_profile()
-        stats.update(baseline_profile)
+        recommendation_stats = self.recommendation_statistics.calculate_recommendation_statistics() if self.recommendation_statistics else None
+        stats.update(recommendation_stats if recommendation_stats else {})
         
-        return stats 
+        action_stats = self.action_statistics.calculate_action_statistics() if self.action_statistics else None
+        stats.update(action_stats if action_stats else {})
+        
+        consumption_impact = self.consumption_statistics.calculate_consumption_impact() if self.consumption_statistics else None
+        stats.update(consumption_impact if consumption_impact else {})
+        
+        baseline_profile = self.consumption_statistics.calculate_baseline_profile() if self.consumption_statistics else None
+        stats.update(baseline_profile if baseline_profile else {})
+
+        return stats

@@ -5,7 +5,6 @@ class RecommendationStatistics:
         self.simulation_steps = simulation_steps
     
     def calculate_recommendation_statistics(self):
-        """Calculate recommendation statistics"""
         total_recommendations = len([r for r in self.manager_agent.recommendation_history if r])
         recommendations_given = sum(
             1 for step_rec in self.manager_agent.recommendation_history 

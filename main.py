@@ -6,6 +6,7 @@ from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficie
 from HouseWithAppliancesModel.house_with_appliances_facade import HouseWithAppliancesFacade
 from RecommendationModel.recommendation_facade import RecommendationFacade
 from AgentModel.house_model import HouseModel
+from AgentModel.agent_statistics import AgentStatistics
 
 ## de facut plot in folderul AgentModel + type hints in tot folderul
 ## ca sa vizualizez rezultatele, reprezentam consumul estimat in timp, productia estimata in timp, consumul simulat in timp (pe acelasi grafic),un calcul de autoconsum simulat/estimat, la fel si autonomie si recomandarile pe un grafic separat(bar chart)
@@ -47,3 +48,9 @@ if __name__ == "__main__":
     agent_model = HouseModel(n=1, house_obj=houses[:1], recommendation_dictionaries=recommendation_dictionaries)
 
     simulation_steps = 168
+
+    agent_statistics_model = AgentStatistics(agent_model, simulation_steps)
+
+    agent_statistics_model.run_simulation_and_generate_statistics()
+
+    agent_statistics_model.print_all_statistics()
