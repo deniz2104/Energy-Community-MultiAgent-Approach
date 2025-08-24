@@ -5,8 +5,8 @@ from HelperFiles.file_to_handle_absolute_path_imports import *
 class SelfConsumption(PowerEstimator):
     def __init__(self, house_id: int) -> None:
         super().__init__(house_id)
-        self.self_consumption: Optional[float] = None
-    
+        self.self_consumption: float = 0.0
+
     def determine_self_consumption_over_time(self, month: Optional[int] = None, day: Optional[int] = None, use_load: bool = False) -> float:
         if month is None and day is None:
             p_prod: list[float] = list(self.power_estimated.values())
