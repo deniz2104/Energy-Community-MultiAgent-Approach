@@ -1,4 +1,3 @@
-from logging import Manager
 from AgentModel.house_agent import HouseAgent
 from AgentModel.instantiate_agents import InstantiateAgents
 from AgentModel.manager_agent import ManagerAgent

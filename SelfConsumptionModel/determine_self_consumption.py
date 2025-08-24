@@ -7,20 +7,14 @@ class SelfConsumption(PowerEstimator):
         super().__init__(house_id)
         self.self_consumption: float = 0.0
 
-    def determine_self_consumption_over_time(self, month: Optional[int] = None, day: Optional[int] = None, use_load: bool = False) -> float:
-        if month is None and day is None:
-            p_prod: list[float] = list(self.power_estimated.values())
-            p_load: list[float] = list(self.consumption.values())
-        elif month is not None and day is None:
-            p_prod = [v for k, v in self.power_estimated.items() if k.month == month]
-            p_load = [v for k, v in self.consumption.items() if k.month == month]
-        elif month is None and day is not None:
-            p_prod = [v for k, v in self.power_estimated.items() if k.day == day]
-            p_load = [v for k, v in self.consumption.items() if k.day == day]
-        else:
-            p_prod = [v for k, v in self.power_estimated.items() if k.month == month and (day is None or k.day == day)]
-            p_load = [v for k, v in self.consumption.items() if k.month == month and (day is None or k.day == day)]
-        numerator = sum(min(p_prod[i], p_load[i]) for i in range(min(len(p_prod), len(p_load))))
+    def determine_self_consumption_over_time(self,specified_value_range: Optional[int] = None, use_load: bool = False) -> float:
+
+        p_prod = list(self.power_estimated.values())
+        p_load = list(self.consumption.values())
+
+        values_range=min(len(p_prod),len(p_load),specified_value_range) if specified_value_range is not None else min(len(p_prod),len(p_load))
+
+        numerator = sum(min(p_prod[i], p_load[i]) for i in range(values_range))
         denominator = sum(p_load) if use_load else sum(p_prod)
         result = numerator / denominator if denominator != 0 else 0
         self.self_consumption = result
