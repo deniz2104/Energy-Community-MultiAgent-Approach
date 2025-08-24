@@ -39,7 +39,7 @@ class AgentStatistics:
         self.action_statistics.print_action_statistics()
         print()
         self.consumption_statistics.print_consumption_statistics()
-
+    
     def get_all_statistics(self) -> dict[str, float | None]:
         if not all([self.action_statistics, self.consumption_statistics, self.recommendation_statistics]):
             return {}

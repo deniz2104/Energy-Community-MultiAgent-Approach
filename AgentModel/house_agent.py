@@ -23,6 +23,10 @@ class HouseAgent(Agent):
         self.simulated_consumption : dict[int,float] = {}
         self.current_recommendation = "maintain"
         self.followed_recommendation : bool = False
+        self.self_consumption :float = house_obj.self_consumption
+        self.self_sufficiency : float = house_obj.self_sufficiency
+        self.simulated_self_consumption : float = 0.0
+        self.simulated_self_sufficiency : float = 0.0
         self.last_action = "maintain"
 
         self.recommendation_dictionary = recommendation_dictionary if recommendation_dictionary is not None else {}
@@ -67,8 +71,28 @@ class HouseAgent(Agent):
     }
         self.simulated_consumption[self.model.step_count] = self.reference_consumption[self.model.step_count] * multipliers.get(action, 1.0)
 
+    def determine_simulated_self_consumption_and_self_sufficiency(self) -> None:
+        denominator_for_self_consumption = 0.0
+        numerator_for_self_consumption = 0.0
+        denominator_for_self_sufficiency = 0.0
+        numerator_for_self_sufficiency = 0.0
+
+        for step, simulated_consumption in self.simulated_consumption.items():
+            base_prod = self.base_consumption[step]
+            min_value = min(simulated_consumption, base_prod)
+
+            denominator_for_self_consumption += simulated_consumption
+            numerator_for_self_consumption += min_value
+                
+            denominator_for_self_sufficiency += base_prod
+            numerator_for_self_sufficiency += min_value
+
+        self.simulated_self_consumption = numerator_for_self_consumption / denominator_for_self_consumption if denominator_for_self_consumption > 0 else 0
+        self.simulated_self_sufficiency = numerator_for_self_sufficiency / denominator_for_self_sufficiency if denominator_for_self_sufficiency > 0 else 0
+
     def step(self) -> None:
         action=self.decide_action()
         self.last_action = action
         
         self.apply_action(action)
+        self.determine_simulated_self_consumption_and_self_sufficiency()

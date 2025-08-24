@@ -37,7 +37,7 @@ class ConsumptionStatistics:
             "weekly_average_consumption": weekly_avg,
             "total_weeks_in_data": total_weeks
         }
-
+    
     def print_consumption_statistics(self) -> None:
         impact_stats = self.calculate_consumption_impact()
         baseline_stats = self.calculate_baseline_profile()
