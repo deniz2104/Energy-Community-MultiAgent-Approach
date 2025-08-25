@@ -15,7 +15,7 @@ class SelfConsumption(PowerEstimator):
         values_range=min(len(p_prod),len(p_load),specified_value_range) if specified_value_range is not None else min(len(p_prod),len(p_load))
 
         numerator = sum(min(p_prod[i], p_load[i]) for i in range(values_range))
-        denominator = sum(p_load) if use_load else sum(p_prod)
+        denominator = sum(p_load[i] for i in range(values_range)) if use_load else sum(p_prod[i] for i in range(values_range))
         result = numerator / denominator if denominator != 0 else 0
         self.self_consumption = result
         return result

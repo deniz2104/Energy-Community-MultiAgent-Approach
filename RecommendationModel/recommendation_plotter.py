@@ -12,8 +12,8 @@ class RecommendationPlotter:
 
         fig = self._create_histogram_figure(hours_list)
         fig = self._update_figure_layout(fig)
-        
-        fig.show()
+
+        fig.show(renderer='browser')
 
     def plot_percentage_of_recommendation_per_appliance(self,dictionary_of_recommendation_percentage_per_appliance):
         fig = make_subplots(rows=1, cols=len(dictionary_of_recommendation_percentage_per_appliance), shared_xaxes=True, vertical_spacing=0.03)
@@ -22,7 +22,7 @@ class RecommendationPlotter:
             fig.add_trace(go.Bar(x=[appliance_type], y=[percentage], name=appliance_type), row=1, col=i+1)
 
         fig.update_layout(title_text="Appliances Recommendation Percentages Over Time", showlegend=False)
-        fig.show()
+        fig.show(renderer='browser')
 
     def _prepare_hours_data(self, dictionary_of_recommendations_percentages_per_hour: dict[int, float]) -> list[int]:
         hours_list : list[int] = []

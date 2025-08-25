@@ -13,48 +13,48 @@ class AgentStatistics:
         self.instantiate_agents = InstantiateAgents(agent_model)
         self.run_model = RunModel(agent_model, simulation_steps)
         
-        self.action_statistics = None
-        self.consumption_statistics = None
-        self.recommendation_statistics = None
+        self.action_statistics: list[AgentActionStatistics] = []
+        self.consumption_statistics: list[ConsumptionStatistics] = []
+        self.recommendation_statistics: list[RecommendationStatistics] = []
 
-    def run_simulation_and_generate_statistics(self) -> tuple[HouseAgent, ManagerAgent]:
-        house_agent, manager_agent = self.instantiate_agents.instantiate_agents()
+    def run_simulation_and_generate_statistics(self) -> tuple[list[HouseAgent], ManagerAgent]:
+        house_agents, manager_agent = self.instantiate_agents.instantiate_all_agents()
         
         self.run_model.run()
 
-        self.action_statistics = AgentActionStatistics(house_agent, manager_agent, self.simulation_steps)
-        self.consumption_statistics = ConsumptionStatistics(house_agent, self.simulation_steps)
-        self.recommendation_statistics = RecommendationStatistics(house_agent, manager_agent, self.simulation_steps)
+        self.action_statistics = []
+        self.consumption_statistics = []
+        self.recommendation_statistics = []
         
-        return house_agent, manager_agent
+        for house_agent in house_agents:
+            self.action_statistics.append(AgentActionStatistics(house_agent, manager_agent, self.simulation_steps))
+            self.consumption_statistics.append(ConsumptionStatistics(house_agent, self.simulation_steps))
+            self.recommendation_statistics.append(RecommendationStatistics(house_agent, manager_agent, self.simulation_steps))
+        
+        return house_agents, manager_agent
     
     def print_all_statistics(self) -> None:
-        if self.action_statistics is None or self.consumption_statistics is None or self.recommendation_statistics is None:
+        if not self.action_statistics or not self.consumption_statistics or not self.recommendation_statistics:
             print("Simulation not run yet. Please run the simulation first.")
             return
 
-        self.recommendation_statistics.print_recommendation_statistics()
-        print()
-        self.action_statistics.print_action_statistics()
-        print()
-        self.consumption_statistics.print_consumption_statistics()
-    
-    def get_all_statistics(self) -> dict[str, float | None]:
-        if not all([self.action_statistics, self.consumption_statistics, self.recommendation_statistics]):
-            return {}
+        print("=" * 60)
+        print("STATISTICS FOR ALL HOUSE AGENTS")
+        print("=" * 60)
+        
+        for agent_index, (rec_stats, action_stats, cons_stats) in enumerate(zip(
+            self.recommendation_statistics, 
+            self.action_statistics, 
+            self.consumption_statistics
+        )):
+            print(f"\n--- HOUSE AGENT {agent_index + 1} (ID: {action_stats.house_agent.unique_id}) ---")
+            print("-" * 40)
             
-        stats = {}
-        
-        recommendation_stats = self.recommendation_statistics.calculate_recommendation_statistics() if self.recommendation_statistics else None
-        stats.update(recommendation_stats if recommendation_stats else {})
-        
-        action_stats = self.action_statistics.calculate_action_statistics() if self.action_statistics else None
-        stats.update(action_stats if action_stats else {})
-        
-        consumption_impact = self.consumption_statistics.calculate_consumption_impact() if self.consumption_statistics else None
-        stats.update(consumption_impact if consumption_impact else {})
-        
-        baseline_profile = self.consumption_statistics.calculate_baseline_profile() if self.consumption_statistics else None
-        stats.update(baseline_profile if baseline_profile else {})
-
-        return stats
+            rec_stats.print_recommendation_statistics()
+            print()
+            action_stats.print_action_statistics()
+            print()
+            cons_stats.print_consumption_statistics()
+            
+            if agent_index < len(self.action_statistics) - 1:
+                print("\n" + "=" * 60)

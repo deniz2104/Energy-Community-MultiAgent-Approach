@@ -44,23 +44,26 @@ if __name__ == "__main__":
     recommendation_model_facade = RecommendationFacade()
     recommendation_dictionaries = {}
     
-    for house in houses_with_appliances[:1]:
+    for house in houses_with_appliances[:3]:
         appliances_thresholds = house_with_appliances_facade.determine_appliance_thresholds(house)
         recommendation_dict = recommendation_model_facade.generate_recommendations(house, appliances_thresholds)
         recommendation_dictionaries[house.house_id] = recommendation_dict
+        recommendation_model_facade.visualize_hourly_recommendations(house, appliances_thresholds)
 
-    agent_model = HouseModel(n=1, house_obj=houses[:1], recommendation_dictionaries=recommendation_dictionaries)
+    agent_model = HouseModel(n=3, house_obj=houses[:3], recommendation_dictionaries=recommendation_dictionaries)
 
-    simulation_steps = 168
+    simulation_steps = 8760
 
     agent_statistics_model = AgentStatistics(agent_model, simulation_steps)
 
     agent_statistics_model.run_simulation_and_generate_statistics()
-    
+
+    agent_statistics_model.print_all_statistics()
+
     agent_plotter = AgentPlots()
     
     house_agents = [agent for agent in agent_model.schedule.agents if isinstance(agent, HouseAgent)]
 
-    agent_plotter.plot_self_consumption_and_sufficiency_comparison(house_agents[0])
-
-    agent_plotter.plot_consumption_time_series(house_agents[0])
+    for house_agent in house_agents:
+        agent_plotter.plot_self_consumption_and_sufficiency_comparison(house_agent)
+        agent_plotter.plot_consumption_time_series(house_agent)
