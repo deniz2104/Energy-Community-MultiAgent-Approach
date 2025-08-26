@@ -1,4 +1,3 @@
-from calendar import c
 import pandas as pd
 from HouseModel.house_helper_file import HouseHelperFile
 from HouseModel.house import House

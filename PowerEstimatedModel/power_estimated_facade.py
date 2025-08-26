@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 from PowerEstimatedModel.power_estimated_builder import PowerEstimatedBuilder
 from PowerEstimatedModel.power_estimated_plotter import PowerEstimatedPlotter
 from PowerEstimatedModel.power_estimated import PowerEstimator

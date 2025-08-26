@@ -9,10 +9,19 @@ from HouseWithAppliancesModel.house_with_appliances_facade import HouseWithAppli
 from RecommendationModel.recommendation_facade import RecommendationFacade
 from AgentModel.house_model import HouseModel
 from AgentModel.agent_statistics import AgentStatistics
-from AgentModel.plots import AgentPlots
-from AgentModel.house_agent import HouseAgent
+from AgentModel.agent_maximum_simulation_steps import AgentSimulationSteps
 
 ## la final ar fi good practice sa fac un devcontainer
+## caiet practica
+## am de pus dictionarele alea intr un csv si le manipulez de acolo, nu are sens sa le construiesc tot timpul
+## Calcul Monterar (1.31 kw). Cu cat se reduce factura pe un an intreg in fiecare caz
+## autoconsumul si autosuficienta se vor calcula pentru toti agentii si se va face o medie
+## facem acest proces pentru 1,5,10,15,20,nr total de case
+## pun graficele organizat intr-un keynote
+## Scatter plot
+## Pe axa x 1-autoconsumul Pe y 1-autonomia
+## Fiecare punct este un profil pe un număr de case calculat la un consum estimat și simulat.
+## Desenez pe grafic linia Pareto
 
 if __name__ == "__main__":
     house_facade = HouseFacade()
@@ -48,22 +57,11 @@ if __name__ == "__main__":
         appliances_thresholds = house_with_appliances_facade.determine_appliance_thresholds(house)
         recommendation_dict = recommendation_model_facade.generate_recommendations(house, appliances_thresholds)
         recommendation_dictionaries[house.house_id] = recommendation_dict
-        recommendation_model_facade.visualize_hourly_recommendations(house, appliances_thresholds)
 
-    agent_model = HouseModel(n=3, house_obj=houses[:3], recommendation_dictionaries=recommendation_dictionaries)
+    agent_model = HouseModel(n=10, house_obj=houses[:10], recommendation_dictionaries=recommendation_dictionaries)
 
-    simulation_steps = 8760
+    simulation_steps = AgentSimulationSteps(agent_model).get_maximum_simulation_steps(houses[:10])
 
     agent_statistics_model = AgentStatistics(agent_model, simulation_steps)
 
     agent_statistics_model.run_simulation_and_generate_statistics()
-
-    agent_statistics_model.print_all_statistics()
-
-    agent_plotter = AgentPlots()
-    
-    house_agents = [agent for agent in agent_model.schedule.agents if isinstance(agent, HouseAgent)]
-
-    for house_agent in house_agents:
-        agent_plotter.plot_self_consumption_and_sufficiency_comparison(house_agent)
-        agent_plotter.plot_consumption_time_series(house_agent)
