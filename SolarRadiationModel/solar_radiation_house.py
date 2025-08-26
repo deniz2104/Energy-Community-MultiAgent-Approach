@@ -1,5 +1,4 @@
 from HouseModel.house import House
-from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class SolarRadiationHouse(House):
     def __init__(self, house_id: int) -> None:

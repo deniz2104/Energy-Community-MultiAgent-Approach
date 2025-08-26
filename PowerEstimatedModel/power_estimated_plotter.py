@@ -4,7 +4,6 @@ from HouseModel.house import House
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from HelperFiles.base_plotter_interface import BasePlotterInterface
-from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class PowerEstimatedPlotter(BasePlotterInterface):
     def get_data_dict(self, data_object: PowerEstimator) -> dict[str, float]:

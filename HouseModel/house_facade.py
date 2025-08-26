@@ -5,7 +5,6 @@ from HouseModel.house_resampling import HouseResampler
 from HouseModel.house_plotter import HousePlotter
 from HouseModel.house_useful_stats import HouseStatistics
 from HouseModel.house import House
-from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class HouseFacade:
     def __init__(self) -> None:

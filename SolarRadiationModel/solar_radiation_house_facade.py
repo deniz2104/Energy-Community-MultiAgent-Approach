@@ -5,7 +5,6 @@ from SolarRadiationModel.solar_radiation_house_builder import SolarRadiationHous
 from SolarRadiationModel.solar_radiation_house_preprocessing_data import SolarRadiationHousePreprocessingData
 from SolarRadiationModel.solar_radiation_plotter import SolarRadiationPlotter
 from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
-from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class SolarRadiationHouseFacade:
     def __init__(self) -> None:

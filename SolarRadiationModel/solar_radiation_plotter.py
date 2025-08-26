@@ -1,4 +1,3 @@
-from HelperFiles.file_to_handle_absolute_path_imports import *
 from typing import Optional
 from HelperFiles.base_plotter_interface import BasePlotterInterface
 from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse

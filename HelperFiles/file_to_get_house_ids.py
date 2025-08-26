@@ -1,4 +1,3 @@
-from file_to_handle_absolute_path_imports import *
 from HouseModel.house_builder import HouseBuilder
 
 house_builder = HouseBuilder()

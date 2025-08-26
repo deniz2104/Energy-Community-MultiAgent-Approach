@@ -11,7 +11,6 @@ from HouseWithAppliancesModel.sigmoid_analyzer import SigmoidAnalyzer
 from HouseWithAppliancesModel.consumption_clusterer import ConsumptionClusterer
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 from HouseModel.house import House
-from HelperFiles.file_to_handle_absolute_path_imports import *
 
 class HouseWithAppliancesFacade:
     def __init__(self) -> None:

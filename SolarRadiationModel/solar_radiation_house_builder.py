@@ -1,7 +1,7 @@
 from HouseModel.house_builder import HouseBuilder
 from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
-from HelperFiles.file_to_handle_absolute_path_imports import *
 import csv
+
 class SolarRadiationHouseBuilder(HouseBuilder) :
     def build(self, csv_path: str) -> list[SolarRadiationHouse]:
         solar_radiation_houses: dict[int, SolarRadiationHouse] = {}
