@@ -7,7 +7,6 @@ class ManagerAgent(Agent):
 
         self.current_recommendation : dict[int,str]= {}
         self.recommendation_history :list[dict[int,str]] = []
-        self.feedback_history = []
 
     def make_recommendation(self)->dict[int,str]:
         current_step=self.model.step_count
@@ -35,13 +34,6 @@ class ManagerAgent(Agent):
         
         return recommendations
 
-    def receive_feedback(self,follow_recommendation)->None:
-        self.feedback_history.append(1 if follow_recommendation else 0)
-
     def step(self) -> None:
         self.current_recommendation = self.make_recommendation()
         self.recommendation_history.append(self.current_recommendation)
-
-        if len(self.model.simulation_data) > 0:
-            last_feedback = self.model.simulation_data[-1]["followed_recommendation"]
-            self.receive_feedback(last_feedback)

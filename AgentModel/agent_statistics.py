@@ -19,7 +19,8 @@ class AgentStatistics:
 
     def run_simulation_and_generate_statistics(self) -> tuple[list[HouseAgent], ManagerAgent]:
         house_agents, manager_agent = self.instantiate_agents.instantiate_all_agents()
-        
+        self.instantiate_agents.set_agents_type()
+
         self.run_model.run()
 
         self.action_statistics = []
@@ -32,7 +33,7 @@ class AgentStatistics:
             self.recommendation_statistics.append(RecommendationStatistics(house_agent, manager_agent, self.simulation_steps))
         
         return house_agents, manager_agent
-    
+
     def print_all_statistics(self) -> None:
         if not self.action_statistics or not self.consumption_statistics or not self.recommendation_statistics:
             print("Simulation not run yet. Please run the simulation first.")

@@ -48,9 +48,13 @@ class HouseAgent(Agent):
         return common_timestamps
 
     def set_agent_type(self) -> None:
-        self.follow_recommendation=1.0
-        self.consume_as_expected=0.0
-        
+        if self.agent_type == "ideal":
+            self.follow_recommendation = 1.0
+        elif self.agent_type == "enthusiastic":
+            self.follow_recommendation = 0.7
+        elif self.agent_type == "non-enthusiastic":
+            self.follow_recommendation = 0.3   
+
     def get_recommendation(self,recommendation) -> None: 
         self.current_recommendation = recommendation if recommendation else "maintain"
 

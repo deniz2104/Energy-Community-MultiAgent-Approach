@@ -11,7 +11,6 @@ class HouseModel(Model):
         self.random = random.Random(seed)
         self.step_count=0
         self.schedule = time.RandomActivation(self)
-        self.simulation_data = []
         self.recommendation_dictionaries = recommendation_dictionaries if recommendation_dictionaries is not None else {}
         self.create_manager()
         self.create_agents(house_obj)
@@ -53,9 +52,3 @@ class HouseModel(Model):
             house.step()
             
         self.step_count += 1
-        if manager_agents[0].feedback_history:
-            self.simulation_data.append({
-                "step": self.step_count,
-                "recommendation": recommendations,
-                "followed_recommendation": manager_agents[0].feedback_history[-1]
-            })
