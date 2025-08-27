@@ -5,7 +5,7 @@ from AgentModel.house_agent import HouseAgent
 from AgentModel.manager_agent import ManagerAgent
 
 class HouseModel(Model):
-    def __init__(self,n,house_obj,recommendation_dictionaries: Optional[dict[int,int]]=None,seed: Optional[int]=None)-> None:
+    def __init__(self,n,house_obj,recommendation_dictionaries: Optional[dict[int,dict[int,int]]] = None,seed: Optional[int]=None)-> None:
         super().__init__(seed=seed)
         self.num_agents = n
         self.random = random.Random(seed)

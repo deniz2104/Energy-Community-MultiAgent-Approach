@@ -1,10 +1,10 @@
 from AgentModel.house_agent import HouseAgent
-from AgentModel.instantiate_agents import InstantiateAgents
+from AgentModel.agents_instantiate import InstantiateAgents
 from AgentModel.manager_agent import ManagerAgent
-from AgentModel.run_model import RunModel
+from AgentModel.agent_run_model import RunModel
 from AgentModel.agent_action_statistics import AgentActionStatistics
-from AgentModel.consumption_statistics import ConsumptionStatistics
-from AgentModel.recommendation_statistics import RecommendationStatistics
+from AgentModel.agent_consumption_statistics import ConsumptionStatistics
+from AgentModel.agent_recommendation_statistics import RecommendationStatistics
 
 class AgentStatistics:
     def __init__(self, agent_model, simulation_steps: int) -> None:
