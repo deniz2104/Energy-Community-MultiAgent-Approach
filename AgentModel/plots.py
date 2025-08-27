@@ -1,20 +1,20 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from AgentModel.house_agent import HouseAgent
+from AgentModel.agents_ss_sc import AgentsSelfSufficiencySelfConsumption
 
 class AgentPlots:
-    def __init__(self):
-        pass
-    
-    def plot_self_consumption_and_sufficiency_comparison(self, house_agent: HouseAgent) -> None:
+    def __init__(self,model):
+        self.model = model
+        self.self_consumption_and_self_sufficiency = AgentsSelfSufficiencySelfConsumption(model)
 
-        agent_ids = [house_agent.unique_id]
+    def plot_self_consumption_and_sufficiency_comparison(self) -> None:
 
-        simulated_self_consumption = [house_agent.simulated_self_consumption]
-        estimated_self_consumption = [house_agent.self_consumption]
+        simulated_self_consumption = [self.self_consumption_and_self_sufficiency.determine_simulated_self_consumption()]
+        estimated_self_consumption = [self.self_consumption_and_self_sufficiency.determine_estimated_self_consumption()]
 
-        simulated_self_sufficiency = [house_agent.simulated_self_sufficiency]
-        estimated_self_sufficiency = [house_agent.self_sufficiency]
+        simulated_self_sufficiency = [self.self_consumption_and_self_sufficiency.determine_simulated_self_sufficiency()]
+        estimated_self_sufficiency = [self.self_consumption_and_self_sufficiency.determine_estimated_self_sufficiency()]
 
         fig = make_subplots(
             rows=1, cols=2,
@@ -22,20 +22,20 @@ class AgentPlots:
         )
         
         fig.add_trace(
-            go.Bar(x=agent_ids, y=simulated_self_consumption, name='Simulated Self-Consumption'),
+            go.Bar(y=simulated_self_consumption, name='Simulated Self-Consumption'),
             row=1, col=1
         )
         fig.add_trace(
-            go.Bar(x=agent_ids, y=estimated_self_consumption, name='Estimated Self-Consumption'),
+            go.Bar(y=estimated_self_consumption, name='Estimated Self-Consumption'),
             row=1, col=1
         )
         
         fig.add_trace(
-            go.Bar(x=agent_ids, y=simulated_self_sufficiency, name='Simulated Self-Sufficiency'),
+            go.Bar(y=simulated_self_sufficiency, name='Simulated Self-Sufficiency'),
             row=1, col=2
         )
         fig.add_trace(
-            go.Bar(x=agent_ids, y=estimated_self_sufficiency, name='Estimated Self-Sufficiency'),
+            go.Bar(y=estimated_self_sufficiency, name='Estimated Self-Sufficiency'),
             row=1, col=2
         )
         
