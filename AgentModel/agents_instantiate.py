@@ -12,12 +12,3 @@ class InstantiateAgents:
 
         manager_agent = manager_agents[0] if manager_agents else None
         return house_agents, manager_agent
-
-    def set_agent_type(self, house_agent, agent_type):
-        house_agent.agent_type = agent_type
-
-    def set_agents_type(self):
-        house_agents = [agent for agent in self.agent_model.schedule.agents if isinstance(agent, HouseAgent)]
-        agent_type = AgentType.get_random_type()
-        for house_agent in house_agents:
-            self.set_agent_type(house_agent, agent_type)

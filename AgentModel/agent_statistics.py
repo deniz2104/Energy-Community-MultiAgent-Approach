@@ -19,7 +19,6 @@ class AgentStatistics:
 
     def run_simulation_and_generate_statistics(self) -> tuple[list[HouseAgent], ManagerAgent]:
         house_agents, manager_agent = self.instantiate_agents.instantiate_all_agents()
-        self.instantiate_agents.set_agents_type()
 
         self.run_model.run()
 

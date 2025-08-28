@@ -3,6 +3,7 @@ from mesa import Model,time
 import random
 from AgentModel.house_agent import HouseAgent
 from AgentModel.manager_agent import ManagerAgent
+from AgentModel.agent_types import AgentType
 
 class HouseModel(Model):
     def __init__(self,n,house_obj,recommendation_dictionaries: Optional[dict[int,dict[int,int]]] = None,seed: Optional[int]=None)-> None:
@@ -16,6 +17,8 @@ class HouseModel(Model):
         self.create_agents(house_obj)
 
     def create_agents(self,house_obj)-> None:
+        agent_type = AgentType.get_random_type()
+        
         for house in house_obj:
             house_recommendation_dict = self.recommendation_dictionaries.get(house.house_id, {})
             
@@ -28,7 +31,7 @@ class HouseModel(Model):
                 unique_id=house.house_id,
                 model=self, 
                 house_obj=house, 
-                agent_type="ideal",
+                agent_type=agent_type,
                 recommendation_dictionary=recommendation_dict
             )
             self.schedule.add(agent)

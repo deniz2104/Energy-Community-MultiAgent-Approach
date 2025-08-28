@@ -45,12 +45,12 @@ class ConsumptionStatistics:
 
         if impact_stats:
             print("--- CONSUMPTION IMPACT ---")
-            print(f"Original consumption: {impact_stats['original_consumption']:.2f} kWh")
-            print(f"Simulated consumption: {impact_stats['simulated_consumption']:.2f} kWh")
+            print(f"Original consumption: {impact_stats['original_consumption']:.2f} Wh")
+            print(f"Simulated consumption: {impact_stats['simulated_consumption']:.2f} Wh")
             print()
         
         print("--- BASELINE PROFILE ---")
-        print(f"Weekly average consumption: {baseline_stats['weekly_average_consumption']:.2f} kWh")
+        print(f"Weekly average consumption: {baseline_stats['weekly_average_consumption']:.2f} Wh")
         print(f"Total weeks in data: {baseline_stats['total_weeks_in_data']}")
         print()
 

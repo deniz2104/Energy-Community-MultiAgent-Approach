@@ -31,7 +31,7 @@ class HouseAgent(Agent):
 
         self.recommendation_dictionary = recommendation_dictionary if recommendation_dictionary is not None else {}
 
-        self.set_agent_type()
+        self.follow_recommendation = self.set_agent_type()
 
     def define_weekly_consumption(self) -> dict[int,float]:
         weekly_consumption = {}
@@ -47,13 +47,14 @@ class HouseAgent(Agent):
         common_timestamps = sorted(consumption_timestamps.intersection(power_estimated_timestamps))
         return common_timestamps
 
-    def set_agent_type(self) -> None:
+    def set_agent_type(self) -> float:
         if self.agent_type == "ideal":
             self.follow_recommendation = 1.0
         elif self.agent_type == "enthusiastic":
             self.follow_recommendation = 0.7
         elif self.agent_type == "non-enthusiastic":
             self.follow_recommendation = 0.3   
+        return self.follow_recommendation
 
     def get_recommendation(self,recommendation) -> None: 
         self.current_recommendation = recommendation if recommendation else "maintain"
@@ -98,5 +99,5 @@ class HouseAgent(Agent):
         action=self.decide_action()
         self.last_action = action
         
-        self.apply_action(action)
+        self.apply_action(self.last_action)
         self.determine_simulated_self_consumption_and_self_sufficiency()

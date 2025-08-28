@@ -35,5 +35,6 @@ class ManagerAgent(Agent):
         return recommendations
 
     def step(self) -> None:
-        self.current_recommendation = self.make_recommendation()
-        self.recommendation_history.append(self.current_recommendation)
+        recommendation = self.make_recommendation()
+        self.current_recommendation = recommendation
+        self.recommendation_history.append(recommendation)
