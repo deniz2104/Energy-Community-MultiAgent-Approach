@@ -1,6 +1,5 @@
 from AgentModel.house_agent import HouseAgent
 from AgentModel.manager_agent import ManagerAgent
-from AgentModel.agent_types import AgentType
 
 class InstantiateAgents:
     def __init__(self, agent_model) -> None:

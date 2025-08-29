@@ -2,7 +2,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from AgentModel.house_agent import HouseAgent
 from AgentModel.agents_ss_sc import AgentsSelfSufficiencySelfConsumption
-import math
 
 class AgentPlots:
     def __init__(self,model):
@@ -126,18 +125,18 @@ class AgentPlots:
             hovermode='closest'
         )
         
-        fig.add_annotation(
-            x=0, y=0,
-            text="Ideal Point<br>(Perfect Autonomy)",
-            showarrow=True,
-            arrowhead=2,
-            arrowsize=1,
-            arrowwidth=2,
-            arrowcolor="green",
-            ax=50,
-            ay=-50,
-            bgcolor="lightgreen",
-            opacity=0.8
-        )
+        #fig.add_annotation(
+        #    x=0, y=0,
+        #    text="Ideal Point<br>(Perfect Autonomy)",
+        #    showarrow=True,
+        #    arrowhead=2,
+        #    arrowsize=1,
+        #    arrowwidth=2,
+        #    arrowcolor="green",
+        #    ax=50,
+        #    ay=-50,
+        #    bgcolor="lightgreen",
+        #    opacity=0.8
+        #)
         
         fig.show(renderer='browser')

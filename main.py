@@ -16,7 +16,7 @@ from AgentModel.agent_maximum_simulation_steps import AgentSimulationSteps
 ## la final ar fi good practice sa fac un devcontainer
 ## caiet practica
 ## web scraping pentru aflarea pretului 
-## pun graficele organizat intr-un keynote pt 1.5,10,15,20,23
+## pun graficele organizat intr-un keynote pt 1,5,10,15,20,23
 ## Desenez pe grafic linia Pareto
 
 if __name__ == "__main__":
