@@ -7,20 +7,16 @@ from SelfSufficiencyModel.determine_self_sufficiency_builder import SelfSufficie
 from SelfSufficiencyModel.self_sufficiency_attribute_adder import SelfSufficiencyAttributeAdder
 from HouseWithAppliancesModel.house_with_appliances_facade import HouseWithAppliancesFacade
 from RecommendationModel.recommendation_facade import RecommendationFacade
+from RecommendationModel.recommendation_dictionary_builder import RecommendationDictionaryBuilder
 from AgentModel.house_model import HouseModel
+from AgentModel.agent_plots import AgentPlots
 from AgentModel.agent_statistics import AgentStatistics
 from AgentModel.agent_maximum_simulation_steps import AgentSimulationSteps
 
 ## la final ar fi good practice sa fac un devcontainer
 ## caiet practica
-## am de pus dictionarele alea intr un csv si le manipulez de acolo, nu are sens sa le construiesc tot timpul
-## Calcul Monterar (1.31 kw). Cu cat se reduce factura pe un an intreg in fiecare caz
-## autoconsumul si autosuficienta se vor calcula pentru toti agentii si se va face o medie
-## facem acest proces pentru 1,5,10,15,20,nr total de case
-## pun graficele organizat intr-un keynote
-## Scatter plot
-## Pe axa x 1-autoconsumul Pe y 1-autonomia
-## Fiecare punct este un profil pe un număr de case calculat la un consum estimat și simulat.
+## web scraping pentru aflarea pretului 
+## pun graficele organizat intr-un keynote pt 1.5,10,15,20,23
 ## Desenez pe grafic linia Pareto
 
 if __name__ == "__main__":
@@ -51,17 +47,17 @@ if __name__ == "__main__":
     houses_with_appliances = house_with_appliances_facade.builder.build("CSVs/appliance_consumption_preprocessed.csv")
     
     recommendation_model_facade = RecommendationFacade()
-    recommendation_dictionaries = {}
-    
-    for house in houses_with_appliances[:3]:
-        appliances_thresholds = house_with_appliances_facade.determine_appliance_thresholds(house)
-        recommendation_dict = recommendation_model_facade.generate_recommendations(house, appliances_thresholds)
-        recommendation_dictionaries[house.house_id] = recommendation_dict
+    recommendation_dictionaries = RecommendationDictionaryBuilder().build("CSVs/recommendation_dictionaries.csv")
 
-    agent_model = HouseModel(n=10, house_obj=houses[:10], recommendation_dictionaries=recommendation_dictionaries)
+    agent_model = HouseModel(n=5, house_obj=houses[:5], recommendation_dictionaries=recommendation_dictionaries)
 
-    simulation_steps = AgentSimulationSteps(agent_model).get_maximum_simulation_steps(houses[:10])
+    simulation_steps = AgentSimulationSteps(agent_model).get_maximum_simulation_steps(houses[:5])
 
     agent_statistics_model = AgentStatistics(agent_model, simulation_steps)
 
     agent_statistics_model.run_simulation_and_generate_statistics()
+    
+    agent_plots = AgentPlots(agent_model)
+    
+    agent_plots.plot_self_consumption_and_sufficiency_comparison()
+    agent_plots.plot_self_consumption_sufficiency_scatter()
