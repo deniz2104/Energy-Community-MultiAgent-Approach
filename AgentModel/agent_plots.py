@@ -116,7 +116,7 @@ class AgentPlots:
                      annotation_text="Perfect Self-Consumption")
         
         fig.update_layout(
-            title="Scatter Plot: House Profiles - Distance from Perfect Energy Autonomy",
+            title=f"Scatter Plot: House Profiles - Distance from Perfect Energy Autonomy Agent Type {self.house_agents[0].agent_type}",
             xaxis_title="1 - Self Consumption (Distance from Perfect Self-Consumption)",
             yaxis_title="1 - Self Sufficiency (Distance from Perfect Self-Sufficiency)",
             showlegend=True,
