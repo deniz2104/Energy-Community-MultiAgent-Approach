@@ -12,6 +12,7 @@ from AgentModel.house_model import HouseModel
 from AgentModel.agent_plots import AgentPlots
 from AgentModel.agent_statistics import AgentStatistics
 from AgentModel.agent_maximum_simulation_steps import AgentSimulationSteps
+from HelperFiles.file_to_gather_number_of_houses import GatherNumberOfHouses
 
 ## la final ar fi good practice sa fac un devcontainer
 ## caiet practica
@@ -49,9 +50,13 @@ if __name__ == "__main__":
     recommendation_model_facade = RecommendationFacade()
     recommendation_dictionaries = RecommendationDictionaryBuilder().build("CSVs/recommendation_dictionaries.csv")
 
-    agent_model = HouseModel(n=5, house_obj=houses[:5], recommendation_dictionaries=recommendation_dictionaries)
+    number_of_houses = GatherNumberOfHouses.get_random_number()
 
-    simulation_steps = AgentSimulationSteps(agent_model).get_maximum_simulation_steps(houses[:5])
+    houses_to_simulate = houses[:number_of_houses]
+
+    agent_model = HouseModel(n=number_of_houses, house_obj=houses_to_simulate, recommendation_dictionaries=recommendation_dictionaries)
+
+    simulation_steps = AgentSimulationSteps(agent_model).get_maximum_simulation_steps(houses_to_simulate)
 
     agent_statistics_model = AgentStatistics(agent_model, simulation_steps)
 
@@ -59,5 +64,4 @@ if __name__ == "__main__":
     
     agent_plots = AgentPlots(agent_model)
     
-    agent_plots.plot_self_consumption_and_sufficiency_comparison()
     agent_plots.plot_self_consumption_sufficiency_scatter()
