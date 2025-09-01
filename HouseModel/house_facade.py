@@ -3,7 +3,6 @@ from HouseModel.house_builder import HouseBuilder
 from HouseModel.houses_preprocessing_data import HousesPreprocessingData
 from HouseModel.house_resampling import HouseResampler
 from HouseModel.house_plotter import HousePlotter
-from HouseModel.house_useful_stats import HouseStatistics
 from HouseModel.house import House
 
 class HouseFacade:
@@ -12,7 +11,6 @@ class HouseFacade:
         self.houses_preprocessor = HousesPreprocessingData()
         self.resampler = HouseResampler()
         self.plotter = HousePlotter()
-        self.statistics = HouseStatistics()
 
     def build_houses(self, csv_path: str) -> list[House]:
         return self.builder.build(csv_path)
@@ -44,6 +42,3 @@ class HouseFacade:
             self.plotter.plot_consumption_over_time_range(house, time_range[0], time_range[1])
         else:
             self.plotter.plot_consumption_over_time(house, month=month, day=day)
-
-    def get_house_statistics(self, house: House):
-        self.statistics.get_weekly_consumption_by_month(house)
