@@ -12,18 +12,19 @@ from AgentModel.house_model import HouseModel
 from AgentModel.agent_plots import AgentPlots
 from AgentModel.agent_statistics import AgentStatistics
 from AgentModel.agent_maximum_simulation_steps import AgentSimulationSteps
-from HelperFiles.file_to_gather_number_of_houses import GatherNumberOfHouses
+from HelperFiles.file_to_gather_number_of_houses import NUMBER_OF_HOUSES
 
 ## la final ar fi good practice sa fac un devcontainer
-## caiet practica
 ## web scraping pentru aflarea pretului 
 ## pun graficele organizat intr-un keynote pt 1,5,10,15,20,23
+## pentru un scenariu rulez pentru 1,5,10,15,20,23
+## fac ss si sc pentru fiecare numar si le plotez pe acelasi grafic
 ## Desenez pe grafic linia Pareto
 
 if __name__ == "__main__":
     house_facade = HouseFacade()
     houses = house_facade.build_houses("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
-    
+        
     solar_radiation_house_facade = SolarRadiationHouseFacade()
     solar_radiation_houses = solar_radiation_house_facade.builder.build("CSVs/solar_radiation_after_resampling_and_matching_houses.csv")
 
@@ -50,18 +51,15 @@ if __name__ == "__main__":
     recommendation_model_facade = RecommendationFacade()
     recommendation_dictionaries = RecommendationDictionaryBuilder().build("CSVs/recommendation_dictionaries.csv")
 
-    number_of_houses = GatherNumberOfHouses.get_random_number()
+    for number in NUMBER_OF_HOUSES:
+        houses_to_simulate = houses[:number]
 
-    houses_to_simulate = houses[:number_of_houses]
+        agent_model = HouseModel(n=number, house_obj=houses_to_simulate, recommendation_dictionaries=recommendation_dictionaries)
 
-    agent_model = HouseModel(n=number_of_houses, house_obj=houses_to_simulate, recommendation_dictionaries=recommendation_dictionaries)
+        simulation_steps = AgentSimulationSteps(agent_model).get_maximum_simulation_steps(houses_to_simulate)
 
-    simulation_steps = AgentSimulationSteps(agent_model).get_maximum_simulation_steps(houses_to_simulate)
+        agent_statistics_model = AgentStatistics(agent_model, simulation_steps)
 
-    agent_statistics_model = AgentStatistics(agent_model, simulation_steps)
+        agent_statistics_model.run_simulation_and_generate_statistics()
 
-    agent_statistics_model.run_simulation_and_generate_statistics()
-    
-    agent_plots = AgentPlots(agent_model)
-    
-    agent_plots.plot_self_consumption_sufficiency_scatter()
+        agent_plots = AgentPlots(agent_model)
