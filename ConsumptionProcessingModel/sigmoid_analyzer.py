@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.graph_objects as go
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
-from HouseWithAppliancesModel.consumption_data_processor import ConsumptionDataProcessor
+from ConsumptionProcessingModel.consumption_data_processor import ConsumptionDataProcessor
 
 class SigmoidAnalyzer:
     def __init__(self) -> None:

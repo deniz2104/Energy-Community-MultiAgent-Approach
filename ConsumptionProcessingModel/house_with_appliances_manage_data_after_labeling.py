@@ -1,5 +1,5 @@
 from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
-from HouseWithAppliancesModel.house_with_appliances_label_for_on_and_off_values import HouseWithAppliancesOnOffValues
+from ConsumptionProcessingModel.house_with_appliances_label_for_on_and_off_values import HouseWithAppliancesOnOffValues
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 import pandas as pd
 import numpy as np
@@ -19,13 +19,6 @@ class HouseWithAppliancesManageDataAfterLabeling:
                     hours_count[hour] += 1
             hour_dictionary[appliance_type] = {hour: count for hour, count in hours_count.items() if count > 0}
         return hour_dictionary
-
-    def count_off_values_per_appliance(self, dictionary_with_on_off_values: dict[str, dict[int, int]]) -> dict[str, int]:
-        off_values_count: dict[str, int] = {}
-        for appliance_type, pairs in dictionary_with_on_off_values.items():
-            off_count = sum(1 for _, state in pairs.items() if state == 0)
-            off_values_count[appliance_type] = off_count
-        return off_values_count
     
     def gather_off_values_per_appliance(self, house_with_appliances: HouseWithAppliancesConsumption) -> dict[str, np.ndarray]:
         off_values_per_appliance: dict[str, np.ndarray] = {}

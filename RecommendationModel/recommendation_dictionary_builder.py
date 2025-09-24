@@ -1,4 +1,5 @@
 from HouseWithAppliancesModel.house_with_appliances_facade import HouseWithAppliancesFacade
+from ConsumptionProcessingModel.consumption_processing_facade import ConsumptionProcessingFacade
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 from RecommendationModel.recommendation_facade import RecommendationFacade
 import csv
@@ -6,6 +7,7 @@ import csv
 class RecommendationDictionaryBuilder:
     def __init__(self):
         self.house_with_appliances_facade = HouseWithAppliancesFacade()
+        self.consumption_processing_facade = ConsumptionProcessingFacade()
         self.recommendation_model_facade = RecommendationFacade()
 
     def open_csv_file(self, csv_path: str) -> list[tuple[int, int, int]]:
@@ -29,7 +31,7 @@ class RecommendationDictionaryBuilder:
         return recommendations
 
     def build_recommendation_dictionary(self, house):
-        appliances_thresholds = self.house_with_appliances_facade.determine_appliance_thresholds(house)
+        appliances_thresholds = self.consumption_processing_facade.determine_appliance_thresholds(house)
         recommendation_dict = self.recommendation_model_facade.generate_recommendations(house, appliances_thresholds)
         return recommendation_dict
 

@@ -3,8 +3,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from typing import Final
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
-from HouseWithAppliancesModel.consumption_data_processor import ConsumptionDataProcessor
-from HouseWithAppliancesModel.sigmoid_analyzer import SigmoidAnalyzer
+from ConsumptionProcessingModel.consumption_data_processor import ConsumptionDataProcessor
+from ConsumptionProcessingModel.sigmoid_analyzer import SigmoidAnalyzer
 
 class ConsumptionClusterer:
     def __init__(self) -> None:
