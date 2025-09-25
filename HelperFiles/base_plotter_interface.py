@@ -42,7 +42,7 @@ class BasePlotterInterface(ABC):
                 y=list(data_dict.values()), 
                 title=f'{title_prefix}: {object_id}'
             )
-            fig.show()
+            fig.show(renderer='browser')
         elif month is not None and day is None:
             timestamps_period, values_period = self.filter_values_by_month_and_day(data_object, 'month', month)
             fig = px.line(
@@ -50,7 +50,7 @@ class BasePlotterInterface(ABC):
                 y=values_period, 
                 title=f'{title_prefix}: {object_id} - Month {month}'
             )
-            fig.show()
+            fig.show(renderer='browser')
         elif month is None and day is not None:
             timestamps_period, values_period = self.filter_values_by_month_and_day(data_object, 'day', day)
             fig = px.line(
@@ -58,7 +58,7 @@ class BasePlotterInterface(ABC):
                 y=values_period, 
                 title=f'{title_prefix}: {object_id} - Day {day}'
             )
-            fig.show()
+            fig.show(renderer='browser')
     
     def plot_over_time_range(self, data_object: Any, time_stamp_1: str, time_stamp_2: str) -> None:
         start_timestamp = pd.Timestamp(time_stamp_1)
@@ -77,4 +77,4 @@ class BasePlotterInterface(ABC):
             y=values_period, 
             title=f'{title_prefix}: {object_id} - {start_timestamp.date()} to {end_timestamp.date()}'
         )
-        fig.show()
+        fig.show(renderer='browser')

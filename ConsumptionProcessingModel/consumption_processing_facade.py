@@ -9,12 +9,6 @@ from ConsumptionProcessingModel.consumption_processing_plotter import Consumptio
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 
 class ConsumptionProcessingFacade:
-    """
-    Facade class for consumption processing, clustering, labeling, and analysis operations.
-    This class provides a unified interface for all consumption-related data processing
-    including on/off pattern detection, threshold determination, and sigmoid analysis.
-    """
-    
     def __init__(self) -> None:
         self.data_labeler: HouseWithAppliancesOnOffValues = HouseWithAppliancesOnOffValues()
         self.manage_data_after_labeling: HouseWithAppliancesManageDataAfterLabeling = HouseWithAppliancesManageDataAfterLabeling()

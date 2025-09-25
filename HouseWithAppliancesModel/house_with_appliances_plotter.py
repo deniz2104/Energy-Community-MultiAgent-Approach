@@ -15,5 +15,5 @@ class HouseWithAppliancesPlotter:
             fig.add_trace(go.Scatter(x=timestamps, y=values, name=appliance_type), row=i+1, col=1)
 
         fig.update_layout(title_text="Appliances Consumption Over Time", showlegend=False)
-        fig.show()
+        fig.show(renderer='browser')
         

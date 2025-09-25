@@ -64,3 +64,44 @@ class AgentPlots:
 
         fig.update_layout(title=f'Agent {house_agent.unique_id}: Consumption Time Series')
         fig.show(renderer='browser')
+    
+    @staticmethod
+    def plot_scenarios_results(results_list):
+        fig = go.Figure()
+        
+        colors = {1: 'red', 5: 'blue', 10: 'green', 15: 'orange', 20: 'purple', 23: 'brown'}
+        
+        for result in results_list:
+            num_houses = result['number_of_houses']
+            agent_type = result['agent_type']
+            sc = result['sc']
+            ss = result['ss']
+
+            hover_text = f"Houses: {num_houses}<br>SC: {sc:.3f}<br>SS: {ss:.3f}<br>Agent Type: {agent_type}"
+
+            fig.add_trace(go.Scatter(
+                x=[sc],
+                y=[ss],
+                mode='markers',
+                marker=dict(
+                    color=colors.get(num_houses, 'gray'),
+                    size=10,
+                    opacity=0.7
+                ),
+                text=f"{num_houses}",
+                textposition="middle center",
+                name=f'{num_houses} Houses',
+                hovertext=hover_text,
+                hoverinfo="text",
+                showlegend=num_houses not in [r['number_of_houses'] for r in results_list[:results_list.index(result)]]
+            ))
+        
+        fig.update_layout(
+            title="Self-Consumption vs Self-Sufficiency by Number of Houses",
+            xaxis_title="Self-Consumption",
+            yaxis_title="Self-Sufficiency",
+            height=600,
+            width=800
+        )
+        
+        fig.show(renderer='browser')
