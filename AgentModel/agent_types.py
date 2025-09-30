@@ -1,6 +1,4 @@
 from enum import Enum
-import random
-from typing import Literal
 
 class AgentType(Enum):
     IDEAL = "ideal"
@@ -8,5 +6,5 @@ class AgentType(Enum):
     NON_ENTHUSIASTIC = "non-enthusiastic"
 
     @classmethod
-    def get_random_type(cls) -> Literal["ideal", "enthusiastic", "non-enthusiastic"]:
-        return (random.choice(list(cls))).value
+    def get_types(cls) -> list[str]:
+        return [member.value for member in cls]
