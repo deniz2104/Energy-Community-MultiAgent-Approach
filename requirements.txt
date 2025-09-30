@@ -4,3 +4,4 @@ plotly == 6.2.0
 scipy == 1.16.0
 numpy == 2.3.2
 scikit-learn == 1.7.1
+paretoset == 1.2.5

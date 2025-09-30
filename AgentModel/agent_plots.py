@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+from paretoset import paretoset
 from plotly.subplots import make_subplots
 from AgentModel.house_agent import HouseAgent
 from AgentModel.agents_ss_sc import AgentsSelfSufficiencySelfConsumption
@@ -70,6 +71,43 @@ class AgentPlots:
 
         fig.update_layout(title=f'Agent {house_agent.unique_id}: Consumption Time Series')
         fig.show(renderer='browser')
+
+    @staticmethod
+    def plot_pareto_frontier(results_list):
+        points = [(1-result['sc'], 1-result['ss']) for result in results_list]  
+        pareto_mask = paretoset(points, sense=["max", "max"])
+        pareto_points = [points[i] for i in range(len(points)) if pareto_mask[i]]
+        pareto_points.sort(key=lambda p: p[0])
+
+        fig = go.Figure()
+        
+        fig.add_trace(go.Scatter(
+            x=[p[0] for p in points],
+            y=[p[1] for p in points],
+            mode='markers',
+            name='All Points',
+            marker=dict(color='lightgrey', size=8)
+        ))
+        
+        if pareto_points:
+            fig.add_trace(go.Scatter(
+                x=[p[0] for p in pareto_points],
+                y=[p[1] for p in pareto_points],
+                mode='lines+markers',
+                name='Pareto Frontier',
+                line=dict(color='red', width=2),
+                marker=dict(color='red', size=10)
+            ))
+
+        fig.update_layout(
+            title="Pareto Frontier Analysis",
+            xaxis_title="Objective 1 (minimize)",
+            yaxis_title="Objective 2 (minimize)",
+            height=600,
+            width=800
+        )
+        
+        fig.show(renderer='browser')
     
     @staticmethod
     def plot_scenarios_results(results_list):
@@ -84,7 +122,7 @@ class AgentPlots:
             sc = result['sc']
             ss = result['ss']
 
-            hover_text = f"Houses: {num_houses}<br>SC: {1-sc:.3f}<br>SS: {1-ss:.3f}<br>Agent Type: {agent_type}"
+            hover_text = f"Houses: {num_houses}<br>SC: {sc:.3f}<br>SS: {ss:.3f}<br>Agent Type: {agent_type}"
 
             fig.add_trace(go.Scatter(
                 x=[1-sc],
@@ -98,18 +136,24 @@ class AgentPlots:
                 ),
                 text=f"{num_houses}",
                 textposition="middle center",
-                name=f'{num_houses} Houses',
+                name=f'{num_houses} Houses - {agent_type}',
                 hovertext=hover_text,
                 hoverinfo="text",
                 showlegend=num_houses not in [r['number_of_houses'] for r in results_list[:results_list.index(result)]]
             ))
-        
+
         fig.update_layout(
-            title="Self-Consumption vs Self-Sufficiency by Number of Houses",
-            xaxis_title="Self-Consumption",
-            yaxis_title="Self-Sufficiency",
+            title="Self-Consumption vs Self-Sufficiency with Pareto Frontier",
+            xaxis_title="1 - Self-Consumption (Lower is Better)",
+            yaxis_title="1 - Self-Sufficiency (Lower is Better)",
             height=600,
-            width=800
+            width=1000,
+            legend=dict(
+                yanchor="top",
+                y=0.99,
+                xanchor="left",
+                x=1.01
+            )
         )
         
         fig.show(renderer='browser')
