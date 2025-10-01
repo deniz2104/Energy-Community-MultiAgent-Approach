@@ -17,6 +17,8 @@ class AgentPlots:
         simulated_self_sufficiency = [self.self_consumption_and_self_sufficiency.determine_simulated_self_sufficiency()]
         estimated_self_sufficiency = [self.self_consumption_and_self_sufficiency.determine_estimated_self_sufficiency()]
 
+        agent_type = self.model.agent_type.value.title() if hasattr(self.model.agent_type, 'value') else str(self.model.agent_type).title()
+
         fig = make_subplots(
             rows=1, cols=3,
             subplot_titles=('Self-Consumption: Simulated vs Estimated', 'Self-Sufficiency: Simulated vs Estimated', 'Monetary Savings (RON)'),
@@ -24,30 +26,30 @@ class AgentPlots:
         )
         
         fig.add_trace(
-            go.Bar(y=simulated_self_consumption, name='Simulated Self-Consumption', marker_color='lightblue'),
+            go.Bar(y=simulated_self_consumption, name=f'{agent_type} - Simulated Self-Consumption', marker_color='lightblue'),
             row=1, col=1
         )
         fig.add_trace(
-            go.Bar(y=estimated_self_consumption, name='Estimated Self-Consumption', marker_color='darkblue'),
+            go.Bar(y=estimated_self_consumption, name=f'{agent_type} - Estimated Self-Consumption', marker_color='darkblue'),
             row=1, col=1
         )
         
         fig.add_trace(
-            go.Bar(y=simulated_self_sufficiency, name='Simulated Self-Sufficiency', marker_color='lightgreen'),
+            go.Bar(y=simulated_self_sufficiency, name=f'{agent_type} - Simulated Self-Sufficiency', marker_color='lightgreen'),
             row=1, col=2
         )
         fig.add_trace(
-            go.Bar(y=estimated_self_sufficiency, name='Estimated Self-Sufficiency', marker_color='darkgreen'),
+            go.Bar(y=estimated_self_sufficiency, name=f'{agent_type} - Estimated Self-Sufficiency', marker_color='darkgreen'),
             row=1, col=2
         )
         
         fig.add_trace(
-            go.Bar(y=[savings], name=f'Savings: RON{savings:.2f}', marker_color='gold'),
+            go.Bar(y=[savings], name=f'{agent_type} - Savings: RON{savings:.2f}', marker_color='gold'),
             row=1, col=3
         )
         
         fig.update_layout(
-            title_text=f"Agent Analysis for {number_of_houses} Houses - Self-Consumption, Self-Sufficiency & Savings",
+            title_text=f"{agent_type} Agent Analysis for {number_of_houses} Houses - Self-Consumption, Self-Sufficiency & Savings",
             showlegend=True,
             height=500,
             width=1200
@@ -101,8 +103,6 @@ class AgentPlots:
 
         fig.update_layout(
             title="Pareto Frontier Analysis",
-            xaxis_title="Objective 1 (minimize)",
-            yaxis_title="Objective 2 (minimize)",
             height=600,
             width=800
         )
@@ -122,7 +122,7 @@ class AgentPlots:
             sc = result['sc']
             ss = result['ss']
 
-            hover_text = f"Houses: {num_houses}<br>SC: {sc:.3f}<br>SS: {ss:.3f}<br>Agent Type: {agent_type}"
+            hover_text = f"Houses: {num_houses}<br>SC: {1-sc:.3f}<br>SS: {1-ss:.3f}<br>Agent Type: {agent_type}"
 
             fig.add_trace(go.Scatter(
                 x=[1-sc],
@@ -144,8 +144,6 @@ class AgentPlots:
 
         fig.update_layout(
             title="Self-Consumption vs Self-Sufficiency with Pareto Frontier",
-            xaxis_title="1 - Self-Consumption (Lower is Better)",
-            yaxis_title="1 - Self-Sufficiency (Lower is Better)",
             height=600,
             width=1000,
             legend=dict(

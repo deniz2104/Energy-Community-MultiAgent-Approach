@@ -6,13 +6,15 @@ from AgentModel.manager_agent import ManagerAgent
 from AgentModel.agent_types import AgentType
 
 class HouseModel(Model):
-    def __init__(self,n,house_obj,recommendation_dictionaries: Optional[dict[int,dict[int,int]]] = None,seed: Optional[int]=None,agent_type: Optional[AgentType]=None)-> None:
+    def __init__(self,n,house_obj,recommendation_dictionaries: Optional[dict[int,dict[int,int]]] = None,
+                 seed: Optional[int]=None,agent_type: Optional[AgentType]=None, energetic_company_provider: Optional[dict[str,dict[str,float]]]=None)-> None:
         super().__init__(seed=seed)
         self.num_agents = n
         self.random = random.Random(seed)
         self.step_count=0
         self.schedule = time.RandomActivation(self)
-        self.agent_type = agent_type
+        self.agent_type = agent_type if agent_type is not None else AgentType.IDEAL
+        self.energetic_company_provider = energetic_company_provider if energetic_company_provider is not None else {}
         self.recommendation_dictionaries = recommendation_dictionaries if recommendation_dictionaries is not None else {}
         self.create_manager()
         self.create_agents(house_obj)

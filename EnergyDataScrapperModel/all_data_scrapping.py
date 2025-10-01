@@ -25,7 +25,7 @@ def make_price_of_kW_per_company(company):
     base_price = float(company.get("pret_energie", 0)) + float(company.get("acciza", 0)) + float(company.get("contravaloare_certificate_verzi", 0)) + float(company.get("tarif_serviciu_distributie", 0)) + float(company.get("tarif_serviciu_sistem", 0)) + float(company.get("tarif_transport_tl", 0)) + float(company.get("taxa_cogenerare_inalta_eficienta", 0))
     return round((base_price + (base_price * float(company.get("tva", 0)) / 100)), 2)
 
-def get_relevant_data_from_the_response():
+def get_best_companies_data_from_the_response():
     all_companies = get_data()
     relevant_data = {}
     for company in all_companies:
@@ -48,23 +48,23 @@ def get_relevant_data_from_the_response():
     return relevant_data
 
 def give_5_best_offers_related_to_current_offer(current_company:str):
-    relevant_data = get_relevant_data_from_the_response()
-    if current_company not in relevant_data:
+    all_data = get_best_companies_data_from_the_response()
+    if current_company not in list(all_data.keys()):
         raise ValueError(f"Current company '{current_company}' not found in the data.")
     
-    current_offer = relevant_data[current_company]
+    current_offer = all_data[current_company]
     current_price = current_offer["price_of_kW"]
     current_renewable_percentage = current_offer["renewal_energy_percentage"]
 
     better_offers_related_to_price = [
-        (company, data) for company, data in relevant_data.items()
+        (company, data) for company, data in all_data.items()
         if (data["price_of_kW"] < current_price)
     ]
     better_offers_related_to_price.sort(key=lambda x: x[1]["price_of_kW"])
 
     better_offers_related_to_renewable_energy = [
-        (company, data) for company, data in relevant_data.items()
-        if (data["renewal_energy_percentage"] > current_renewable_percentage)
+        (company, data) for company, data in all_data.items()
+        if (data["renewal_energy_percentage"] >= current_renewable_percentage)
     ]
     better_offers_related_to_renewable_energy.sort(key=lambda x: x[1]["renewal_energy_percentage"], reverse=True)
 

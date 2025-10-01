@@ -5,12 +5,12 @@ class ManagerAgent(Agent):
     def __init__(self, unique_id, model) -> None:
         super().__init__(unique_id, model)
 
-        self.current_recommendation : dict[int,str]= {}
-        self.recommendation_history :list[dict[int,str]] = []
+        self.current_recommendation: dict[int, str] = {}
+        self.recommendation_history: list[dict[int, str]] = []
 
-    def make_recommendation(self)->dict[int,str]:
-        current_step=self.model.step_count
-        current_week= current_step // 168
+    def make_recommendation(self) -> dict[int, str]:
+        current_step = self.model.step_count
+        current_week = current_step // 168
 
         houses = [agent for agent in self.model.schedule.agents if isinstance(agent, HouseAgent)]
         recommendations = {}
