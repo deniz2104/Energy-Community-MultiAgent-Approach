@@ -1,6 +1,6 @@
 import pandas as pd
 from ConsumptionProcessingModel.consumption_data_processor import ConsumptionDataProcessor
-from HelperFiles.hours_for_day_and_night import TOTAL_HOURS
+from config import TOTAL_HOURS
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 
 class RecommendationModel:

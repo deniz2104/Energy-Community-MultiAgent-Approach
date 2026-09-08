@@ -1,31 +1,33 @@
-import csv
-from database_house import DatabaseHandler
-class SolarRadiationDatabaseHandler(DatabaseHandler):
-    def extract_solar_radiation_data(self) -> list[tuple]:
-        self.cursor.execute("""
-            SELECT h.ID,WD.EpochTime, WD.TotalSolarConsumption
-            FROM House h
-            JOIN (
-                SELECT WeatherStationIDREF, EpochTime, Value as TotalSolarConsumption
-                FROM WeatherData
-                WHERE WeatherVariableIDREF=4
-                GROUP BY WeatherStationIDREF, EpochTime
-                ORDER BY WeatherVariableIDREF DESC
-            ) WD ON h.WeatherStationIDREF = WD.WeatherStationIDREF
-            ORDER BY h.ID;
-        """)
-        rows= self.cursor.fetchall()
-        return rows
 
-    def write_to_csv(self, rows: list[tuple], file_path: str) -> None:
-        with open(file_path, 'w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
-            writer.writerows(rows)
+from DataBaseModel.database_core import DataHandler
+from DataBaseModel.constants import SOLAR_DATA_FILE, SOLAR_VARIABLE_ID, ONE_YEAR_IN_SECONDS
+
+class SolarRadiationDatabaseHandler(DataHandler):
+    def extract_solar_radiation_data(self, file_name: str) -> None:
+        house = self.tables['House']
+        weather_data = self.tables['WeatherData']
+        consumption = self.tables['Consumption']
+
+        solar = weather_data[weather_data['WeatherVariableIDREF'] == SOLAR_VARIABLE_ID]
+        grouped = solar.groupby(['WeatherStationIDREF', 'EpochTime'], as_index=False)['Value'].first()
+
+        consumption_bounds = consumption.groupby('HouseIDREF')['EpochTime'].agg(StartingEpochTime='min', EndingEpochTime='max')
+
+        merged = house[['ID', 'WeatherStationIDREF']].merge(grouped, on='WeatherStationIDREF')
+        merged = merged.merge(consumption_bounds, left_on='ID', right_index=True)
+        merged = merged[
+            (merged['EpochTime'] >= merged['StartingEpochTime']) &
+            (merged['EpochTime'] <= merged['EndingEpochTime']) &
+            (merged['EpochTime'] < merged['StartingEpochTime'] + ONE_YEAR_IN_SECONDS)
+        ]
+
+        self.tables['House'] = house[house['ID'].isin(merged['ID'])]
+
+        result = merged[['ID', 'EpochTime', 'Value']].rename(columns={'ID': 'HouseID', 'EpochTime': 'Timestamp', 'Value': 'TotalConsumption'})
+        result = result.sort_values(['HouseID', 'Timestamp']).reset_index(drop=True)
+        result = self.convert_epochtime_to_timestamp(result)
+        self.export_to_csv(result, file_name)
 
 if __name__ == "__main__":
-    handler=SolarRadiationDatabaseHandler()
-    handler.read_database("irise.sqlite3")
-    data=handler.extract_solar_radiation_data()
-    handler.write_to_csv(data, "CSVs/solar_radiation_data.csv")
-    handler.close_connection()
+    handler = SolarRadiationDatabaseHandler()
+    handler.extract_solar_radiation_data(SOLAR_DATA_FILE)

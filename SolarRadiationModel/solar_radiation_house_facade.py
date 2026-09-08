@@ -1,20 +1,17 @@
 from typing import Optional
-from HouseModel.house_builder import HouseBuilder
 from HouseModel.house import House
-from SolarRadiationModel.solar_radiation_house_builder import SolarRadiationHouseBuilder
 from SolarRadiationModel.solar_radiation_house_preprocessing_data import SolarRadiationHousePreprocessingData
 from SolarRadiationModel.solar_radiation_plotter import SolarRadiationPlotter
 from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
+from CsvModel.csv_core import export_to_csv
 
 class SolarRadiationHouseFacade:
     def __init__(self) -> None:
-        self.builder = SolarRadiationHouseBuilder()
         self.preprocessor = SolarRadiationHousePreprocessingData()
-        self.house_builder = HouseBuilder()
         self.plotter = SolarRadiationPlotter()
 
     def build_solar_radiation_data(self, csv_path: str) -> list[SolarRadiationHouse]:
-        return self.builder.build(csv_path)
+        return SolarRadiationHouse.build(csv_path)
 
     def process_solar_radiation_pipeline(self, csv_path: str, houses: list[House], export_solar_radiation_path: Optional[str] = None, export_house_path: Optional[str] = None) -> list[SolarRadiationHouse]:
         solar_radiation_houses = self.build_solar_radiation_data(csv_path)
@@ -36,10 +33,12 @@ class SolarRadiationHouseFacade:
             houses.remove(house)
 
         if export_solar_radiation_path:
-            self.builder.export_to_csv(solar_radiation_houses, export_solar_radiation_path)
+            solar_radiation_rows = [(house.house_id, timestamp, value) for house in solar_radiation_houses for timestamp, value in house.solar_radiation.items()]
+            export_to_csv(solar_radiation_rows, export_solar_radiation_path)
 
         if export_house_path:
-            self.house_builder.export_to_csv(houses, export_house_path)
+            house_rows = [(house.house_id, timestamp, consumption) for house in houses for timestamp, consumption in house.consumption.items()]
+            export_to_csv(house_rows, export_house_path)
 
         return solar_radiation_houses
 

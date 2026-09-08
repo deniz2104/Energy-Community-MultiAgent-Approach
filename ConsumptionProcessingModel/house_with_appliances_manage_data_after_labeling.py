@@ -1,4 +1,4 @@
-from HelperFiles.hours_for_day_and_night import NIGHT_HOURS,TOTAL_HOURS
+from config import NIGHT_HOURS, TOTAL_HOURS
 from ConsumptionProcessingModel.house_with_appliances_label_for_on_and_off_values import HouseWithAppliancesOnOffValues
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 import pandas as pd

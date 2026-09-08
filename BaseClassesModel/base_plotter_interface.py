@@ -19,46 +19,31 @@ class BasePlotterInterface(ABC):
     def get_plot_title_prefix(self) -> str:
         pass
 
-    def filter_values_by_month_and_day(self, data_object: Any, mode: str, value: int) -> tuple[list[pd.Timestamp], list[float]]:
+    def filter_values_by_month_and_day(self, data_object: Any, month: Optional[int] = None, day: Optional[int] = None) -> tuple[list[pd.Timestamp], list[float]]:
         timestamps = []
         values = []
-        
+
         data_dict = self.get_data_dict(data_object)
         for key, data_value in data_dict.items():
             timestamp = pd.to_datetime(key)
-            if (mode == 'month' and timestamp.month == value) or (mode == 'day' and timestamp.day == value):
+            if (month is None or timestamp.month == month) and (day is None or timestamp.day == day):
                 timestamps.append(timestamp)
                 values.append(data_value)
         return timestamps, values
-    
+
     def plot_over_time(self, data_object: Any, month: Optional[int] = None, day: Optional[int] = None) -> None:
         object_id = self.get_object_id(data_object)
         title_prefix = self.get_plot_title_prefix()
-        
-        if month is None and day is None:
-            data_dict = self.get_data_dict(data_object)
-            fig = px.line(
-                x=pd.to_datetime(list(data_dict.keys())), 
-                y=list(data_dict.values()), 
-                title=f'{title_prefix}: {object_id}'
-            )
-            fig.show(renderer='browser')
-        elif month is not None and day is None:
-            timestamps_period, values_period = self.filter_values_by_month_and_day(data_object, 'month', month)
-            fig = px.line(
-                x=timestamps_period, 
-                y=values_period, 
-                title=f'{title_prefix}: {object_id} - Month {month}'
-            )
-            fig.show(renderer='browser')
-        elif month is None and day is not None:
-            timestamps_period, values_period = self.filter_values_by_month_and_day(data_object, 'day', day)
-            fig = px.line(
-                x=timestamps_period, 
-                y=values_period, 
-                title=f'{title_prefix}: {object_id} - Day {day}'
-            )
-            fig.show(renderer='browser')
+        timestamps, values = self.filter_values_by_month_and_day(data_object, month, day)
+
+        title = f'{title_prefix}: {object_id}'
+        if month is not None:
+            title += f' - Month {month}'
+        if day is not None:
+            title += f' - Day {day}'
+
+        fig = px.line(x=timestamps, y=values, title=title)
+        fig.show(renderer='browser')
     
     def plot_over_time_range(self, data_object: Any, time_stamp_1: str, time_stamp_2: str) -> None:
         start_timestamp = pd.Timestamp(time_stamp_1)

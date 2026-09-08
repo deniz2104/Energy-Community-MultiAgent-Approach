@@ -1,7 +1,7 @@
 from collections import defaultdict
 import requests
 import unicodedata
-from HelperFiles.get_current_geolocation_via_api import get_location
+from EnergyDataScrapperModel.retrieve_current_location import get_location
 
 def get_data():
     url = "https://posf.ro/api/v1/comparator?request=get-judete"

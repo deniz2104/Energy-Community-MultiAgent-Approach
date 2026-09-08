@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from HelperFiles.hours_for_day_and_night import TOTAL_HOURS
+from config import TOTAL_HOURS
 
 class RecommendationPlotter:
     def __init__(self):

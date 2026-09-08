@@ -1,7 +1,7 @@
 from typing import Optional
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from HelperFiles.hours_for_day_and_night import TOTAL_HOURS, NIGHT_HOURS
+from config import TOTAL_HOURS, NIGHT_HOURS
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 
 class ConsumptionProcessingPlotter:

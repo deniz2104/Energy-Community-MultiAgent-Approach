@@ -1,5 +1,5 @@
 from typing import Optional
-from HelperFiles.base_plotter_interface import BasePlotterInterface
+from BaseClassesModel.base_plotter_interface import BasePlotterInterface
 from SolarRadiationModel.solar_radiation_house import SolarRadiationHouse
 
 class SolarRadiationPlotter(BasePlotterInterface):

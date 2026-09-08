@@ -1,4 +1,4 @@
-from HelperFiles.base_class_for_adding_attributes_to_house_objects import AddingAttributesToObject
+from BaseClassesModel.base_class_for_adding_attributes_to_house_objects import AddingAttributesToObject
 from SelfConsumptionModel.determine_self_consumption import SelfConsumption
 from HouseModel.house import House
 

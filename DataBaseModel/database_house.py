@@ -1,51 +1,30 @@
-import sqlite3
-from typing import Optional
-import time
-import csv
+from DataBaseModel.database_core import DataHandler
+from DataBaseModel.constants import CONSUMPTION_DATA_FILE, SOLAR_VARIABLE_ID, ONE_YEAR_IN_SECONDS
 
-class DatabaseHandler():
-    def __init__(self) -> None:
-        self.connection : Optional[sqlite3.Connection] = None
-        self.cursor : Optional[sqlite3.Cursor] = None
+class HouseDatabaseHandler(DataHandler):
+    def extract_house_consumption_data(self, file_name: str) -> None:
+        house = self.tables['House']
+        consumption = self.tables['Consumption']
+        weather_data = self.tables['WeatherData']
 
-    def read_database(self, database_path: str) -> None:
-        self.connection = sqlite3.connect(database_path)
-        self.cursor = self.connection.cursor()
+        solar = weather_data[weather_data['WeatherVariableIDREF'] == SOLAR_VARIABLE_ID]
+        solar_house_ids = set(house[['ID', 'WeatherStationIDREF']].merge(solar, on='WeatherStationIDREF')['ID'])
 
-    def extract_data(self) -> list[tuple]:
-        self.cursor.execute("""
-            SELECT h.ID, cs.EpochTime, cs.TotalConsumption
-            FROM House h
-            JOIN (
-                SELECT HouseIDREF, EpochTime, SUM(Value) AS TotalConsumption
-                FROM Consumption
-                GROUP BY HouseIDREF, EpochTime
-            ) cs ON cs.HouseIDREF = h.ID
-            ORDER BY h.ID;
-        """)
-        rows = self.cursor.fetchall()
-        return rows
+        grouped = consumption.groupby(['HouseIDREF', 'EpochTime'], as_index=False)['Value'].sum()
 
-    def convert_rows_to_correct_format(self, rows: list[tuple]) -> list[tuple]:
-        rows = list(rows)
-        for i in range(len(rows)):
-            row=list(rows[i])
-            row[1]=time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(row[1]))
-            rows[i]=tuple(row)
-        return rows
+        merged = house[['ID']].merge(grouped, left_on='ID', right_on='HouseIDREF')
+        merged = merged[merged['ID'].isin(solar_house_ids)]
 
-    def write_to_csv(self, rows: list[tuple], file_path: str) -> None:
-        with open(file_path, 'w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow(['HouseID', 'EpochTime', 'TotalConsumption'])
-            writer.writerows(rows)
+        starting_epoch_per_house = merged.groupby('ID')['EpochTime'].transform('min')
+        merged = merged[merged['EpochTime'] < starting_epoch_per_house + ONE_YEAR_IN_SECONDS]
 
-    def close_connection(self) -> None:
-        self.connection.close()
+        self.tables['House'] = house[house['ID'].isin(merged['ID'])]
+
+        result = merged[['ID', 'EpochTime', 'Value']].rename(columns={'ID': 'HouseID', 'EpochTime': 'Timestamp', 'Value': 'TotalConsumption'})
+        result = result.sort_values(['HouseID', 'Timestamp']).reset_index(drop=True)
+        result = self.convert_epochtime_to_timestamp(result)
+        self.export_to_csv(result, file_name)
 
 if __name__ == "__main__":
-    db_handler = DatabaseHandler()
-    db_handler.read_database('irise.sqlite3')
-    data = db_handler.extract_data()
-    db_handler.write_to_csv(data, 'CSVs/consumption_data.csv')
-    db_handler.close_connection()
+    db_handler = HouseDatabaseHandler()
+    db_handler.extract_house_consumption_data(CONSUMPTION_DATA_FILE)

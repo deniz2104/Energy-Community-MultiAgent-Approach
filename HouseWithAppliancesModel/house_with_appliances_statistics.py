@@ -1,5 +1,5 @@
 import pandas as pd
-from HelperFiles.hours_for_day_and_night import NIGHT_HOURS, TOTAL_HOURS
+from config import NIGHT_HOURS, TOTAL_HOURS
 from HouseWithAppliancesModel.house_with_appliances import HouseWithAppliancesConsumption
 
 class HouseWithAppliancesStatistics:

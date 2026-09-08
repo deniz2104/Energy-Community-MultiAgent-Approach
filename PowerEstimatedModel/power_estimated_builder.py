@@ -1,12 +1,10 @@
-from SolarRadiationModel.solar_radiation_house_builder import SolarRadiationHouseBuilder
 from PowerEstimatedModel.power_estimated import PowerEstimator
+from CsvModel.csv_core import open_csv_file
 
-class PowerEstimatedBuilder(SolarRadiationHouseBuilder):
-    def __init__(self) -> None:
-        pass
+class PowerEstimatedBuilder:
     def build(self,csv_path: str) -> list[PowerEstimator]:
         power_estimated_houses: dict[int,PowerEstimator] ={}
-        rows=super().open_csv_file(csv_path)
+        rows=open_csv_file(csv_path)
 
         for house_id, timestamp, power_estimated in rows:
             if house_id not in power_estimated_houses:

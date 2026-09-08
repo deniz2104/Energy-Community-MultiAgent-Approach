@@ -1,4 +1,4 @@
-from HouseModel.house_facade import HouseFacade
+from HouseModel.house_facade import process_houses_pipeline
 from SolarRadiationModel.solar_radiation_house_facade import SolarRadiationHouseFacade
 from PowerEstimatedModel.power_estimated_facade import PowerEstimatedFacade
 from SelfConsumptionModel.determine_self_consumption_builder import SelfConsumptionBuilder
@@ -10,9 +10,9 @@ from RecommendationModel.recommendation_facade import RecommendationFacade
 from RecommendationModel.recommendation_dictionary_builder import RecommendationDictionaryBuilder
 from AgentModel.house_model import HouseModel
 from AgentModel.agent_plots import AgentPlots
-from AgentModel.agent_statistics import AgentStatistics
+#from AgentModel.agent_statistics import AgentStatistics
 from AgentModel.agent_maximum_simulation_steps import AgentSimulationSteps
-from HelperFiles.file_to_gather_number_of_houses import NUMBER_OF_HOUSES
+from config import NUMBER_OF_HOUSES
 
 ## la final ar fi good practice sa fac un devcontainer
 ## web scraping pentru aflarea pretului 
@@ -22,11 +22,11 @@ from HelperFiles.file_to_gather_number_of_houses import NUMBER_OF_HOUSES
 ## Desenez pe grafic linia Pareto
 
 if __name__ == "__main__":
-    house_facade = HouseFacade()
-    houses = house_facade.build_houses("CSVs/houses_after_filtering_and_matching_with_weather_data.csv")
+    houses = process_houses_pipeline("CSVs/RawConsumption/house_consumption_data.csv", "CSVs/ProcessedConsumption/house_consumption_preprocessed.csv")
+    exit(0)
         
     solar_radiation_house_facade = SolarRadiationHouseFacade()
-    solar_radiation_houses = solar_radiation_house_facade.builder.build("CSVs/solar_radiation_after_resampling_and_matching_houses.csv")
+    solar_radiation_houses = solar_radiation_house_facade.build_solar_radiation_data("CSVs/solar_radiation_after_resampling_and_matching_houses.csv")
 
     power_estimated_facade = PowerEstimatedFacade()
     power_estimated = power_estimated_facade.build_power_estimated_data('CSVs/solar_radiation_after_resampling_and_matching_houses.csv')

@@ -1,0 +1,9 @@
+from pathlib import Path
+
+DIFFERENCE_DAYS = 12
+N_ESTIMATORS = 300
+CONTAMINATION = 0.0002
+SEED = 42
+INFERIOR_WINSORIZE_LIMITS = [0, 0.003]
+YEAR_DAYS = 365
+EXPORT_PATH = Path("CSVs") / "processed_houses_data.csv"

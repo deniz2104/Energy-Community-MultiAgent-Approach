@@ -3,7 +3,7 @@ from typing import Optional
 from HouseModel.house import House
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from HelperFiles.base_plotter_interface import BasePlotterInterface
+from BaseClassesModel.base_plotter_interface import BasePlotterInterface
 
 class PowerEstimatedPlotter(BasePlotterInterface):
     def get_data_dict(self, data_object: PowerEstimator) -> dict[str, float]:
@@ -73,7 +73,7 @@ class PowerEstimatedPlotter(BasePlotterInterface):
 
         fig.add_trace(
             go.Scatter(x=(list(consumption_house.consumption.keys())), 
-                    y=list(consumption_house.consumption.values()),
+                    y=consumption_house.consumption_values,
                     mode='lines', name='Consumption'),
             secondary_y=True,
         )
